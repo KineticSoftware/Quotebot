@@ -1,15 +1,13 @@
-﻿using Discord;
-using Discord.Commands;
+﻿using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Azure.KeyVault;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Quotebot.Services;
-using System.Configuration;
 
 public class Program
 {
-    private DiscordSocketClient? _client;
 
     static void Main(string[] args) => new Program().MainAsync(args).GetAwaiter().GetResult();
 
@@ -17,25 +15,25 @@ public class Program
     {
         using var services = BuildServiceProvider();
 
-
-        _client = services.GetService<DiscordSocketClient>();      
+        IConfigurationRoot configuration = services.GetRequiredService<IConfigurationRoot>();
+        DiscordSocketClient client = services.GetRequiredService<DiscordSocketClient>();      
         
 
-        _client.Log += async (logMessage) =>
+        client.Log += async (logMessage) =>
        {
            Console.WriteLine(logMessage.Message);
            await Task.CompletedTask;
        };
 
-        _client.Ready += async () => {
+        client.Ready += async () => {
             Console.WriteLine("Bot is connected!");
             await Task.CompletedTask;
         };
 
-        string apiClient = ConfigurationManager.AppSettings["ApiClientId"] ?? string.Empty;
-        string apiSecret = ConfigurationManager.AppSettings["ApiSecret"] ?? string.Empty;
-        string keyUrl = ConfigurationManager.AppSettings["TokenSecretUri"] ?? string.Empty;
-
+        string apiClient = configuration["ApiClientId"];
+        string apiSecret = configuration["ApiSecret"];
+        string keyUrl = configuration["TokenSecretUri"];
+         
         if(string.IsNullOrWhiteSpace(apiClient) || string.IsNullOrWhiteSpace(apiSecret) || string.IsNullOrWhiteSpace(keyUrl))
         {
             Console.WriteLine("Unable to determine Azure Credentials. Exiting...");
@@ -60,12 +58,17 @@ public class Program
 
         Console.ReadLine();
 
-        await _client.StopAsync();
+        await client.StopAsync();
     }
 
     private ServiceProvider BuildServiceProvider()
     {
+        IConfigurationBuilder builder = new ConfigurationBuilder()
+                                    .AddEnvironmentVariables();
+        IConfigurationRoot configuration = builder.Build();
+
         return new ServiceCollection()
+            .AddSingleton(configuration)
             .AddSingleton<DiscordSocketClient>()
             .AddSingleton<CommandService>()
             .AddSingleton<CommandHandlersService>()

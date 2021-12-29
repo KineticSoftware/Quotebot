@@ -36,7 +36,7 @@ public class Program
         string apiSecret = ConfigurationManager.AppSettings["ApiSecret"] ?? string.Empty;
         string keyUrl = ConfigurationManager.AppSettings["TokenSecretUri"] ?? string.Empty;
 
-        if(string.IsNullOrWhiteSpace(apiClient) || string.IsNullOrWhiteSpace(apiSecret) || string.IsNullOrWhiteSpace(keyUrl)
+        if(string.IsNullOrWhiteSpace(apiClient) || string.IsNullOrWhiteSpace(apiSecret) || string.IsNullOrWhiteSpace(keyUrl))
         {
             Console.WriteLine("Unable to determine Azure Credentials. Exiting...");
             return;

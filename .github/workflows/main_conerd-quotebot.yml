@@ -36,7 +36,7 @@ jobs:
           type: 'zip'
           artifacts: ${{ENV.ZIP_FILE}}
           directory: ${{ENV.ZIP_PATH}}
-          exclusions: ''Quotebot.exe app_data/**/unix/*''
+          exclusions: 'Quotebot.exe app_data/**/unix/*'
 
       - name: Publish WebJob
         uses: srijken/azure-webjob-deploy@master

@@ -1,1 +1,1 @@
-﻿dotnet Quotebot.dll
+﻿Quotebot.dll

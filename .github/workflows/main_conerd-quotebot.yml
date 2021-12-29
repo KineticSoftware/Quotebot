@@ -34,7 +34,7 @@ jobs:
         uses: thedoctor0/zip-release@master
         with:
           type: 'zip'
-          filename: ${{ENV.ZIP_FILE}}
+          artifacts: ${{ENV.ZIP_FILE}}
           directory: ${{ENV.ZIP_PATH}}
           exclusions: ''Quotebot.exe app_data/**/unix/*''
 

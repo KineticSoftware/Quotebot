@@ -51,10 +51,10 @@ public class Program
 
         // Get the API key out of the vault
         string token = (await keyVault.GetSecretAsync(keyUrl)).Value;
-        Console.WriteLine(token);
-
         
         await services.GetRequiredService<CommandHandlersService>().InitializeAsync();
+
+        await client.StartAsync();
 
         Console.ReadLine();
 

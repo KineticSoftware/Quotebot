@@ -1,2 +1,1 @@
-﻿@echo off
-dotnet Quotebot.dll
+﻿dotnet Quotebot.dll

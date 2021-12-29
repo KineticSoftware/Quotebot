@@ -4,7 +4,7 @@ using Discord.WebSocket;
 using Microsoft.Azure.KeyVault;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
-using Quotebot;
+using Quotebot.Services;
 using System.Configuration;
 
 public class Program

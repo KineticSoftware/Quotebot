@@ -27,14 +27,14 @@ jobs:
           dotnet-version: '6.0.x'
           include-prerelease: false
 
-      - name: Build with dotnet
+      - name: dotnet build
         run: dotnet build ${{ENV.SLN_PATH}} --configuration Release --output ${{env.BINARIES}}
       
-      - name: Archive Release
+      - name: Create Release Artifact
         uses: thedoctor0/zip-release@master
         with:
           type: 'zip'
-          artifacts: ${{ENV.ZIP_FILE}}
+          filename: ${{ENV.ZIP_FILE}}
           directory: ${{ENV.ZIP_PATH}}
           exclusions: 'Quotebot.exe app_data/**/unix/*'
 

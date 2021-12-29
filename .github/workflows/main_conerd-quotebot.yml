@@ -8,8 +8,7 @@ env:
   ZIP_FILE: 'webjob.zip'
   ZIP_PATH: './output'
   ZIP_FILEPATH: './output/webjob.zip'
-  SLN_PATH: '.\src\Quotebot.sln'
-
+  SLN_PATH: './src/Quotebot.sln'
 on:
   push:
     branches:

@@ -38,20 +38,33 @@ jobs:
           directory: ${{ENV.ZIP_PATH}}
           exclusions: 'Quotebot.exe app_data/**/unix/*'
 
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v2
+        with:
+          name: quotebot-artifact
+          path: ${{ENV.ZIP_FILEPATH}}
+    
+  deploy:
+    runs-on: windows-latest
+    needs: build
+    environment:
+      name: 'Production'      
+  
+    steps:
       - name: Publish WebJob
         uses: srijken/azure-webjob-deploy@master
         with: 
           zip-file: ${{ENV.ZIP_FILEPATH}}
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_59E93C47D0E84C97A2528BC20F84FB38 }}
+      
+
+
+      
       # - name: dotnet publish
       #   # run: dotnet publish .\src\Quotebot.sln -c Release -o ${{env.DOTNET_ROOT}}/publish
       #   run: dotnet publish .\src\Quotebot.sln -c Release 
 
-  #     - name: Upload artifact for deployment job
-  #       uses: actions/upload-artifact@v2
-  #       with:
-  #         name: quotebot-artifact
-  #         path: ${{env.DOTNET_ROOT}}/publish
+
 
   # deploy:
   #   runs-on: windows-latest

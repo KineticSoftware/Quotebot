@@ -4,7 +4,7 @@ CONerd Quotebot is this idea that any message spoken in a Discord server could b
 ## Checklist
 - [x] Create the bot in Discord
 - [x] reate an Azure Webjob to run the bot
-- [x] dd Azure Secrets Vault integration
+- [x] Integrate Azure Secrets Vault integration
 - [x] Write some baseline code for the bot to join the server
 - [x] Write a simple baseline interaction with the bot responding to a user
 - [x] Build CI/CD pipeline

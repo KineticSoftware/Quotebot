@@ -1,7 +1,7 @@
 # Docs for the Azure Web Apps Deploy action: https://github.com/Azure/webapps-deploy
 # More GitHub Actions for Azure: https://github.com/Azure/actions
 
-name: Build and deploy ASP.Net Core app to Azure Web App - conerd-quotebot
+name: Build and Deploy Quotebot
 
 env:
   BINARIES: './output/app_data/jobs/continuous/Quotebot' # the last folder name will become the webjob name in the portal

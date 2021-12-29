@@ -4,7 +4,7 @@ using Discord.WebSocket;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
-namespace Quotebot
+namespace Quotebot.Services
 {
     internal class CommandHandlersService
     {
@@ -33,7 +33,7 @@ namespace Quotebot
             if (!(rawMessage is SocketUserMessage message))
                 return;
 
-            if (message.Source != Discord.MessageSource.User)
+            if (message.Source != MessageSource.User)
                 return;
 
             var argPosition = 0;

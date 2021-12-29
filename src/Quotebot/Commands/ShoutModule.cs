@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Quotebot
+namespace Quotebot.Commands
 {
     [Group("quote")]
     public class ShoutModule : ModuleBase<SocketCommandContext>

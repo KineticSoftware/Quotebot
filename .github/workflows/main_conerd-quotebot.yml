@@ -3,16 +3,21 @@
 
 name: Build and deploy ASP.Net Core app to Azure Web App - conerd-quotebot
 
+env:
+  BINARIES: './output/app_data/jobs/continuous/Quotebot' # the last folder name will become the webjob name in the portal
+  ZIP_FILE: 'webjob.zip'
+  ZIP_PATH: './output'
+  ZIP_FILEPATH: './output/webjob.zip'
+  SLN_PATH: '.\src\Quotebot.sln'
+
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   build:
     runs-on: windows-latest
-
     steps:
       - uses: actions/checkout@v2
 
@@ -23,35 +28,49 @@ jobs:
           include-prerelease: false
 
       - name: Build with dotnet
-        run: dotnet build .\src\Quotebot.sln --configuration Release
-
-      - name: dotnet publish
-        run: dotnet publish .\src\Quotebot.sln -c Release -o ${{env.DOTNET_ROOT}}/publish
-
-      - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v2
+        run: dotnet build ${{ENV.SLN_PATH}} --configuration Release --output ${{env.BINARIES}}
+      
+      - name: Archive Release
+        uses: thedoctor0/zip-release@master
         with:
-          name: quotebot-artifact
-          path: ${{env.DOTNET_ROOT}}/publish
+          type: 'zip'
+          filename: ${{ENV.ZIP_FILE}}
+          directory: ${{ENV.ZIP_PATH}}
+          exclusions: ''Quotebot.exe app_data/**/unix/*''
 
-  deploy:
-    runs-on: windows-latest
-    needs: build
-    environment:
-      name: 'Production'
-      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
-
-    steps:
-      - name: Download artifact from build job
-        uses: actions/download-artifact@v2
-        with:
-          name: quotebot-artifact
-
-      - name: Deploy to Azure Web App
-        id: deploy-to-webapp
-        uses: azure/webapps-deploy@v2
-        with:
-          app-name: 'conerd-quotebot'
-          slot-name: 'Production'
+      - name: Publish WebJob
+        uses: srijken/azure-webjob-deploy@master
+        with: 
+          zip-file: ${{ENV.ZIP_FILEPATH}}
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_59E93C47D0E84C97A2528BC20F84FB38 }}
-          package: .
+      # - name: dotnet publish
+      #   # run: dotnet publish .\src\Quotebot.sln -c Release -o ${{env.DOTNET_ROOT}}/publish
+      #   run: dotnet publish .\src\Quotebot.sln -c Release 
+
+  #     - name: Upload artifact for deployment job
+  #       uses: actions/upload-artifact@v2
+  #       with:
+  #         name: quotebot-artifact
+  #         path: ${{env.DOTNET_ROOT}}/publish
+
+  # deploy:
+  #   runs-on: windows-latest
+  #   needs: build
+  #   environment:
+  #     name: 'Production'
+  #     url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+  #   steps:
+  #     - name: Download artifact from build job
+  #       uses: actions/download-artifact@v2
+  #       with:
+  #         name: quotebot-artifact
+
+      # - name: Deploy to Azure Web App
+      #   id: deploy-to-webapp
+      #   uses: azure/webapps-deploy@v2
+      #   with:
+      #     app-name: 'conerd-quotebot'
+      #     slot-name: 'Production'
+      #     publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_59E93C47D0E84C97A2528BC20F84FB38 }}
+      #     package: .

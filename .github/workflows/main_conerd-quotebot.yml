@@ -50,10 +50,14 @@ jobs:
       name: 'Production'      
   
     steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v2
+        with:
+          name: quotebot-artifact
       - name: Publish WebJob
         uses: srijken/azure-webjob-deploy@master
         with: 
-          zip-file: ${{ENV.ZIP_FILEPATH}}
+          zip-file: ${{ENV.ZIP_FILE}}
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_59E93C47D0E84C97A2528BC20F84FB38 }}
       
 

@@ -1,4 +1,5 @@
-﻿using Discord.Commands;
+﻿using Discord;
+using Discord.Commands;
 using Discord.WebSocket;
 using Microsoft.Azure.KeyVault;
 using Microsoft.Extensions.Configuration;
@@ -50,10 +51,11 @@ public class Program
         });
 
         // Get the API key out of the vault
-        string token = (await keyVault.GetSecretAsync(keyUrl)).Value;
+        string discordToken = (await keyVault.GetSecretAsync(keyUrl)).Value;
         
         await services.GetRequiredService<CommandHandlersService>().InitializeAsync();
 
+        await client.LoginAsync(TokenType.Bot, discordToken);
         await client.StartAsync();
 
         Console.ReadLine();

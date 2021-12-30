@@ -1,0 +1,25 @@
+name: Build
+
+env:
+  SLN_PATH: './src/Quotebot.sln'
+  
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.0.x'
+          include-prerelease: false
+
+      - name: dotnet build
+        run: dotnet build ${{ENV.SLN_PATH}} --configuration Debug
+      

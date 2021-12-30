@@ -1,5 +1,6 @@
 ﻿using Discord;
 using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
 using Microsoft.Azure.KeyVault;
 using Microsoft.Extensions.Configuration;
@@ -17,8 +18,8 @@ public class Program
         using var services = BuildServiceProvider();
 
         IConfigurationRoot configuration = services.GetRequiredService<IConfigurationRoot>();
-        DiscordSocketClient client = services.GetRequiredService<DiscordSocketClient>();      
-        
+        DiscordSocketClient client = services.GetRequiredService<DiscordSocketClient>();
+        InteractionService interactionService = services.GetRequiredService<InteractionService>();
 
         client.Log += async (logMessage) =>
        {
@@ -31,6 +32,13 @@ public class Program
             await Task.CompletedTask;
         };
 
+        interactionService.Log += async (logMessage) =>
+        {
+            Console.WriteLine(logMessage.Message);
+            await Task.CompletedTask;
+        };
+
+#if Release
         string apiClient = configuration["ApiClientId"];
         string apiSecret = configuration["ApiSecret"];
         string keyUrl = configuration["TokenSecretUri"];
@@ -52,8 +60,12 @@ public class Program
 
         // Get the API key out of the vault
         string discordToken = (await keyVault.GetSecretAsync(keyUrl)).Value;
-        
+#else
+        string discordToken = configuration["DiscordToken"];
+#endif
         await services.GetRequiredService<CommandHandlersService>().InitializeAsync();
+        await services.GetRequiredService<InteractionHandlersService>().InitializeAsync();
+
 
         await client.LoginAsync(TokenType.Bot, discordToken);
         await client.StartAsync();
@@ -72,8 +84,10 @@ public class Program
         return new ServiceCollection()
             .AddSingleton(configuration)
             .AddSingleton<DiscordSocketClient>()
+            .AddSingleton(serviceProvider => new InteractionService(serviceProvider.GetRequiredService<DiscordSocketClient>()))
             .AddSingleton<CommandService>()
             .AddSingleton<CommandHandlersService>()
+            .AddSingleton<InteractionHandlersService>()
             .BuildServiceProvider();
     }
 }

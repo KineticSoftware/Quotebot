@@ -5,7 +5,6 @@ using Discord.WebSocket;
 using Microsoft.Azure.KeyVault;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Quotebot.Services;
 
 public class Program
@@ -17,7 +16,7 @@ public class Program
     {
         using var services = BuildServiceProvider();
 
-        IConfigurationRoot configuration = services.GetRequiredService<IConfigurationRoot>();
+        IConfiguration configuration = services.GetRequiredService<IConfiguration>();
         DiscordSocketClient client = services.GetRequiredService<DiscordSocketClient>();
         InteractionService interactionService = services.GetRequiredService<InteractionService>();
 
@@ -28,6 +27,14 @@ public class Program
        };
 
         client.Ready += async () => {
+
+#if DEBUG
+                // Id of the test guild can be provided from the Configuration object
+                await interactionService.RegisterCommandsToGuildAsync(Convert.ToUInt64(configuration["GuildId"]), true);
+#else
+                await interactionService.RegisterCommandsGloballyAsync(true);
+#endif
+
             Console.WriteLine("Bot is connected!");
             await Task.CompletedTask;
         };
@@ -79,7 +86,7 @@ public class Program
     {
         IConfigurationBuilder builder = new ConfigurationBuilder()
                                     .AddEnvironmentVariables();
-        IConfigurationRoot configuration = builder.Build();
+        IConfiguration configuration = builder.Build();
 
         return new ServiceCollection()
             .AddSingleton(configuration)

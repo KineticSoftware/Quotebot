@@ -64,7 +64,8 @@ public class Program
 #else
         string discordToken = configuration["DiscordToken"];
 #endif
-        await services.GetRequiredService<CommandHandlersService>().InitializeAsync();
+
+        //await services.GetRequiredService<CommandHandlersService>().InitializeAsync();
         await services.GetRequiredService<InteractionHandlersService>().InitializeAsync();
 
 

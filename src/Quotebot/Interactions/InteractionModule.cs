@@ -12,16 +12,6 @@ namespace Quotebot.Interactions
 {
     public class InteractionModule : InteractionModuleBase<SocketInteractionContext>
     {
-        private readonly InteractionHandlersService _handlerService;
-
-        private readonly InteractionService _interactionService;
-
-        public InteractionModule(InteractionHandlersService handlerService, InteractionService interactionService)
-        {
-            _handlerService = handlerService;
-            _interactionService = interactionService;
-        }
-
         // Slash Commands are declared using the [SlashCommand], you need to provide a name and a description, both following the Discord guidelines
         [SlashCommand("ping", "Recieve a pong")]
         // By setting the DefaultPermission to false, you can disable the command by default. No one can use the command until you give them permission

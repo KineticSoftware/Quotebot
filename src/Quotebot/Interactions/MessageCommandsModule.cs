@@ -17,7 +17,7 @@ namespace Quotebot.Interactions
             if (rawMessage is not SocketUserMessage message)
                 return;
 
-            await message.ReplyAsync("sneks");
+            await message.ReplyAsync($"sneks {message.Author.Username}");
             var emoji = Emote.Parse("<:quoted:926362503531872317>");
             await message.AddReactionAsync(emoji);
         }

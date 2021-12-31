@@ -13,11 +13,12 @@ namespace Quotebot.Interactions
     {
         private readonly InteractionHandlersService _handlerService;
 
-        public InteractionService InteractionService { get; set; }
+        private readonly InteractionService _interactionService;
 
-        public InteractionModule(InteractionHandlersService handlerService)
+        public InteractionModule(InteractionHandlersService handlerService, InteractionService interactionService)
         {
             _handlerService = handlerService;
+            _interactionService = interactionService;
         }
 
         // Slash Commands are declared using the [SlashCommand], you need to provide a name and a description, both following the Discord guidelines

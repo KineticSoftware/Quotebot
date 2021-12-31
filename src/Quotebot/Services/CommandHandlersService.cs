@@ -30,28 +30,31 @@ namespace Quotebot.Services
 
         public async Task MessageReceivedAsync(SocketMessage rawMessage)
         {
-            if (!(rawMessage is SocketUserMessage message))
-                return;
-
-            if (message.Source != MessageSource.User)
-                return;
-
             var argPosition = 0;
-            if (!message.HasCharPrefix('!', ref argPosition))
-                return;
 
-            var context = new SocketCommandContext(_client, message);
+            switch (rawMessage)
+            {
+                case SocketUserMessage message
+                    when !message.HasCharPrefix('!', ref argPosition) :
+                    return;
 
-            await _commandService.ExecuteAsync(context, argPosition, _serviceProvider);
+                case SocketUserMessage message
+                    when message.Source != MessageSource.User:
+                    return;
 
+                case SocketUserMessage message:
+                    var context = new SocketCommandContext(_client, message);
+                    await _commandService.ExecuteAsync(context, argPosition, _serviceProvider);
+                    return;
+
+                case SocketMessage:
+                    return;
+            }
         }
 
         public async Task CommandExecutedAsync(Optional<CommandInfo> command, ICommandContext context, IResult result)
         {
-            if (!command.IsSpecified)
-                return;
-
-            if (result.IsSuccess)
+            if (!command.IsSpecified || result.IsSuccess)
                 return;
 
             await context.Channel.SendMessageAsync($"Error: {result}");

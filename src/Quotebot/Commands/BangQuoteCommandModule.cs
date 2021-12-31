@@ -3,7 +3,7 @@
 namespace Quotebot.Commands
 {
     [Group("quote")]
-    public class ShoutModule : ModuleBase<SocketCommandContext>
+    public class BangQuoteCommandModule : ModuleBase<SocketCommandContext>
     {
         [Command("hello")]
         [Summary("Says hello to you")]

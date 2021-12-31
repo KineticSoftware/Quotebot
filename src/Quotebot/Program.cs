@@ -31,11 +31,10 @@ public class Program
 
         client.Ready += async () =>
         {
-            //#if DEBUG
             await interactionService.RegisterCommandsToGuildAsync(Convert.ToUInt64(configuration["GuildId"]), true);
-            //#else
+            
+            // we may never do this. 
             // await interactionService.RegisterCommandsGloballyAsync(true);
-            //#endif
 
             Console.WriteLine("Bot is connected!");
         };

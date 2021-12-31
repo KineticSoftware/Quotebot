@@ -3,7 +3,7 @@
 namespace Quotebot.Commands
 {
     [Group("quote")]
-    public class BangQuoteCommandModule : ModuleBase<SocketCommandContext>
+    public class QuoteCommandModule : ModuleBase<SocketCommandContext>
     {
         [Command("hello")]
         [Summary("Says hello to you")]
@@ -23,6 +23,7 @@ namespace Quotebot.Commands
         [Summary("Says the current time")]
         public async Task SayGoAway()
         {
+            
             await ReplyAsync($"{Context.User.Username} fuck you, I'm eating!");
         }
     }

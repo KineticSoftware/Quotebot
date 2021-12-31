@@ -21,7 +21,7 @@ namespace Quotebot.Interactions
             var emoji = Emote.Parse("<:quoted:926362503531872317>");
             await message.AddReactionAsync(emoji);
             
-            await RespondAsync("sneks {message.Author.Username}");
+            await RespondAsync($"sneks {message.Author.Username}");
         }
     }
 }

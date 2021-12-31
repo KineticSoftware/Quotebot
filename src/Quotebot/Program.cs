@@ -77,7 +77,7 @@ public class Program
         await client.StopAsync();
     }
 
-    private ServiceProvider BuildServiceProvider()
+    private static ServiceProvider BuildServiceProvider()
     {
         IConfigurationBuilder builder = new ConfigurationBuilder()
                                     .AddEnvironmentVariables();
@@ -85,7 +85,7 @@ public class Program
 
         return new ServiceCollection()
             .AddSingleton(configuration)
-            .AddSingleton<DiscordSocketClient>()
+            .AddSingleton(serviceProvider => new DiscordSocketClient(new DiscordSocketConfig { LogLevel = LogSeverity.Debug }))
             .AddSingleton(serviceProvider => new InteractionService(serviceProvider.GetRequiredService<DiscordSocketClient>()))
             .AddSingleton<CommandService>()
             .AddSingleton<CommandHandlersService>()

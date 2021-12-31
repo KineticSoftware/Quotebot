@@ -1,14 +1,9 @@
 ﻿using Discord.Commands;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Quotebot.Commands
 {
     [Group("quote")]
-    public class ShoutModule : ModuleBase<SocketCommandContext>
+    public class QuoteCommandModule : ModuleBase<SocketCommandContext>
     {
         [Command("hello")]
         [Summary("Says hello to you")]
@@ -28,6 +23,7 @@ namespace Quotebot.Commands
         [Summary("Says the current time")]
         public async Task SayGoAway()
         {
+            
             await ReplyAsync($"{Context.User.Username} fuck you, I'm eating!");
         }
     }

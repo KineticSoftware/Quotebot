@@ -1,36 +1,44 @@
 ﻿using Discord;
 using Discord.Commands;
+using Discord.Interactions;
 using Discord.WebSocket;
-using Microsoft.Azure.KeyVault;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Quotebot.Services;
 
 public class Program
 {
 
-    static void Main(string[] args) => new Program().MainAsync(args).GetAwaiter().GetResult();
+    //static void Main(string[] args) => new Program().MainAsync(args).GetAwaiter().GetResult();
 
-    public async Task MainAsync(string[] args)
+    public static async Task Main(string[] args)
     {
         using var services = BuildServiceProvider();
 
-        IConfigurationRoot configuration = services.GetRequiredService<IConfigurationRoot>();
-        DiscordSocketClient client = services.GetRequiredService<DiscordSocketClient>();      
-        
+        IConfiguration configuration = services.GetRequiredService<IConfiguration>();
+        DiscordSocketClient client = services.GetRequiredService<DiscordSocketClient>();
+        InteractionService interactionService = services.GetRequiredService<InteractionService>();
 
-        client.Log += async (logMessage) =>
-       {
-           Console.WriteLine(logMessage.Message);
-           await Task.CompletedTask;
-       };
 
-        client.Ready += async () => {
-            Console.WriteLine("Bot is connected!");
+        async Task LogMessage(LogMessage log)
+        {
+            Console.WriteLine(log.Message);
             await Task.CompletedTask;
-        };
+        }
 
+        client.Log += LogMessage;
+        interactionService.Log += LogMessage;
+
+        client.Ready += async () =>
+        {
+            await interactionService.RegisterCommandsToGuildAsync(Convert.ToUInt64(configuration["GuildId"]), true);
+            
+            // we may never do this. 
+            // await interactionService.RegisterCommandsGloballyAsync(true);
+
+            Console.WriteLine("Bot is connected!");
+        };
+#if Release
         string apiClient = configuration["ApiClientId"];
         string apiSecret = configuration["ApiSecret"];
         string keyUrl = configuration["TokenSecretUri"];
@@ -52,28 +60,59 @@ public class Program
 
         // Get the API key out of the vault
         string discordToken = (await keyVault.GetSecretAsync(keyUrl)).Value;
-        
-        await services.GetRequiredService<CommandHandlersService>().InitializeAsync();
+#else
+        string discordToken = configuration["DiscordToken"];
+#endif
+
+        await services.GetRequiredService<CommandsHandlerService>().InitializeAsync();
+        await services.GetRequiredService<InteractionsHandlerService>().InitializeAsync();
+
 
         await client.LoginAsync(TokenType.Bot, discordToken);
         await client.StartAsync();
 
-        Console.ReadLine();
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        Console.CancelKeyPress += async (s, e) =>
+        {
+            Console.WriteLine("Disconnecting...");
+            await client.LogoutAsync();
+            cancellationTokenSource.Cancel();
+            e.Cancel = true;
 
-        await client.StopAsync();
+        };
+
+        try
+        {
+            await Task.Delay(Timeout.Infinite, cancellationTokenSource.Token);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
 
-    private ServiceProvider BuildServiceProvider()
+    private static ServiceProvider BuildServiceProvider()
     {
         IConfigurationBuilder builder = new ConfigurationBuilder()
                                     .AddEnvironmentVariables();
-        IConfigurationRoot configuration = builder.Build();
+        IConfiguration configuration = builder.Build();
 
         return new ServiceCollection()
             .AddSingleton(configuration)
-            .AddSingleton<DiscordSocketClient>()
-            .AddSingleton<CommandService>()
-            .AddSingleton<CommandHandlersService>()
+            .AddSingleton(serviceProvider => new DiscordSocketClient(new DiscordSocketConfig 
+            { 
+                LogLevel = LogSeverity.Debug,
+                MessageCacheSize = 50,
+            }))
+            .AddSingleton(serviceProvider => new InteractionService(serviceProvider.GetRequiredService<DiscordSocketClient>()))
+            .AddSingleton(serviceProvider => new CommandService(new CommandServiceConfig
+            {
+                // Again, log level:
+                LogLevel = LogSeverity.Debug,
+                ThrowOnError = true
+            }))
+            .AddSingleton<CommandsHandlerService>()
+            .AddSingleton<InteractionsHandlerService>()
             .BuildServiceProvider();
     }
 }

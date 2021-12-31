@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Quotebot.Interactions
 {
-    public class InteractionModule : InteractionModuleBase<SocketInteractionContext>
+    public class SlashCommandsModule : InteractionModuleBase<SocketInteractionContext>
     {
         // Slash Commands are declared using the [SlashCommand], you need to provide a name and a description, both following the Discord guidelines
         [SlashCommand("ping", "Recieve a pong")]
@@ -29,14 +29,6 @@ namespace Quotebot.Interactions
         }
 
 
-        [MessageCommand("Save Quote!")]
-        public async Task AddQuote(IMessage rawMessage)
-        {
-            if (rawMessage is not SocketUserMessage message)
-                return;
-
-            await message.ReplyAsync("Quote!");
-            await message.AddReactionAsync(new Emoji("☁"));
-        }
+        
     }
 }

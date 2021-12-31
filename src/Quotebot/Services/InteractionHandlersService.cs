@@ -27,7 +27,6 @@ namespace Quotebot.Services
             _interactionService.SlashCommandExecuted += SlashCommandExecuted;
             _interactionService.ContextCommandExecuted += ContextCommandExecuted;
             _interactionService.ComponentCommandExecuted += ComponentCommandExecuted;
-
         }
 
         private async Task ComponentCommandExecuted(ComponentCommandInfo commandInfo, IInteractionContext context, IResult result)
@@ -37,19 +36,11 @@ namespace Quotebot.Services
                 switch (result.Error)
                 {
                     case InteractionCommandError.UnmetPrecondition:
-                        // implement
-                        break;
                     case InteractionCommandError.UnknownCommand:
-                        // implement
-                        break;
                     case InteractionCommandError.BadArgs:
-                        // implement
-                        break;
                     case InteractionCommandError.Exception:
-                        // implement
-                        break;
                     case InteractionCommandError.Unsuccessful:
-                        // implement
+                        Console.WriteLine($"{result.Error} {result.ErrorReason}");
                         break;
                     default:
                         break;
@@ -60,24 +51,17 @@ namespace Quotebot.Services
 
         private async Task ContextCommandExecuted(ContextCommandInfo contextInfo, IInteractionContext context, IResult result)
         {
+            // Message Commands
             if (!result.IsSuccess)
             {
                 switch (result.Error)
                 {
                     case InteractionCommandError.UnmetPrecondition:
-                        // implement
-                        break;
                     case InteractionCommandError.UnknownCommand:
-                        // implement
-                        break;
                     case InteractionCommandError.BadArgs:
-                        // implement
-                        break;
                     case InteractionCommandError.Exception:
-                        // implement
-                        break;
                     case InteractionCommandError.Unsuccessful:
-                        // implement
+                        Console.WriteLine($"{result.Error} {result.ErrorReason}");
                         break;
                     default:
                         break;
@@ -94,19 +78,11 @@ namespace Quotebot.Services
                 switch (result.Error)
                 {
                     case InteractionCommandError.UnmetPrecondition:
-                        // implement
-                        break;
                     case InteractionCommandError.UnknownCommand:
-                        // implement
-                        break;
                     case InteractionCommandError.BadArgs:
-                        // implement
-                        break;
                     case InteractionCommandError.Exception:
-                        // implement
-                        break;
                     case InteractionCommandError.Unsuccessful:
-                        // implement
+                        Console.WriteLine($"{result.Error} {result.ErrorReason}");
                         break;
                     default:
                         break;

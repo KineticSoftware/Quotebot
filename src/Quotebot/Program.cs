@@ -31,11 +31,11 @@ public class Program
 
         client.Ready += async () =>
         {
-//#if DEBUG
+            //#if DEBUG
             await interactionService.RegisterCommandsToGuildAsync(Convert.ToUInt64(configuration["GuildId"]), true);
-//#else
+            //#else
             // await interactionService.RegisterCommandsGloballyAsync(true);
-//#endif
+            //#endif
 
             Console.WriteLine("Bot is connected!");
         };
@@ -79,7 +79,7 @@ public class Program
             await client.LogoutAsync();
             cancellationTokenSource.Cancel();
             e.Cancel = true;
-            
+
         };
 
         try

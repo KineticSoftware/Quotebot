@@ -27,8 +27,5 @@ namespace Quotebot.Interactions
         {
             await RespondAsync(echo + (mention ? Context.User.Mention : string.Empty));
         }
-
-
-        
     }
 }

@@ -5,13 +5,13 @@ using System.Reflection;
 
 namespace Quotebot.Services
 {
-    public class InteractionHandlersService
+    public class InteractionsHandlerService
     {
         private readonly DiscordSocketClient _client;
         private readonly InteractionService _interactionService;
         private readonly IServiceProvider _serviceProvider;
 
-        public InteractionHandlersService(DiscordSocketClient client, InteractionService interactionService, IServiceProvider serviceProvider)
+        public InteractionsHandlerService(DiscordSocketClient client, InteractionService interactionService, IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
             _client = client;

@@ -6,13 +6,13 @@ using System.Reflection;
 
 namespace Quotebot.Services
 {
-    internal class CommandHandlersService
+    internal class CommandsHandlerService
     {
         private readonly CommandService _commandService;
         private readonly DiscordSocketClient _client;
         private readonly IServiceProvider _serviceProvider;
 
-        public CommandHandlersService(IServiceProvider serviceProvider)
+        public CommandsHandlerService(IServiceProvider serviceProvider)
         {
             _serviceProvider = serviceProvider;
 

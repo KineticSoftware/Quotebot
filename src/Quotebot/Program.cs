@@ -100,9 +100,18 @@ public class Program
 
         return new ServiceCollection()
             .AddSingleton(configuration)
-            .AddSingleton(serviceProvider => new DiscordSocketClient(new DiscordSocketConfig { LogLevel = LogSeverity.Debug }))
+            .AddSingleton(serviceProvider => new DiscordSocketClient(new DiscordSocketConfig 
+            { 
+                LogLevel = LogSeverity.Debug,
+                MessageCacheSize = 50,
+            }))
             .AddSingleton(serviceProvider => new InteractionService(serviceProvider.GetRequiredService<DiscordSocketClient>()))
-            .AddSingleton<CommandService>()
+            .AddSingleton(serviceProvider => new CommandService(new CommandServiceConfig
+            {
+                // Again, log level:
+                LogLevel = LogSeverity.Debug,
+                ThrowOnError = true
+            }))
             .AddSingleton<CommandHandlersService>()
             .AddSingleton<InteractionHandlersService>()
             .BuildServiceProvider();

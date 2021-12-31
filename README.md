@@ -10,8 +10,8 @@ CONerd Quotebot is this idea that any message spoken in a Discord server could b
 - [x] Build CI/CD pipeline
 - [ ] Determine the database technology
 - [ ] Add database service implenatation
-- [ ] Add `!quote add`
-  - [ ] How does this work? In reply or with messageid?    
+- [x] Add `!quote add`
+  - [x] Accessed by right clicking on a message (context menu) and then via `Apps` menu item. 
 - [ ] Add `!quote search <text>`
 - [ ] NTH Add `!quote messageid`
 - [ ] Make quotebot add an emoji to quoted text

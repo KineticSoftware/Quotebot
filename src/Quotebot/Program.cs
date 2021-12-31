@@ -64,8 +64,8 @@ public class Program
         string discordToken = configuration["DiscordToken"];
 #endif
 
-        //await services.GetRequiredService<CommandHandlersService>().InitializeAsync();
-        await services.GetRequiredService<InteractionHandlersService>().InitializeAsync();
+        await services.GetRequiredService<CommandsHandlerService>().InitializeAsync();
+        await services.GetRequiredService<InteractionsHandlerService>().InitializeAsync();
 
 
         await client.LoginAsync(TokenType.Bot, discordToken);
@@ -111,8 +111,8 @@ public class Program
                 LogLevel = LogSeverity.Debug,
                 ThrowOnError = true
             }))
-            .AddSingleton<CommandHandlersService>()
-            .AddSingleton<InteractionHandlersService>()
+            .AddSingleton<CommandsHandlerService>()
+            .AddSingleton<InteractionsHandlerService>()
             .BuildServiceProvider();
     }
 }

@@ -2,7 +2,6 @@
 using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
-using Microsoft.Azure.KeyVault;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Quotebot.Services;
@@ -10,9 +9,9 @@ using Quotebot.Services;
 public class Program
 {
 
-    static void Main(string[] args) => new Program().MainAsync(args).GetAwaiter().GetResult();
+    //static void Main(string[] args) => new Program().MainAsync(args).GetAwaiter().GetResult();
 
-    public async Task MainAsync(string[] args)
+    public static async Task Main(string[] args)
     {
         using var services = BuildServiceProvider();
 

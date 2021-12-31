@@ -2,14 +2,27 @@
 using Discord.Commands;
 using Discord.Interactions;
 using Discord.WebSocket;
+using Microsoft.Azure.KeyVault;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using Quotebot.Services;
 
 public class Program
 {
 
     //static void Main(string[] args) => new Program().MainAsync(args).GetAwaiter().GetResult();
+    private static bool IsDebug
+    {
+        get
+        {
+#if DEBUG
+            return true;
+#else
+        return false;
+#endif
+        }
+    }
 
     public static async Task Main(string[] args)
     {
@@ -18,7 +31,6 @@ public class Program
         IConfiguration configuration = services.GetRequiredService<IConfiguration>();
         DiscordSocketClient client = services.GetRequiredService<DiscordSocketClient>();
         InteractionService interactionService = services.GetRequiredService<InteractionService>();
-
 
         async Task LogMessage(LogMessage log)
         {
@@ -31,38 +43,47 @@ public class Program
 
         client.Ready += async () =>
         {
-            await interactionService.RegisterCommandsToGuildAsync(Convert.ToUInt64(configuration["GuildId"]), true);
-            
-            // we may never do this. 
-            // await interactionService.RegisterCommandsGloballyAsync(true);
+            //if(IsDebug)
+            //{
+                await interactionService.RegisterCommandsToGuildAsync(Convert.ToUInt64(configuration["GuildId"]), true);
+
+            //}
+            //else
+            //{
+            //    await interactionService.RegisterCommandsGloballyAsync(true);
+            //}
 
             Console.WriteLine("Bot is connected!");
         };
-#if Release
-        string apiClient = configuration["ApiClientId"];
-        string apiSecret = configuration["ApiSecret"];
-        string keyUrl = configuration["TokenSecretUri"];
-         
-        if(string.IsNullOrWhiteSpace(apiClient) || string.IsNullOrWhiteSpace(apiSecret) || string.IsNullOrWhiteSpace(keyUrl))
+        string discordToken = string.Empty;
+        if (IsDebug)
         {
-            Console.WriteLine("Unable to determine Azure Credentials. Exiting...");
-            return;
+           discordToken = configuration["DiscordToken"];
         }
-
-        var keyVault = new KeyVaultClient(async (string authority, string resource, string scope) =>
+        else
         {
-            var authContext = new AuthenticationContext(authority);
-            var credential = new ClientCredential(apiClient, apiSecret);
-            var token = await authContext.AcquireTokenAsync(resource, credential);
+            string apiClient = configuration["ApiClientId"];
+            string apiSecret = configuration["ApiSecret"];
+            string keyUrl = configuration["TokenSecretUri"];
 
-            return token.AccessToken;
-        });
+            if (string.IsNullOrWhiteSpace(apiClient) || string.IsNullOrWhiteSpace(apiSecret) || string.IsNullOrWhiteSpace(keyUrl))
+            {
+                Console.WriteLine("Unable to determine Azure Credentials. Exiting...");
+                return;
+            }
 
-        // Get the API key out of the vault
-        string discordToken = (await keyVault.GetSecretAsync(keyUrl)).Value;
-#else
-        string discordToken = configuration["DiscordToken"];
-#endif
+            var keyVault = new KeyVaultClient(async (string authority, string resource, string scope) =>
+            {
+                var authContext = new AuthenticationContext(authority);
+                var credential = new ClientCredential(apiClient, apiSecret);
+                var token = await authContext.AcquireTokenAsync(resource, credential);
+
+                return token.AccessToken;
+            });
+
+            // Get the API key out of the vault
+            discordToken = (await keyVault.GetSecretAsync(keyUrl)).Value;
+        }
 
         await services.GetRequiredService<CommandsHandlerService>().InitializeAsync();
         await services.GetRequiredService<InteractionsHandlerService>().InitializeAsync();
@@ -78,7 +99,6 @@ public class Program
             await client.LogoutAsync();
             cancellationTokenSource.Cancel();
             e.Cancel = true;
-
         };
 
         try
@@ -115,4 +135,6 @@ public class Program
             .AddSingleton<InteractionsHandlerService>()
             .BuildServiceProvider();
     }
+
+    
 }

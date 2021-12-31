@@ -72,9 +72,24 @@ public class Program
         await client.LoginAsync(TokenType.Bot, discordToken);
         await client.StartAsync();
 
-        Console.ReadLine();
+        CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+        Console.CancelKeyPress += async (s, e) =>
+        {
+            Console.WriteLine("Disconnecting...");
+            await client.LogoutAsync();
+            cancellationTokenSource.Cancel();
+            e.Cancel = true;
+            
+        };
 
-        await client.StopAsync();
+        try
+        {
+            await Task.Delay(Timeout.Infinite, cancellationTokenSource.Token);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
     }
 
     private static ServiceProvider BuildServiceProvider()

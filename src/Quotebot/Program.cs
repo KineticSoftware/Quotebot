@@ -20,31 +20,26 @@ public class Program
         DiscordSocketClient client = services.GetRequiredService<DiscordSocketClient>();
         InteractionService interactionService = services.GetRequiredService<InteractionService>();
 
-        client.Log += async (logMessage) =>
-       {
-           Console.WriteLine(logMessage.Message);
-           await Task.CompletedTask;
-       };
 
-        client.Ready += async () => {
+        async Task LogMessage(LogMessage log)
+        {
+            Console.WriteLine(log.Message);
+            await Task.CompletedTask;
+        }
 
-#if DEBUG
-                // Id of the test guild can be provided from the Configuration object
-                await interactionService.RegisterCommandsToGuildAsync(Convert.ToUInt64(configuration["GuildId"]), true);
-#else
-                await interactionService.RegisterCommandsGloballyAsync(true);
-#endif
+        client.Log += LogMessage;
+        interactionService.Log += LogMessage;
+
+        client.Ready += async () =>
+        {
+//#if DEBUG
+            await interactionService.RegisterCommandsToGuildAsync(Convert.ToUInt64(configuration["GuildId"]), true);
+//#else
+            // await interactionService.RegisterCommandsGloballyAsync(true);
+//#endif
 
             Console.WriteLine("Bot is connected!");
-            await Task.CompletedTask;
         };
-
-        interactionService.Log += async (logMessage) =>
-        {
-            Console.WriteLine(logMessage.Message);
-            await Task.CompletedTask;
-        };
-
 #if Release
         string apiClient = configuration["ApiClientId"];
         string apiSecret = configuration["ApiSecret"];

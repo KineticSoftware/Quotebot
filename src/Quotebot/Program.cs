@@ -12,8 +12,6 @@ namespace Quotebot
 {
     public class Program
     {
-
-        //static void Main(string[] args) => new Program().MainAsync(args).GetAwaiter().GetResult();
         private static bool IsDebug
         {
             get

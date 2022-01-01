@@ -12,6 +12,7 @@ namespace Quotebot
 {
     public class Program
     {
+        //IsDebug
         private static bool IsDebug
         {
             get

@@ -121,7 +121,7 @@ namespace Quotebot
             return new ServiceCollection()
                 .AddSingleton(configuration)
                 .RegisterDiscordServices()
-                .RegisterCosmosDb()
+                .RegisterCosmosDb(configuration)
                 .BuildServiceProvider();
         }
     }

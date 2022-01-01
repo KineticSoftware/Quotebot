@@ -1,4 +1,5 @@
 ﻿using Discord.Commands;
+using System.Reflection;
 
 namespace Quotebot.Commands
 {
@@ -23,8 +24,14 @@ namespace Quotebot.Commands
         [Summary("Says the current time")]
         public async Task SayGoAway()
         {
-            
             await ReplyAsync($"{Context.User.Username} fuck you, I'm eating!");
+        }
+
+        [Command("version")]
+        [Summary("Gets the bot's current version")]
+        public async Task SayVersion()
+        {
+            await ReplyAsync($"My current version is {Assembly.GetEntryAssembly()?.GetName().Version}");
         }
     }
 }

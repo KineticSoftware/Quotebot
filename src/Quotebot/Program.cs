@@ -85,7 +85,12 @@ namespace Quotebot
                 discordToken = (await keyVault.GetSecretAsync(keyUrl)).Value;
             }
 
-            await services.GetRequiredService<IDataService>().Initialize();
+            IDataService? dataService = services.GetService<IDataService>();
+            if(dataService is not null)
+            {
+                await dataService.Initialize();
+            }
+            
             await services.GetRequiredService<CommandsHandlerService>().InitializeAsync();
             await services.GetRequiredService<InteractionsHandlerService>().InitializeAsync();
 

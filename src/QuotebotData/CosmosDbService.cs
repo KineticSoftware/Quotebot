@@ -50,12 +50,11 @@ namespace Quotebot.Data
             // The response from Azure Cosmos
             DatabaseProperties properties = databaseResponse;
 
-            Console.WriteLine($"\n1. Create a database resource with id: {properties.Id} and last modified time stamp: {properties.LastModified}");
-            Console.WriteLine($"\n2. Create a database resource request charge: {databaseResponse.RequestCharge} and Activity Id: {databaseResponse.ActivityId}");
+            Console.WriteLine($"Database resource id: {properties.Id} and last modified: {properties.LastModified}");
 
             return databaseResponse;
         }
-
+            
         private async Task<Container> InitializeContainer(Database database)
         {
             // Set throughput to the minimum value of 400 RU/s
@@ -72,6 +71,9 @@ namespace Quotebot.Data
             };
 
             Console.WriteLine(output);
+
+            ContainerProperties properties = containerResponse;
+            Console.WriteLine($"Container resource id: {properties.Id} and last modified: {properties.LastModified}");
 
             return containerResponse;
         }

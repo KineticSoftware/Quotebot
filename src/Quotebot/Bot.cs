@@ -84,8 +84,11 @@ namespace Quotebot
             return (await keyVault.GetSecretAsync(keyUrl)).Value;
         }
 
-        public static async Task LogMessage(LogMessage log) =>
-            await Task.Run(() => Console.WriteLine(log.Message));
+        public static async Task LogMessage(LogMessage log) 
+        { 
+            Console.WriteLine(log.Message);
+            await Task.CompletedTask;
+         }
 
         public async Task OnReady()
         {

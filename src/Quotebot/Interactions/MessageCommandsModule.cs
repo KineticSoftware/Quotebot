@@ -1,4 +1,5 @@
 ﻿using Discord.Interactions;
+using System.Text;
 
 namespace Quotebot.Interactions
 {

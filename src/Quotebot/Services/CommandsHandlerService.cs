@@ -1,12 +1,10 @@
-﻿using Discord;
-using Discord.Commands;
-using Discord.WebSocket;
+﻿using Discord.Commands;
 using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
 namespace Quotebot.Services
 {
-    internal class CommandsHandlerService
+    public class CommandsHandlerService
     {
         private readonly CommandService _commandService;
         private readonly DiscordSocketClient _client;

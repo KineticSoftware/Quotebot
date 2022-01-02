@@ -1,6 +1,4 @@
-﻿using Discord;
-using Discord.Interactions;
-using Discord.WebSocket;
+﻿using Discord.Interactions;
 using System.Reflection;
 
 namespace Quotebot.Services

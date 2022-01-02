@@ -16,12 +16,13 @@ namespace Quotebot.Interactions
         {
             if (rawMessage is not SocketUserMessage message)
                 return;
-
-            
-            var emoji = Emote.Parse("<:quoted:926362503531872317>");
-            await message.AddReactionAsync(emoji);
-            
-            await RespondAsync($"sneks {message.Author.Username}");
+            await message.AddReactionAsync(BotExtensions.QuoteBotEmote());
+            var completeMessage = await Context.GetCompleteMessage(message);
+            var response = new StringBuilder()
+                .AppendLine("...snek")
+                .AppendLine($"*{completeMessage.Author.Username}*")
+                .AppendLine($"*{completeMessage.Content}*");
+            await RespondAsync($"{response}");
         }
     }
 }

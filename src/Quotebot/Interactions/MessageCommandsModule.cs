@@ -19,7 +19,7 @@ namespace Quotebot.Interactions
             await message.AddReactionAsync(BotExtensions.QuoteBotEmote());
             var completeMessage = await Context.GetCompleteMessage(message);
             var response = new StringBuilder()
-                .AppendLine("...snek")
+                .AppendLine("...sneks")
                 .AppendLine($"*{completeMessage.Author.Username}*")
                 .AppendLine($"*{completeMessage.Content}*");
             await RespondAsync($"{response}");

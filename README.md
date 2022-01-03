@@ -10,6 +10,7 @@ CONerd Quotebot is this idea that any message spoken in a Discord server could b
 - [x] Build CI/CD pipeline
 - [x] Determine the database technology (CosmosDb)
 - [x] Add database service implementation
+  - [ ] Determine table schema (Date/Time, messageID (primary key), username, message, etc.)
 - [x] Add `!quote add`
   - [x] Accessed by right clicking on a message (context menu) and then via `Apps` menu item. 
   - [ ] While replying to message `/quote add`

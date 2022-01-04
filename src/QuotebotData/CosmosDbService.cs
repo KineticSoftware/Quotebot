@@ -1,6 +1,9 @@
-﻿using Microsoft.Azure.Cosmos;
-using Microsoft.Extensions.Configuration;
+﻿using Discord;
+using Microsoft.Azure.Cosmos;
+using Microsoft.Extensions.Logging;
 using System.Net;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Quotebot.Data
 {
@@ -8,19 +11,25 @@ namespace Quotebot.Data
     {
         private readonly CosmosClient _cosmosClient;
         private readonly ILogger _logger;
+        private readonly JsonSerializerOptions _jsonSerializerOptions;
 
         //// The container we will create.
-        //private Container container;
+        private Container? _container;
 
         //// The name of the database and container we will create
         private readonly string _databaseId = "Quotebot";
         private readonly string _containerId = "Quotes";
-        private readonly string _partitionKeyPath = "/users/id";
+        private readonly string _partitionKeyPath = "/Author/Id";
 
         public CosmosDbService(CosmosClient cosmosClient, ILogger<CosmosDbService> logger)
         {
             _cosmosClient = cosmosClient;
             _logger = logger;
+
+            _jsonSerializerOptions = new(JsonSerializerDefaults.General)
+            {
+                UnknownTypeHandling = JsonUnknownTypeHandling.JsonElement
+            };
         }
 
         public async Task Initialize()
@@ -63,7 +72,7 @@ namespace Quotebot.Data
 
             return databaseResponse;
         }
-            
+        
         private async Task DeleteExistingContainerIfDebug(Database database)
         {
 #if DEBUG
@@ -98,5 +107,35 @@ namespace Quotebot.Data
 
             return containerResponse;
         }
+
+
+
+        public async Task CreateQuoteRecord(IMessage message)
+        {
+            try
+            {
+                QuotedCosmosRecord record = new(message);
+                using var payloadStream = CosmosDbService.ToStream<QuotedCosmosRecord>(record);
+                var response = await _container!.CreateItemAsync(record, new PartitionKey(message.Author.Id));
+
+                _logger.LogDebug($"Item created");
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+        }
+
+
+        private static Stream ToStream<T>(T input)
+        {
+            MemoryStream streamPayload = new MemoryStream();
+            JsonSerializer.Serialize(streamPayload, input);
+
+            streamPayload.Position = 0;
+            return streamPayload;
+        }
+
     }
 }

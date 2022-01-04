@@ -16,9 +16,10 @@ namespace Quotebot.Data
         private readonly string _containerId = "Quotes";
         private readonly string _partitionKeyPath = "/users/id";
 
-        public CosmosDbService(CosmosClient cosmosClient)
+        public CosmosDbService(CosmosClient cosmosClient, ILogger<CosmosDbService> logger)
         {
             _cosmosClient = cosmosClient;
+            _logger = logger;
         }
 
         public async Task Initialize()
@@ -30,12 +31,13 @@ namespace Quotebot.Data
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex);
+                _logger.LogCritical(Convert.ToString(ex));
             }
         }
 
         private async Task<Database> InitializeDatabase()
         {
+            _logger.LogTrace("CreateDatabaseIfNotExistsAsync");
             DatabaseResponse databaseResponse = await _cosmosClient.CreateDatabaseIfNotExistsAsync(_databaseId);
 
             string output = databaseResponse.StatusCode switch
@@ -45,18 +47,19 @@ namespace Quotebot.Data
                 _ => $"An error occured when attempting to create database. Http Status was {databaseResponse.StatusCode}"
             };
 
-            Console.WriteLine(output);
+            _logger.LogDebug(output);
 
             // The response from Azure Cosmos
             DatabaseProperties properties = databaseResponse;
 
-            Console.WriteLine($"Database resource id: {properties.Id} and last modified: {properties.LastModified}");
+            _logger.LogDebug($"Database resource id: {properties.Id} and last modified: {properties.LastModified}");
 
             return databaseResponse;
         }
             
         private async Task<Container> InitializeContainer(Database database)
         {
+            _logger.LogTrace("CreateContainerIfNotExistsAsync");
             // Set throughput to the minimum value of 400 RU/s
             ContainerResponse containerResponse = await database.CreateContainerIfNotExistsAsync(
                 id: _containerId,
@@ -70,10 +73,10 @@ namespace Quotebot.Data
                 _ => $"An error occured when attempting to create database. Http Status was {containerResponse.StatusCode}"
             };
 
-            Console.WriteLine(output);
+            _logger.LogDebug(output);
 
             ContainerProperties properties = containerResponse;
-            Console.WriteLine($"Container resource id: {properties.Id} and last modified: {properties.LastModified}");
+            _logger.LogDebug($"Container resource id: {properties.Id} and last modified: {properties.LastModified}");
 
             return containerResponse;
         }

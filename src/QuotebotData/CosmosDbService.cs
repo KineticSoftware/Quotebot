@@ -7,6 +7,7 @@ namespace Quotebot.Data
     public class CosmosDbService : IDataService
     {
         private readonly CosmosClient _cosmosClient;
+        private readonly ILogger _logger;
 
         //// The container we will create.
         //private Container container;
@@ -26,8 +27,14 @@ namespace Quotebot.Data
         {
             try
             {
-                var database = await InitializeDatabase();
-                await InitializeContainer(database);
+                _logger.LogInformation("Connecting to database...");
+                Database? database = await InitializeDatabase();
+                if (database == null)
+                {
+                    throw new ArgumentNullException(nameof(database));
+                }
+                await DeleteExistingContainerIfDebug(database);
+                _container = await InitializeContainer(database);
             }
             catch (Exception ex)
             {
@@ -57,6 +64,17 @@ namespace Quotebot.Data
             return databaseResponse;
         }
             
+        private async Task DeleteExistingContainerIfDebug(Database database)
+        {
+#if DEBUG
+            // Delete the existing container to prevent create item conflicts
+            using (await database.GetContainer(_containerId).DeleteContainerStreamAsync())
+            { }
+#else
+            await Task.CompletedTask;
+#endif
+        }
+
         private async Task<Container> InitializeContainer(Database database)
         {
             _logger.LogTrace("CreateContainerIfNotExistsAsync");

@@ -1,11 +1,20 @@
 ﻿using Discord.Commands;
+using Quotebot.Data;
 using System.Reflection;
+using System.Text;
 
 namespace Quotebot.Commands
 {
     [Group("quote")]
     public class QuoteCommandModule : ModuleBase<SocketCommandContext>
     {
+        IDataService _dataService;
+
+        public QuoteCommandModule(IDataService dataService)
+        {
+            _dataService = dataService;
+        }
+        
         [Command("hello")]
         [Summary("Says hello to you")]
         public async Task SayHello()

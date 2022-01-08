@@ -1,5 +1,6 @@
 ﻿using Discord.Interactions;
 using Quotebot.Data;
+using Quotebot.Data.Entities;
 using System.Text;
 
 namespace Quotebot.Interactions
@@ -20,12 +21,20 @@ namespace Quotebot.Interactions
             await message.AddReactionAsync(BotExtensions.QuoteBotEmote());
             var completeMessage = await Context.GetCompleteMessage(message);
 
-            await _dataService.CreateQuoteRecord(completeMessage);
+            await _dataService.CreateQuoteRecord(new Quoted(completeMessage));
 
             var response = new StringBuilder()
-                .Append($"*{completeMessage.Author.Username}* quoted!")
-                .AppendLine($"*{completeMessage.Content}*");
+                .AppendLine($"*{completeMessage.Content}* by {completeMessage.Author.Username} quoted!");
+
             await RespondAsync($"{response}");
+        }
+
+        [UserCommand("Count of Quotes")]
+        public async Task GetUserQuoteCount(IUser user)
+        {
+            var countedQuotes = await _dataService.QuotesCountByUser(new User(user));
+
+            await RespondAsync($"{user.Username} has been quoted {countedQuotes} times");
         }
     }
 }

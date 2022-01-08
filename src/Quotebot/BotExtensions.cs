@@ -1,6 +1,4 @@
-﻿using Discord;
-
-namespace Quotebot
+﻿namespace Quotebot
 {
     public static class BotExtensions
     {

@@ -80,10 +80,10 @@ namespace Quotebot.Data
                     var database = serviceProvider.GetRequiredService<Database>();
 
                     logger.LogTrace("CreateContainerIfNotExistsAsync");
-                    
+
                     ContainerResponse containerResponse = database.CreateContainerIfNotExistsAsync(
-                        id: DataConstants.ContainerId,
-                        partitionKeyPath: DataConstants.PrimaryPartitionKey).Result;
+                    id: DataConstants.ContainerId,
+                    partitionKeyPath: DataConstants.PrimaryPartitionKey, 1000).Result;
 
                     string output = containerResponse.StatusCode switch
                     {

@@ -1,5 +1,6 @@
 ﻿using Discord.Commands;
 using Quotebot.Data;
+using Quotebot.Data.Entities;
 using System.Reflection;
 using System.Text;
 
@@ -23,7 +24,7 @@ namespace Quotebot.Commands
         }
 
         [Command("hey")]
-        [Summary("Says the current time")]
+        [Summary("Idiocracy Quote")]
         public async Task SayGoAway()
         {
             await ReplyAsync($"{Context.User.Username} fuck you, I'm eating!");
@@ -42,9 +43,17 @@ namespace Quotebot.Commands
         {
 
             StringBuilder stringBuilder = new();
-            await foreach(var quote in _dataService.FindByQuote(text))
+            var results = await _dataService.FindByQuote(text);
+            if(results == Enumerable.Empty<Quoted>())
             {
-                stringBuilder.AppendLine($"{quote.Content} by {quote.Author?.Username} on {quote.CreatedAt.ToString("d")}");
+                await ReplyAsync($"No quotes found containg the text {text}");
+                return;
+            }
+
+            foreach(var quote in results)
+            {
+                stringBuilder.AppendLine($"{quote.Content}")
+                    .AppendLine($"*by {quote.Author?.Username} on {quote.CreatedAt.ToString("d")}*");
             }
 
             await ReplyAsync(stringBuilder.ToString());

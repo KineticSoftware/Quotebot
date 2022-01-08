@@ -8,6 +8,6 @@ namespace Quotebot.Data
 
         Task<int> QuotesCountByUser(User user);
 
-        IAsyncEnumerable<Quoted> FindByQuote(string messageLike);
+        Task<IEnumerable<Quoted>> FindByQuote(string messageLike);
     }
 }

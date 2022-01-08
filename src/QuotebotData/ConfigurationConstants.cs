@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Quotebot.Data
 {
-    internal static class Constants
+    internal static class ConfigurationConstants
     {
         public const string CosmosUrlConfigurationKey = "CosmosEndpointUrl";
         public const string CosmosAuthorizationConfigurationKey = "CosmosAuthorization";

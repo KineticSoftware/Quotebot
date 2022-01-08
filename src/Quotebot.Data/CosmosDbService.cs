@@ -31,19 +31,29 @@ namespace Quotebot.Data
                 .CountAsync();
         }
 
-        public async IAsyncEnumerable<Quoted> FindByQuote(string messageLike)
+        public async Task<IEnumerable<Quoted>> FindByQuote(string messageLike)
         {
-            using var setIterator = _container.GetItemLinqQueryable<Quoted>()
-                                 .Where(record => record.Content.Contains(messageLike))
+            var iterator = await _container.GetItemQueryIterator<Quoted>().ReadNextAsync();
+            if(!iterator.Any())
+            {
+                return Enumerable.Empty<Quoted>();
+            }
+
+            using var setIterator = _container.GetItemLinqQueryable<Quoted>(allowSynchronousQueryExecution: true)
+                                 .Where(record => record != null && record.Content != null && record.Content.Contains(messageLike))
                                  .ToFeedIterator();
             
+            List<Quoted> results = new();
+
             while (setIterator.HasMoreResults)
             {
                 foreach (var item in await setIterator.ReadNextAsync())
                 {
-                    yield return item;
+                    results.Add(item);
                 }
             }
+
+            return results;
         }
     }
 }

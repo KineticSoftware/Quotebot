@@ -17,7 +17,7 @@
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\QuotebotData\Quotebot.Data.csproj" />
+    <ProjectReference Include="..\Quotebot.Data\Quotebot.Data.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Update="run.cmd">

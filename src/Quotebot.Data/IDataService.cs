@@ -1,5 +1,4 @@
-﻿using Discord;
-using Quotebot.Data.Entities;
+﻿using Quotebot.Data.Entities;
 
 namespace Quotebot.Data
 {

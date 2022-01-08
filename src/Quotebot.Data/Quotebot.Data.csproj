@@ -7,8 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Azure.Core" Version="1.21.0" />
     <PackageReference Include="Discord.Net" Version="3.1.0" />
     <PackageReference Include="Microsoft.Azure.Cosmos" Version="3.23.0" />

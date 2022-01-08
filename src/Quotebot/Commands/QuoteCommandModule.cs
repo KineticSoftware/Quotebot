@@ -22,13 +22,6 @@ namespace Quotebot.Commands
             await ReplyAsync($"Hello {Context.User.Username}");
         }
 
-        [Command("time")]
-        [Summary("Says the current time")]
-        public async Task SayTime()
-        {
-            await ReplyAsync($"The current time is {DateTime.Now}");
-        }
-
         [Command("hey")]
         [Summary("Says the current time")]
         public async Task SayGoAway()
@@ -41,6 +34,20 @@ namespace Quotebot.Commands
         public async Task SayVersion()
         {
             await ReplyAsync($"My current version is {Assembly.GetEntryAssembly()?.GetName().Version}");
+        }
+
+        [Command("find")]
+        [Summary("Find a Quote")]
+        public async Task SayTime([Remainder] string text)
+        {
+
+            StringBuilder stringBuilder = new();
+            await foreach(var quote in _dataService.FindByQuote(text))
+            {
+                stringBuilder.AppendLine($"{quote.Content} by {quote.Author?.Username} on {quote.CreatedAt.ToString("d")}");
+            }
+
+            await ReplyAsync(stringBuilder.ToString());
         }
     }
 }

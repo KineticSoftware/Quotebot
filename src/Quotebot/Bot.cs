@@ -49,8 +49,7 @@ namespace Quotebot
         {
             var discordToken = await GetDiscordToken();
             await Task.WhenAll(CommandsHandlerService.InitializeAsync(),
-                InteractionsHandlerService.InitializeAsync(),
-                DataService.Initialize());
+                InteractionsHandlerService.InitializeAsync());
             await Client.LoginAsync(TokenType.Bot, discordToken);
             await Client.StartAsync();
         }

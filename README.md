@@ -10,14 +10,15 @@ CONerd Quotebot is this idea that any message spoken in a Discord server could b
 - [x] Build CI/CD pipeline
 - [x] Determine the database technology (CosmosDb)
 - [x] Add database service implementation
-  - [ ] Determine table schema (Date/Time, messageID (primary key), username, message, etc.)
+  - [x] Determine table schema (Date/Time, messageID (primary key), username, message, etc.)
 - [x] Add `!quote add`
   - [x] Accessed by right clicking on a message (context menu) and then via `Apps` menu item. 
   - [ ] While replying to message `/quote add`
-  - [ ] Data storage implemenation
+  - [x] Data storage implemenation
+- [x] Add `Count of Quotes` as a user action (right click on a User)
 - [ ] Should we set [ephemeral](https://github.com/discord-net/Discord.Net/blob/dev/src/Discord.Net.Core/Entities/Interactions/IDiscordInteraction.cs#L58)?
   - [ ] What about the other options? e..g allowedMentions 
-- [ ] Add `!quote search <text>`
+- [x] Add `!quote find <text>`
 - [ ] NTH Add `!quote messageid`
 - [x] Make quotebot add an emoji to quoted text
 - [ ] (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧

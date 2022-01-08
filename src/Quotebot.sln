@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quotebot", "Quotebot\Quotebot.csproj", "{9FFBDD30-B48C-4D77-9EE2-34D9D12934F0}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quotebot.Data", "QuotebotData\Quotebot.Data.csproj", "{2332C0AE-C059-4EA0-B1F2-65E487AA6759}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quotebot.Data", "Quotebot.Data\Quotebot.Data.csproj", "{164E8CB4-1E11-4B11-A845-E535ABDB13E5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,10 +17,10 @@ Global
 		{9FFBDD30-B48C-4D77-9EE2-34D9D12934F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9FFBDD30-B48C-4D77-9EE2-34D9D12934F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9FFBDD30-B48C-4D77-9EE2-34D9D12934F0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2332C0AE-C059-4EA0-B1F2-65E487AA6759}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2332C0AE-C059-4EA0-B1F2-65E487AA6759}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2332C0AE-C059-4EA0-B1F2-65E487AA6759}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2332C0AE-C059-4EA0-B1F2-65E487AA6759}.Release|Any CPU.Build.0 = Release|Any CPU
+		{164E8CB4-1E11-4B11-A845-E535ABDB13E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{164E8CB4-1E11-4B11-A845-E535ABDB13E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{164E8CB4-1E11-4B11-A845-E535ABDB13E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{164E8CB4-1E11-4B11-A845-E535ABDB13E5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

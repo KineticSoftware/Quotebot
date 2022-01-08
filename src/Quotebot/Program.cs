@@ -1,6 +1,7 @@
 ﻿global using Discord;
 global using Microsoft.Extensions.Configuration;
 global using Discord.WebSocket;
+global using Microsoft.Extensions.Logging;
 using Discord.Commands;
 using Discord.Interactions;
 using Microsoft.Extensions.Hosting;
@@ -12,6 +13,12 @@ using Quotebot.Services;
 try
 {
     var host = new HostBuilder()
+        .ConfigureLogging(hostBuilder =>
+        {
+            hostBuilder.ClearProviders();
+            hostBuilder.SetMinimumLevel(LogLevel.Debug);
+            hostBuilder.AddConsole();
+        })
         .ConfigureAppConfiguration((hostContext, configBuilder) =>
         {
             configBuilder.AddEnvironmentVariables();
@@ -19,20 +26,7 @@ try
         .ConfigureServices((hostContext, services) =>
         {
             services
-                .AddSingleton(serviceProvider => new DiscordSocketClient(new DiscordSocketConfig
-                {
-                    LogLevel = LogSeverity.Debug,
-                    MessageCacheSize = 50,
-                }))
-                .AddSingleton(serviceProvider => new InteractionService(serviceProvider.GetRequiredService<DiscordSocketClient>()))
-                .AddSingleton(serviceProvider => new CommandService(new CommandServiceConfig
-                {
-                    // Again, log level:
-                    LogLevel = LogSeverity.Debug,
-                    ThrowOnError = true
-                }))
-                .AddSingleton<CommandsHandlerService>()
-                .AddSingleton<InteractionsHandlerService>()
+                .RegisterDiscordNet()
                 .RegisterCosmosDb(hostContext.Configuration)
                 .AddSingleton<Bot>();
         })

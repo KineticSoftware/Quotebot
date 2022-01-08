@@ -80,11 +80,10 @@ namespace Quotebot.Data
                     var database = serviceProvider.GetRequiredService<Database>();
 
                     logger.LogTrace("CreateContainerIfNotExistsAsync");
-                    // Set throughput to the minimum value of 400 RU/s
+                    
                     ContainerResponse containerResponse = database.CreateContainerIfNotExistsAsync(
                         id: DataConstants.ContainerId,
-                        partitionKeyPath: DataConstants.PrimaryPartitionKey,
-                        throughput: 400).Result;
+                        partitionKeyPath: DataConstants.PrimaryPartitionKey).Result;
 
                     string output = containerResponse.StatusCode switch
                     {

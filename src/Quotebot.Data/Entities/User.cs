@@ -2,6 +2,8 @@
 
 namespace Quotebot.Data.Entities
 {
+    
+
     public class User
     {
         public User()
@@ -23,6 +25,28 @@ namespace Quotebot.Data.Entities
             ActiveClients = user.ActiveClients;
             Activities = user.Activities;
         }
+
+        public User(IGuildUser user)
+        {
+            AvatarId = user.AvatarId;
+            Discriminator = user.Discriminator;
+            DiscriminatorValue = user.DiscriminatorValue;
+            IsBot = user.IsBot;
+            IsWebhook = user.IsWebhook;
+            Username = user.Username;
+            Nickname = user.Nickname;
+            PublicFlags = user.PublicFlags;
+            CreatedAt = user.CreatedAt;
+            Id = user.Id;
+            Mention = user.Mention;
+            Status = user.Status;
+            ActiveClients = user.ActiveClients;
+            Activities = user.Activities;
+            JoinedAt = user.JoinedAt;
+            GuildAvatarId = user.GuildAvatarId;
+            GuildId = user.GuildId;
+        }
+
         public string? AvatarId { get; set; }
 
         public string? Discriminator { get; set; }
@@ -34,6 +58,8 @@ namespace Quotebot.Data.Entities
         public bool IsWebhook { get; set; }
 
         public string? Username { get; set; }
+
+        public string? Nickname { get; set; }
 
         public UserProperties? PublicFlags { get; set; }
 
@@ -48,5 +74,11 @@ namespace Quotebot.Data.Entities
         public IReadOnlyCollection<ClientType>? ActiveClients { get; set; }
 
         public IReadOnlyCollection<IActivity>? Activities { get; set; }
+
+        public DateTimeOffset? JoinedAt { get; set; }
+
+        public string GuildAvatarId { get; set; }
+
+        public ulong GuildId { get; set; }
     }
 }

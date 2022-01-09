@@ -77,7 +77,7 @@ namespace Quotebot.Data.Entities
 
         public DateTimeOffset? JoinedAt { get; set; }
 
-        public string GuildAvatarId { get; set; }
+        public string? GuildAvatarId { get; set; }
 
         public ulong GuildId { get; set; }
     }

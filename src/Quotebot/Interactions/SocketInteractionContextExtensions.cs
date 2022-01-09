@@ -17,7 +17,8 @@ namespace Quotebot.Interactions
         public async static Task<IEnumerable<IMessage>> GetLatestChannelMessagesAsync(this SocketInteractionContext context, int count = 50) =>
             await context.Channel.GetMessagesAsync(count).FlattenAsync();
 
-        public static User GetGuildUserName(this SocketInteractionContext context, IUser discordUser) {
+        public static async Task<User> GetGuildUserName(this SocketInteractionContext context, IUser discordUser) {
+            await context.Guild.DownloadUsersAsync();
             var user = context.Guild.GetUser(discordUser.Id);
             return new User(user);
         }

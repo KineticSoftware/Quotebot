@@ -28,14 +28,18 @@ namespace Quotebot.Interactions
 
             await completeMessage.AddReactionAsync(BotExtensions.QuoteBotEmote());
 
-            var record = new Quoted(completeMessage);
-            record.Author = Context.GetGuildUserName(completeMessage.Author);
+            var quote = new Quoted(completeMessage);
+            quote.Author = await Context.GetGuildUserName(completeMessage.Author);
 
-            await _dataService.CreateQuoteRecord(record);
+            var result = await _dataService.TryCreateQuoteRecord(quote);
+            if(!result)
+            {
+                await RespondAsync($"This quote was already added.");
+                return;
+            }
 
             var response = new StringBuilder()
-                .AppendLine($"{completeMessage.Content}")
-                .AppendLine($"*by {completeMessage.Author.Username} quoted!*");
+                .AppendLine($"> *{quote.Author?.Nickname ?? quote.Author?.Username} : {completeMessage.Content}*");
 
             await RespondAsync($"{response}");
         }

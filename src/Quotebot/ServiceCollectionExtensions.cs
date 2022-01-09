@@ -19,6 +19,7 @@ namespace Quotebot
                 {
                     LogLevel = LogSeverity.Debug,
                     MessageCacheSize = 50,
+                    GatewayIntents = GatewayIntents.All
                 }))
                 .AddSingleton(serviceProvider => new InteractionService(serviceProvider.GetRequiredService<DiscordSocketClient>()))
                 .AddSingleton(serviceProvider => new CommandService(new CommandServiceConfig

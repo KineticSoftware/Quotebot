@@ -4,7 +4,7 @@ namespace Quotebot.Data
 {
     public interface IDataService
     {
-        Task CreateQuoteRecord(Quoted message);
+        Task<bool> TryCreateQuoteRecord(Quoted message);
 
         Task<int> QuotesCountByUser(User user);
 

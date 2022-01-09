@@ -2,6 +2,7 @@
 using Microsoft.Azure.Cosmos.Linq;
 using Microsoft.Extensions.Logging;
 using Quotebot.Data.Entities;
+using System.Text;
 
 namespace Quotebot.Data
 {
@@ -19,9 +20,22 @@ namespace Quotebot.Data
             _logger = logger;
         }
 
-        public async Task CreateQuoteRecord(Quoted message)
+        public async Task<bool> TryCreateQuoteRecord(Quoted message)
         {
+            using var iterator = _container.GetItemLinqQueryable<Quoted>()
+               .Where(record => record.DiscordMessageId == message.DiscordMessageId).ToFeedIterator();
+
+            if (iterator.HasMoreResults)
+            {
+                foreach(var item in await iterator.ReadNextAsync())
+                {
+                    return false;
+                }
+                 
+            }
+
             await _container.CreateItemAsync(message, new PartitionKey(Convert.ToString(message.Id)));
+            return true;
         }
 
         public async Task<int> QuotesCountByUser(Entities.User user)

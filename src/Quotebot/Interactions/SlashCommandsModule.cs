@@ -1,4 +1,5 @@
-﻿using Discord.Interactions;
+﻿using Discord.Commands;
+using Discord.Interactions;
 using Quotebot.Data;
 using Quotebot.Data.Entities;
 using System.Text;
@@ -13,21 +14,26 @@ namespace Quotebot.Interactions
             _dataService = dataService;
         }
 
-        // Slash Commands are declared using the [SlashCommand], you need to provide a name and a description, both following the Discord guidelines
         [SlashCommand("findquote", "Finds a quote")]
-        // By setting the DefaultPermission to false, you can disable the command by default. No one can use the command until you give them permission
-        public async Task FindQuote(string text)
+        public async Task FindQuote(string text, int limit = 5)
         {
-            var results = await _dataService.FindByQuote(text);
-
-            await RespondAsync(results);
+            await DeferAsync();
+            
+            var results = await _dataService.FindByQuote(text, Context.Channel.Id, limit);
+            
+            await FollowupAsync(results);
         }
 
-        // [Summary] lets you customize the name and the description of a parameter
-        //[SlashCommand("addquote", "Repeat the input")]
-        //public async Task Echo(string echo, [Summary(description: "mention the user")] bool mention = false)
-        //{
-        //    await RespondAsync(echo + (mention ? Context.User.Mention : string.Empty));
-        //}
+        [SlashCommand("findserverquote", "Finds a quote across all channels in this server")]
+        public async Task FindServerQuote(string text, int limit = 5)
+        {
+            await DeferAsync();
+
+            var results = await _dataService.FindByQuoteInServer(text, limit);
+
+            await FollowupAsync(results);
+        }
+
+
     }
 }

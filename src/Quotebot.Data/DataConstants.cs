@@ -4,6 +4,6 @@
     {
         public const string DatabaseId = "QuoteMage";
         public const string ContainerId = "Quotes";
-        public const string PrimaryPartitionKey = "/id";
+        public const string PrimaryPartitionKey = "/Author/Id";
     }
 }

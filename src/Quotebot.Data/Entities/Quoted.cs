@@ -22,15 +22,18 @@ namespace Quotebot.Data.Entities
             Reference = message.Reference;
             Flags = message.Flags;
             CreatedAt = message.CreatedAt;
-            DiscordMessageId = message.Id;
-            Id = Guid.NewGuid();
+            Id = Convert.ToString(message.Id);
 
         }
+
+        [JsonPropertyName("id")]
+        public string Id { get; set; } = string.Empty;
+
+        public DateTimeOffset CreatedAt { get; set; }
 
         public MessageType Type { get; set; }
 
         public MessageSource Source { get; set; }
-
 
         public bool MentionedEveryone { get; set; }
 
@@ -42,20 +45,12 @@ namespace Quotebot.Data.Entities
 
         public DateTimeOffset? EditedTimestamp { get; set; }
 
-        public Channel? Channel { get; set; }
+        public Channel Channel { get; set; } = new();
 
-        public User? Author { get; set; }
+        public User Author { get; set; } = new();
 
         public MessageReference? Reference { get; set; }
 
         public MessageFlags? Flags { get; set; }
-
-        public DateTimeOffset CreatedAt { get; set; }
-
-        public ulong DiscordMessageId { get; set; }
-
-        [JsonPropertyName("id")]
-        public Guid Id { get; set; }
-
     }
 }

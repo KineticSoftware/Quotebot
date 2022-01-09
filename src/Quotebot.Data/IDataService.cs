@@ -8,6 +8,8 @@ namespace Quotebot.Data
 
         Task<int> QuotesCountByUser(User user);
 
-        Task<string> FindByQuote(string messageLike, int take = 5);
+        Task<string> FindByQuote(string messageLike, ulong channelId, int take = 5);
+
+        Task<string> FindByQuoteInServer(string messageLike, int take = 5);
     }
 }

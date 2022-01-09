@@ -13,11 +13,14 @@ namespace Quotebot.Interactions
         {
             _dataService = dataService;
         }
+
         [MessageCommand("Save Quote!")]
         public async Task AddQuote(IMessage rawMessage)
         {
             if (rawMessage is not SocketUserMessage message)
                 return;
+
+            await DeferAsync();
 
             var completeMessage = await Context.GetCompleteMessage(message);
             if (completeMessage.Author.IsBot)
@@ -34,19 +37,20 @@ namespace Quotebot.Interactions
             var result = await _dataService.TryCreateQuoteRecord(quote);
             if(!result)
             {
-                await RespondAsync($"This quote was already added.");
+                await FollowupAsync($"This quote was already added.");
                 return;
             }
 
             var response = new StringBuilder()
                 .AppendLine($"> *{quote.Author?.Nickname ?? quote.Author?.Username} : {completeMessage.Content}*");
 
-            await RespondAsync($"{response}");
+            await FollowupAsync($"{response}");
         }
 
         [UserCommand("Count of Quotes")]
         public async Task GetUserQuoteCount(IUser user)
         {
+            await DeferAsync();
             var guildUser = await Context.GetGuildUserName(user);
             var countedQuotes = await _dataService.QuotesCountByUser(guildUser);
 
@@ -57,7 +61,7 @@ namespace Quotebot.Interactions
                _ => $"{guildUser.Nickname ?? guildUser.Username} has been quoted {countedQuotes} times."
            };
 
-            await RespondAsync(respsonse);
+            await FollowupAsync(respsonse);
         }
     }
 }

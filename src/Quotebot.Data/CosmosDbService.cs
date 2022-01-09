@@ -45,7 +45,7 @@ namespace Quotebot.Data
                 .CountAsync();
         }
 
-        public async Task<string> FindByQuote(string messageLike)
+        public async Task<string> FindByQuote(string messageLike, int take = 5)
         {
             var iterator = await _container.GetItemQueryIterator<Quoted>().ReadNextAsync();
             if(!iterator.Any())
@@ -55,6 +55,7 @@ namespace Quotebot.Data
 
             using var setIterator = _container.GetItemLinqQueryable<Quoted>(allowSynchronousQueryExecution: true)
                                  .Where(record => record != null && record.CleanContent != null && record.CleanContent.Contains(messageLike, StringComparison.InvariantCultureIgnoreCase))
+                                 .Take(take)
                                  .ToFeedIterator();
             
             List<Quoted> results = new();
@@ -66,7 +67,7 @@ namespace Quotebot.Data
                 {
                     stringBuilder
                         .AppendLine()
-                        .AppendLine($"{quote.CreatedAt.ToString("d")} - **{quote.Author?.Nickname ?? quote.Author?.Username}** {quote.Content}");
+                        .AppendLine($"{quote.CreatedAt.ToString("d")} - **{quote.Author?.Nickname ?? quote.Author?.Username}** : {quote.Content}");
                 }
             }
 

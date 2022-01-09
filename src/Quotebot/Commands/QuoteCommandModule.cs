@@ -39,9 +39,18 @@ namespace Quotebot.Commands
 
         [Command("find")]
         [Summary("Find a Quote")]
-        public async Task SayTime([Remainder] string text)
+        public async Task FindQuotes(string text, int limit = 5)
         {
-            var results = await _dataService.FindByQuote(text);
+            var results = await _dataService.FindByQuote(text, Context.Channel.Id, limit);
+
+            await ReplyAsync(results);
+        }
+
+        [Command("findserver")]
+        [Summary("Finds a Quote in a Server")]
+        public async Task FindServerQuotes(string text, int limit = 5)
+        {
+            var results = await _dataService.FindByQuoteInServer(text, limit);
 
             await ReplyAsync(results);
         }

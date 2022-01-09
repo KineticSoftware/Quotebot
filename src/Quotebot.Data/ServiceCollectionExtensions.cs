@@ -31,11 +31,7 @@ namespace Quotebot.Data
                 {
                     CosmosClientOptions cosmosClientOptions = new CosmosClientOptions()
                     {
-                        Serializer = new CosmosSystemTextJsonSerializer(new JsonSerializerOptions
-                        {
-                            //PropertyNameCaseInsensitive = true,
-                            ReferenceHandler = ReferenceHandler.Preserve
-                        })
+                        Serializer = new CosmosSystemTextJsonSerializer(new JsonSerializerOptions { })
                     };
                     return new CosmosClient(configuration[ConfigurationConstants.CosmosUrlConfigurationKey], configuration[ConfigurationConstants.CosmosAuthorizationConfigurationKey], cosmosClientOptions);
                 })

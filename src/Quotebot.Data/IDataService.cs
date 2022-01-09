@@ -4,10 +4,10 @@ namespace Quotebot.Data
 {
     public interface IDataService
     {
-        Task CreateQuoteRecord(Quoted message);
+        Task<bool> TryCreateQuoteRecord(Quoted message);
 
         Task<int> QuotesCountByUser(User user);
 
-        Task<IEnumerable<Quoted>> FindByQuote(string messageLike);
+        Task<string> FindByQuote(string messageLike, int take = 5);
     }
 }

@@ -37,7 +37,7 @@ namespace Quotebot.Interactions
             var result = await _dataService.TryCreateQuoteRecord(quote);
             if(!result)
             {
-                await RespondAsync($"This quote was already added.");
+                await FollowupAsync($"This quote was already added.");
                 return;
             }
 

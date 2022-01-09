@@ -53,8 +53,8 @@ namespace Quotebot.Interactions
            var respsonse = countedQuotes switch
            {
                0 => $"{guildUser.Nickname ?? guildUser.Username} has never been quoted.",
-               1 => $"{guildUser.Nickname ?? guildUser.Username} has been quoted {countedQuotes} once",
-               _ => $"{guildUser.Nickname ?? guildUser.Username} has been quoted {countedQuotes} times"
+               1 => $"{guildUser.Nickname ?? guildUser.Username} has been quoted {countedQuotes} once.",
+               _ => $"{guildUser.Nickname ?? guildUser.Username} has been quoted {countedQuotes} times."
            };
 
             await RespondAsync(respsonse);

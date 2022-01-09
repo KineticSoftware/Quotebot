@@ -19,16 +19,19 @@ namespace Quotebot.Interactions
             if (rawMessage is not SocketUserMessage message)
                 return;
 
-            if(message.Author.IsBot)
+            var completeMessage = await Context.GetCompleteMessage(message);
+            if (completeMessage.Author.IsBot)
             {
                 await RespondAsync($"Sorry, you can't add quotes from bots.");
                 return;
             }
 
-            await message.AddReactionAsync(BotExtensions.QuoteBotEmote());
-            var completeMessage = await Context.GetCompleteMessage(message);
+            await completeMessage.AddReactionAsync(BotExtensions.QuoteBotEmote());
 
-            await _dataService.CreateQuoteRecord(new Quoted(completeMessage));
+            var record = new Quoted(completeMessage);
+            record.Author = Context.GetGuildUserName(completeMessage.Author);
+
+            await _dataService.CreateQuoteRecord(record);
 
             var response = new StringBuilder()
                 .AppendLine($"{completeMessage.Content}")

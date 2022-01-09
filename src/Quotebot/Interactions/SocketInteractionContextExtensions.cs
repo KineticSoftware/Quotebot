@@ -1,4 +1,5 @@
 ﻿using Discord.Interactions;
+using Quotebot.Data.Entities;
 
 namespace Quotebot.Interactions
 {
@@ -15,5 +16,10 @@ namespace Quotebot.Interactions
             
         public async static Task<IEnumerable<IMessage>> GetLatestChannelMessagesAsync(this SocketInteractionContext context, int count = 50) =>
             await context.Channel.GetMessagesAsync(count).FlattenAsync();
+
+        public static User GetGuildUserName(this SocketInteractionContext context, IUser discordUser) {
+            var user = context.Guild.GetUser(discordUser.Id);
+            return new User(user);
+        }
     }
 }

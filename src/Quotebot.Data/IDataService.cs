@@ -8,6 +8,6 @@ namespace Quotebot.Data
 
         Task<int> QuotesCountByUser(User user);
 
-        Task<IEnumerable<Quoted>> FindByQuote(string messageLike);
+        Task<string> FindByQuote(string messageLike);
     }
 }

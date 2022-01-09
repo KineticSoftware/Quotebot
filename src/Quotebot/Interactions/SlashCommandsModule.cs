@@ -18,21 +18,9 @@ namespace Quotebot.Interactions
         // By setting the DefaultPermission to false, you can disable the command by default. No one can use the command until you give them permission
         public async Task FindQuote(string text)
         {
-            StringBuilder stringBuilder = new();
             var results = await _dataService.FindByQuote(text);
-            if (results == Enumerable.Empty<Quoted>())
-            {
-                await ReplyAsync($"No quotes found containg the text {text}");
-                return;
-            }
 
-            foreach (var quote in results)
-            {
-                stringBuilder.AppendLine($"{quote.Content}")
-                    .AppendLine($"*by {quote.Author?.Username} on {quote.CreatedAt.ToString("d")}*");
-            }
-
-            await RespondAsync(stringBuilder.ToString());
+            await RespondAsync(results);
         }
 
         // [Summary] lets you customize the name and the description of a parameter

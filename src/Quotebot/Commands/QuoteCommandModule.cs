@@ -41,22 +41,9 @@ namespace Quotebot.Commands
         [Summary("Find a Quote")]
         public async Task SayTime([Remainder] string text)
         {
-
-            StringBuilder stringBuilder = new();
             var results = await _dataService.FindByQuote(text);
-            if(results == Enumerable.Empty<Quoted>())
-            {
-                await ReplyAsync($"No quotes found containg the text {text}");
-                return;
-            }
 
-            foreach(var quote in results)
-            {
-                stringBuilder.AppendLine($"{quote.Content}")
-                    .AppendLine($"*by {quote.Author?.Username} on {quote.CreatedAt.ToString("d")}*");
-            }
-
-            await ReplyAsync(stringBuilder.ToString());
+            await ReplyAsync(results);
         }
     }
 }

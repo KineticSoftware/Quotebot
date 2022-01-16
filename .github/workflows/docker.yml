@@ -92,7 +92,7 @@ jobs:
           build-args: |
             source=${{env.BINARIES}}
           push: true
-          tags: conerd.azurecr.io/quotemage:${{ needs.build.outputs.build_version }}
+          tags: conerd.azurecr.io/bots/quotemage:${{ needs.build.outputs.build_version }}
 
       
 

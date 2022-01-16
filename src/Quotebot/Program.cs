@@ -16,9 +16,7 @@ try
         .ConfigureDefaults(args)
         .ConfigureAppConfiguration((hostContext, configBuilder) =>
         {
-            var configuration = configBuilder
-                .AddJsonFile("appsettings.json", optional: true)
-                .AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json", optional: true).Build();
+            var configuration = configBuilder.Build();
 
             if (hostContext.HostingEnvironment.IsProduction())
             {

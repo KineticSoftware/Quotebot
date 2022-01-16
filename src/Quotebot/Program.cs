@@ -8,29 +8,40 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Quotebot;
 using Quotebot.Data;
-using Quotebot.Services;
+
 
 try
 {
     var host = new HostBuilder()
+        .ConfigureDefaults(args)
+        .ConfigureAppConfiguration((hostContext, configBuilder) =>
+        {
+            var configuration = configBuilder
+                .AddJsonFile("appsettings.json", optional: true)
+                .AddJsonFile($"appsettings.{hostContext.HostingEnvironment.EnvironmentName}.json", optional: true).Build();
+
+            if (hostContext.HostingEnvironment.IsProduction())
+            {
+                string apiClient = configuration["ApiClientId"];
+                string apiSecret = configuration["ApiSecret"];
+                string keyUrl = configuration["TokenSecretUri"];
+                configBuilder.AddAzureKeyVault(keyUrl, apiClient, apiSecret);
+            }
+        })
         .ConfigureLogging(hostBuilder =>
         {
             hostBuilder.ClearProviders();
-            hostBuilder.SetMinimumLevel(LogLevel.Debug);
             hostBuilder.AddConsole();
-        })
-        .ConfigureAppConfiguration((hostContext, configBuilder) =>
-        {
-            configBuilder.AddEnvironmentVariables();
         })
         .ConfigureServices((hostContext, services) =>
         {
             services
-                .RegisterDiscordNet()
+                .RegisterDiscordNet(hostContext.Configuration)
                 .RegisterCosmosDb(hostContext.Configuration)
                 .AddSingleton<Bot>();
         })
         .Build();
+
     CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
     var runningHost = host.RunAsync(cancellationTokenSource.Token);
     var bot = host.Services.GetService<Bot>();

@@ -66,6 +66,7 @@ jobs:
       name: 'Production'      
   
     steps:
+
       - name: Download artifact from build job
         uses: actions/download-artifact@v2
         with:
@@ -86,7 +87,7 @@ jobs:
           build-args: |
             source=${{env.BINARIES}}
           push: false
-          tags: quotemage:${{ env.BUILD_VERSION }}
+          tags: quotemage:${{ jobs.build.env.BUILD_VERSION }}
 
       
 

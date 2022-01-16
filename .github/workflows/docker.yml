@@ -94,7 +94,7 @@ jobs:
       - name: Deploy to Azure
         uses: azure/arm-deploy@v1
         with:
-          resourceGroupName: github-action-arm-rg
+          resourceGroupName: CoNerd
           template: ./container-app.json
           parameters: conerdazurecrio-conerd-pwd=${{ secrets.conerdazurecrio-conerd-pwd }} keyvault-api-clientid=${{ secrets.KEYVAULT_CLIENTID }} keyvault-api-secret=${{ secrets.KEYVAULT_SECRET }} keyvault-secret-url=${{ secrets.KEYVAULT_URI }}
 

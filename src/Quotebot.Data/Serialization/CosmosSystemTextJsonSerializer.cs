@@ -2,7 +2,7 @@
 using Microsoft.Azure.Cosmos;
 using System.Text.Json;
 
-namespace Quotebot.Data
+namespace Quotebot.Data.Serialization
 {
     /// <summary>
     /// I hate this class. It makes me cry 😭

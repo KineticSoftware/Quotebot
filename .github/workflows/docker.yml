@@ -90,7 +90,7 @@ jobs:
           build-args: |
             source=${{env.BINARIES}}
           push: false
-          tags: quotemage:${{ needs.job1.outputs.build_version }}
+          tags: quotemage:${{ needs.build.outputs.build_version }}
 
       
 

@@ -56,8 +56,10 @@ jobs:
         with:
           name: quotebot-artifact
           path: |
+            ./dockerfile
             ${{env.BINARIES}}
-            !${{env.BINARIES}}/appruntimes_data/win**/**
+            !${{env.BINARIES}}/runtimes_data/win**/**
+          if-no-files-found: error
     
     outputs:
       build_version: ${{ env.BUILD_VERSION }}

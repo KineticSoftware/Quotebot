@@ -73,6 +73,11 @@ jobs:
           load: true
           tags: quotemage:test
       
+      - name: Scan Container
+        uses: azure/container-scan@v0
+        with:
+          image-name: quotemage:test
+
       - name: Test Container
         run: |
           docker run --rm quotemage:test

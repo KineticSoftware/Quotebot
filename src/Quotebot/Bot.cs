@@ -1,111 +1,73 @@
 ﻿using Discord.Interactions;
-using Microsoft.Azure.KeyVault;
-using Microsoft.IdentityModel.Clients.ActiveDirectory;
+using Microsoft.Extensions.Hosting;
+using Quotebot.Configuration;
 using Quotebot.Data;
 using Quotebot.Services;
 
 namespace Quotebot
 {
-    public class Bot
+    internal class Bot
     {
+        private readonly ILogger<Bot> _logger;
+        private readonly IHostEnvironment _environment;
+        private readonly BotConfiguration _configuration;
+        private readonly DiscordSocketClient _client;
+        private readonly InteractionService _interactionService;
+        private readonly CommandsHandlerService _commandsHandlerService;
+        private readonly InteractionsHandlerService _interactionsHandlerService;
 
-#if DEBUG
-        private readonly bool IsDebug = true;
-#else
-        private readonly bool IsDebug = false;
-#endif
-
-        private readonly DiscordSocketClient Client;
-        private readonly IConfiguration Configuration;
-        private readonly InteractionService InteractionService;
-        private readonly IDataService DataService;
-        private readonly CommandsHandlerService CommandsHandlerService;
-        private readonly InteractionsHandlerService InteractionsHandlerService;
-
-        public Bot(IConfiguration configuration,
+        public Bot(
+            ILogger<Bot> logger,
+            IHostEnvironment environment,
+            BotConfiguration configuration,
             DiscordSocketClient client,
             InteractionService interactionService,
             IDataService dataService,
             CommandsHandlerService commandsHandlerService,
             InteractionsHandlerService interactionsHandlerService)
         {
-            Configuration = configuration;
-            Client = client;
-            InteractionService = interactionService;
-            CommandsHandlerService = commandsHandlerService;
-            InteractionsHandlerService = interactionsHandlerService;
-            DataService = dataService;
+            _logger = logger;
+            _configuration = configuration;
+            _environment = environment;
+            _client = client;
+            _interactionService = interactionService;
+            _commandsHandlerService = commandsHandlerService;
+            _interactionsHandlerService = interactionsHandlerService;
             RegisterEventHandlers();
         }
 
         private void RegisterEventHandlers()
         {
-            Client.Log += LogMessage;
-            Client.Ready += OnReady;
-            InteractionService.Log += LogMessage;
+            _client.Log += LogMessage;
+            _client.Ready += OnReady;
+            _interactionService.Log += LogMessage;
         }
 
         public async Task Connect()
         {
-            var discordToken = await GetDiscordToken();
-            await Task.WhenAll(CommandsHandlerService.InitializeAsync(),
-                InteractionsHandlerService.InitializeAsync());
-            await Client.LoginAsync(TokenType.Bot, discordToken);
-            await Client.StartAsync();
+            var discordToken = _configuration.Token;
+            await Task.WhenAll(_commandsHandlerService.InitializeAsync(),
+                _interactionsHandlerService.InitializeAsync());
+            await _client.LoginAsync(TokenType.Bot, discordToken);
+            await _client.StartAsync();
         }
 
-        private async Task<string> GetDiscordToken() =>
-            IsDebug
-                ? Configuration["DiscordToken"]
-                : await GetDiscordTokenAzure();
-
-        private async Task<string> GetDiscordTokenAzure()
-        {
-            string apiClient = Configuration["ApiClientId"];
-            string apiSecret = Configuration["ApiSecret"];
-            string keyUrl = Configuration["TokenSecretUri"];
-
-            if (string.IsNullOrWhiteSpace(apiClient) || string.IsNullOrWhiteSpace(apiSecret) || string.IsNullOrWhiteSpace(keyUrl))
-            {
-                Console.WriteLine("Unable to determine Azure Credentials. Exiting...");
-                return string.Empty;
-            }
-
-            var keyVault = new KeyVaultClient(async (string authority, string resource, string scope) =>
-            {
-                var authContext = new AuthenticationContext(authority);
-                var credential = new ClientCredential(apiClient, apiSecret);
-                var token = await authContext.AcquireTokenAsync(resource, credential);
-
-                return token.AccessToken;
-            });
-            // Get the API key out of the vault
-            return (await keyVault.GetSecretAsync(keyUrl)).Value;
-        }
-
-        public static async Task LogMessage(LogMessage log) 
+        public async Task LogMessage(LogMessage log) 
         { 
-            Console.WriteLine(log.Message);
+            _logger.LogDebug(log.Message);
             await Task.CompletedTask;
          }
 
         public async Task OnReady()
         {
-            //if(IsDebug)
-            //{
-            await InteractionService.RegisterCommandsToGuildAsync(Convert.ToUInt64(Configuration["GuildId"]), true);
-            //}
-            //else
-            //{
-            //    await InteractionService.RegisterCommandsGloballyAsync(true);
-            //}
-            Console.WriteLine("Bot is connected!");
+            await _interactionService.RegisterCommandsToGuildAsync(_configuration.GuildId, true);
+            _logger.LogInformation("Bot is connected!");
         }
 
         public async Task OnShutdown()
         {
-            Console.WriteLine("Disconnecting...");
-            await Client.LogoutAsync();
+            _logger.LogInformation("Disconnecting...");
+            await _client.LogoutAsync();
         }
     }
 }

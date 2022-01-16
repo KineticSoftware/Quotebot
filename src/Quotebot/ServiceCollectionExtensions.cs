@@ -1,6 +1,7 @@
 ﻿using Discord.Commands;
 using Discord.Interactions;
 using Microsoft.Extensions.DependencyInjection;
+using Quotebot.Configuration;
 using Quotebot.Services;
 using System;
 using System.Collections.Generic;
@@ -12,9 +13,13 @@ namespace Quotebot
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection RegisterDiscordNet(this IServiceCollection serviceCollection)
+        public static IServiceCollection RegisterDiscordNet(this IServiceCollection serviceCollection, IConfiguration parentConfiguration)
         {
-            return serviceCollection.AddSingleton(serviceProvider => new DiscordSocketClient(
+            BotConfiguration configuration = parentConfiguration.GetRequiredSection(BotConfiguration.ConfigurationSectionName).Get<BotConfiguration>();
+
+            return serviceCollection
+                .AddSingleton(configuration)
+                .AddSingleton(serviceProvider => new DiscordSocketClient(
                 new DiscordSocketConfig
                 {
                     LogLevel = LogSeverity.Debug,
@@ -30,7 +35,6 @@ namespace Quotebot
                 }))
                 .AddSingleton<CommandsHandlerService>()
                 .AddSingleton<InteractionsHandlerService>();
-
         }
     }
 }

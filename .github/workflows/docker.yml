@@ -6,7 +6,7 @@ on:
 
 env:
   SLN_PATH: './src/Quotebot.sln'
-  BINARIES: './output/app_data/jobs/continuous/Quotebot'
+  BINARIES: './output'
 
 jobs:
   build:
@@ -30,20 +30,11 @@ jobs:
 
       - name: dotnet build
         run: dotnet build ${{ENV.SLN_PATH}} --configuration Release -p:Version=${{ENV.BUILD_VERSION}} --output ${{env.BINARIES}}
-      
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
       
-      # - name: Login to Docker Hub
-      #   uses: docker/login-action@v1
-      #   with:
-      #     username: ${{ secrets.DOCKER_HUB_USERNAME }}
-      #     password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-      
-      
-
-      - name: Build and push
+      - name: Build Test Container
         uses: docker/build-push-action@v2
         with:
           context: .
@@ -51,7 +42,29 @@ jobs:
           build-args: |
             source=${{env.BINARIES}}
           push: false
-          # tags: ${{ secrets.DOCKER_HUB_USERNAME }}/simplewhale:latest
+          load: true
+          tags: quotemage:test
+      
+      - name: Test Container
+        run: |
+          docker run --rm quotemage:test
+
+      # - name: Login to Docker Hub
+      #   uses: docker/login-action@v1
+      #   with:
+      #     username: ${{ secrets.DOCKER_HUB_USERNAME }}
+      #     password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+
+      - name: Build Release Container
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          file: ./dockerfile
+          build-args: |
+            source=${{env.BINARIES}}
+          push: false
           tags: quotemage:${{ env.BUILD_VERSION }}
+
+      
 
       

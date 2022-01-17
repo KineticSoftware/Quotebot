@@ -30,6 +30,9 @@
         },
         "keyvault-secret-url": {
             "type": "string"
+        },
+        "container-version": {
+            "type": "string"
         }
     },
     "resources": [
@@ -70,7 +73,7 @@
                     "containers": [
                         {
                             "name": "quotemage",
-                            "image": "conerd.azurecr.io/quotemage:latest",
+                            "image": "conerd.azurecr.io/quotemage:[parameters('container-version')]",
                             "command": [],
                             "env": [
                                 {

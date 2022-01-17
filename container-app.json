@@ -1,0 +1,106 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "subscriptionId": {
+            "type": "string",
+            "defaultValue": "aa5821af-08a6-4708-82df-14b56118350a"
+        },
+        "name": {
+            "type": "string",
+            "defaultValue": "quotemage"
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "eastus"
+        },
+        "kubeEnvironmentId": {
+            "type": "string",
+            "defaultValue": "/subscriptions/aa5821af-08a6-4708-82df-14b56118350a/resourceGroups/CoNerd/providers/Microsoft.Web/kubeEnvironments/Production-East-US"
+        },
+        "conerdazurecrio-conerd-pwd": {
+            "type": "string"
+        },
+        "keyvault-api-clientid": {
+            "type": "string",
+            "defaultValue": "d5f3497c-699a-4c36-817d-aec392265044"
+        },
+        "keyvault-api-secret": {
+            "type": "string"
+        },
+        "keyvault-secret-url": {
+            "type": "string"
+        },
+        "container-version": {
+            "type": "string"
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Web/containerapps",
+            "apiVersion": "2021-03-01",
+            "name": "[parameters('name')]",
+            "location": "[parameters('location')]",
+            "dependsOn": [],
+            "kind": "containerapps",
+            "properties": {
+                "kubeEnvironmentId": "[parameters('kubeEnvironmentId')]",
+                "configuration": {
+                    "activeRevisionsMode": "single",
+                    "secrets": [
+                        {
+                            "name": "conerdazurecrio-conerd-pwd",
+                            "value": "[parameters('conerdazurecrio-conerd-pwd')]"
+                        },
+                        {
+                            "name": "keyvault-api-secret",
+                            "value": "[parameters('keyvault-api-secret')]"
+                        },
+                        {
+                            "name": "keyvault-secret-url",
+                            "value": "[parameters('keyvault-secret-url')]"
+                        }
+                    ],
+                    "registries": [
+                        {
+                            "server": "conerd.azurecr.io",
+                            "username": "conerd",
+                            "passwordSecretRef": "conerdazurecrio-conerd-pwd"
+                        }
+                    ]
+                },
+                "template": {
+                    "containers": [
+                        {
+                            "name": "quotemage",
+                            "image": "[concat('conerd.azurecr.io/quotemage:',parameters('container-version'))]",
+                            "command": [],
+                            "env": [
+                                {
+                                    "name": "ApiClientId",
+                                    "value": "[parameters('keyvault-api-clientid')]"
+                                },
+                                {
+                                    "name": "ApiSecret",
+                                    "secretref": "keyvault-api-secret"
+                                },
+                                {
+                                    "name": "TokenSecretUri",
+                                    "secretref": "keyvault-secret-url"
+                                }
+                            ],
+                            "resources": {
+                                "cpu": ".25",
+                                "memory": ".5Gi"
+                            }
+                        }
+                    ],
+                    "scale": {
+                        "minReplicas": 1,
+                        "maxReplicas": 1
+                    }
+                }
+            }
+        }
+    ]
+}

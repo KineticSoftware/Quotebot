@@ -2,27 +2,29 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Quotebot.Data.Serialization;
 using System.Net;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace Quotebot.Data
 {
     public static class ServiceCollectionExtensions
     {
-        public static IServiceCollection RegisterCosmosDb(this IServiceCollection serviceCollection, IConfiguration configuration)
+        public static IServiceCollection RegisterCosmosDb(this IServiceCollection serviceCollection, IConfiguration parentConfiguration)
         {
-            string endpoint = configuration[ConfigurationConstants.CosmosUrlConfigurationKey];
+            CosmosConfiguration configuration = parentConfiguration.GetRequiredSection(CosmosConfiguration.ConfigurationSectionName).Get<CosmosConfiguration>();
+            
+            string endpoint = configuration.Url;
             if (string.IsNullOrWhiteSpace(endpoint))
             {
-                Console.WriteLine($"Please specify a valid {ConfigurationConstants.CosmosUrlConfigurationKey} in environment variables");
+                Console.WriteLine($"Please specify a valid CosmosDb {nameof(configuration.Url)} in your appSettings.json or Key Vault.");
                 return serviceCollection;
             }
 
-            string authKey = configuration[ConfigurationConstants.CosmosAuthorizationConfigurationKey];
+            string authKey = configuration.Authorization;
             if (string.IsNullOrWhiteSpace(authKey))
             {
-                Console.WriteLine($"Please specify a valid {ConfigurationConstants.CosmosAuthorizationConfigurationKey} in the appSettings.json");
+                Console.WriteLine($"Please specify a valid {nameof(configuration.Authorization)} in your appSettings.json or Key Vault.");
                 return serviceCollection;
             }
 
@@ -33,7 +35,7 @@ namespace Quotebot.Data
                     {
                         Serializer = new CosmosSystemTextJsonSerializer(new JsonSerializerOptions { })
                     };
-                    return new CosmosClient(configuration[ConfigurationConstants.CosmosUrlConfigurationKey], configuration[ConfigurationConstants.CosmosAuthorizationConfigurationKey], cosmosClientOptions);
+                    return new CosmosClient(configuration.Url, configuration.Authorization, cosmosClientOptions);
                 })
                 .AddSingleton(serviceProvider =>
                 {
@@ -62,11 +64,12 @@ namespace Quotebot.Data
 
                     Database database = databaseResponse;
 
-#if DEBUG
-                    logger.LogTrace("DeleteContainerStreamAsync");
-                    using var deletionResult = database.GetContainer(DataConstants.ContainerId).DeleteContainerStreamAsync().Result;
-                    logger.LogTrace($"DeleteContainerStreamAsync {deletionResult.IsSuccessStatusCode}");
-#endif
+                    if(configuration.AlwaysRebuildContainer)
+                    {
+                        logger.LogTrace("DeleteContainerStreamAsync");
+                        using var deletionResult = database.GetContainer(DataConstants.ContainerId).DeleteContainerStreamAsync().Result;
+                        logger.LogTrace($"DeleteContainerStreamAsync {deletionResult.IsSuccessStatusCode}");
+                    }
 
                     return database;
                 })

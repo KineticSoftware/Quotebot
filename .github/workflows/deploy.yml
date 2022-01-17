@@ -6,10 +6,10 @@ env:
   ZIP_PATH: './output'
   ZIP_FILEPATH: './output/webjob.zip'
   SLN_PATH: './src/Quotebot.sln'
-on:
-  push:
-    branches:
-      - main
+# on:
+#   push:
+#     branches:
+#       - main
 
 jobs:
   build:

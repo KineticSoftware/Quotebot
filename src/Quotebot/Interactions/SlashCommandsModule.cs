@@ -1,8 +1,5 @@
-﻿using Discord.Commands;
-using Discord.Interactions;
+﻿using Discord.Interactions;
 using Quotebot.Data;
-using Quotebot.Data.Entities;
-using System.Text;
 
 namespace Quotebot.Interactions
 {

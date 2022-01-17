@@ -43,10 +43,11 @@
             "properties": {
                 "kubeEnvironmentId": "[parameters('kubeEnvironmentId')]",
                 "configuration": {
+                    "activeRevisionsMode": "single",
                     "secrets": [
                         {
-                          "name": "conerdazurecrio-conerd-pwd",
-                          "value": "[parameters('conerdazurecrio-conerd-pwd')]"
+                            "name": "conerdazurecrio-conerd-pwd",
+                            "value": "[parameters('conerdazurecrio-conerd-pwd')]"
                         },
                         {
                             "name": "keyvault-api-secret",
@@ -56,14 +57,14 @@
                             "name": "keyvault-secret-url",
                             "value": "[parameters('keyvault-secret-url')]"
                         }
-                      ],
+                    ],
                     "registries": [
                         {
-                          "server": "conerd.azurecr.io",
-                          "username": "conerd",
-                          "passwordSecretRef": "conerdazurecrio-conerd-pwd"
+                            "server": "conerd.azurecr.io",
+                            "username": "conerd",
+                            "passwordSecretRef": "conerdazurecrio-conerd-pwd"
                         }
-                      ]
+                    ]
                 },
                 "template": {
                     "containers": [
@@ -72,25 +73,29 @@
                             "image": "conerd.azurecr.io/quotemage:latest",
                             "command": [],
                             "env": [
-                              {
-                                "name": "ApiClientId",
-                                "value": "[parameters('keyvault-api-clientid')]" 
-                              },
-                              {
-                                "name": "ApiSecret",
-                                "secretref": "keyvault-api-secret" 
-                              },
-                              {
-                                "name": "TokenSecretUri",
-                                "secretref": "keyvault-secret-url" 
-                              }
+                                {
+                                    "name": "ApiClientId",
+                                    "value": "[parameters('keyvault-api-clientid')]"
+                                },
+                                {
+                                    "name": "ApiSecret",
+                                    "secretref": "keyvault-api-secret"
+                                },
+                                {
+                                    "name": "TokenSecretUri",
+                                    "secretref": "keyvault-secret-url"
+                                }
                             ],
                             "resources": {
-                              "cpu": ".25",
-                              "memory": ".5Gi"
+                                "cpu": ".25",
+                                "memory": ".5Gi"
                             }
-                          }
-                    ]
+                        }
+                    ],
+                    "scale": {
+                        "minReplicas": 1,
+                        "maxReplicas": 1
+                    }
                 }
             }
         }

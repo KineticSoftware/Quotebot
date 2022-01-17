@@ -2,8 +2,6 @@
 global using Microsoft.Extensions.Configuration;
 global using Discord.WebSocket;
 global using Microsoft.Extensions.Logging;
-using Discord.Commands;
-using Discord.Interactions;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Quotebot;

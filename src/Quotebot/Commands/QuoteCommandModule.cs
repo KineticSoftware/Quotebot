@@ -1,8 +1,6 @@
 ﻿using Discord.Commands;
 using Quotebot.Data;
-using Quotebot.Data.Entities;
 using System.Reflection;
-using System.Text;
 
 namespace Quotebot.Commands
 {

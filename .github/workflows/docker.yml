@@ -3,8 +3,7 @@ name: Build and Push Container
 on:
   push:
     branches:
-      # - 'main'
-      - '**'
+      - 'main'
 
 env:
   SLN_PATH: './src/Quotebot.sln'

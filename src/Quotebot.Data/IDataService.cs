@@ -1,6 +1,4 @@
-﻿using Quotebot.Data.Entities;
-
-namespace Quotebot.Data;
+﻿namespace Quotebot.Data;
 
 public interface IDataService
 {

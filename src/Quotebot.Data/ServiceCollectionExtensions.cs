@@ -1,11 +1,4 @@
 ﻿using Microsoft.Azure.Cosmos;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using Quotebot.Data.Configuration;
-using Quotebot.Data.Serialization;
-using System.Net;
-using System.Text.Json;
 
 namespace Quotebot.Data;
 

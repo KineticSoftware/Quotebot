@@ -1,5 +1,4 @@
 ﻿using Discord.Commands;
-using Quotebot.Data;
 using System.Reflection;
 
 namespace Quotebot.Commands;

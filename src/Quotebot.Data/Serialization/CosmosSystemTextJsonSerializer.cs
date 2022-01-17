@@ -1,6 +1,5 @@
 ﻿using Azure.Core.Serialization;
 using Microsoft.Azure.Cosmos;
-using System.Text.Json;
 
 namespace Quotebot.Data.Serialization
 {

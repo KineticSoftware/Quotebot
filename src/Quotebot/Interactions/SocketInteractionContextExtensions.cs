@@ -1,5 +1,5 @@
 ﻿using Discord.Interactions;
-using Quotebot.Data.Entities;
+
 
 namespace Quotebot.Interactions;
 

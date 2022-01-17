@@ -1,7 +1,4 @@
-﻿using Discord;
-using System.Text.Json.Serialization;
-
-namespace Quotebot.Data.Entities;
+﻿namespace Quotebot.Data.Entities;
 
 public class Quoted
 {

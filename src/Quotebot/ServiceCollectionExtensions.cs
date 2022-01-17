@@ -1,8 +1,5 @@
 ﻿using Discord.Commands;
 using Discord.Interactions;
-using Microsoft.Extensions.DependencyInjection;
-using Quotebot.Configuration;
-using Quotebot.Services;
 
 namespace Quotebot;
 

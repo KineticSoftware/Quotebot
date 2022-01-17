@@ -1,15 +1,10 @@
 ﻿using Discord.Interactions;
-using Microsoft.Extensions.Hosting;
-using Quotebot.Configuration;
-using Quotebot.Data;
-using Quotebot.Services;
 
 namespace Quotebot;
 
 internal class Bot
 {
     private readonly ILogger<Bot> _logger;
-    private readonly IHostEnvironment _environment;
     private readonly BotConfiguration _configuration;
     private readonly DiscordSocketClient _client;
     private readonly InteractionService _interactionService;
@@ -18,7 +13,6 @@ internal class Bot
 
     public Bot(
         ILogger<Bot> logger,
-        IHostEnvironment environment,
         BotConfiguration configuration,
         DiscordSocketClient client,
         InteractionService interactionService,
@@ -28,7 +22,6 @@ internal class Bot
     {
         _logger = logger;
         _configuration = configuration;
-        _environment = environment;
         _client = client;
         _interactionService = interactionService;
         _commandsHandlerService = commandsHandlerService;

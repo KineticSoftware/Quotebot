@@ -99,7 +99,7 @@ jobs:
           resourceGroupName: CoNerd
           template: ./container-app.json
           deploymentName: MageBot-Deployment-${{ needs.build.outputs.build_version }}
-          parameters: container-version=${{ needs.build.outputs.build_version }} conerdazurecrio-conerd-pwd=${{ secrets.conerdazurecrio-conerd-pwd }} keyvault-api-clientid=${{ secrets.KEYVAULT_CLIENTID }} keyvault-api-secret=${{ secrets.KEYVAULT_SECRET }} keyvault-secret-url=${{ secrets.KEYVAULT_URI }}
+          parameters: container-version=${{ needs.build.outputs.build_version }} conerdazurecrio-conerd-pwd=${{ secrets.CONTAINER_REGISTRY_PASSWORD }} keyvault-api-clientid=${{ secrets.KEYVAULT_CLIENTID }} keyvault-api-secret=${{ secrets.KEYVAULT_SECRET }} keyvault-secret-url=${{ secrets.KEYVAULT_URI }}
 
 
       

@@ -1,7 +1,6 @@
-﻿namespace Quotebot
+﻿namespace Quotebot;
+
+public static class BotExtensions
 {
-    public static class BotExtensions
-    {
-        public static Emote QuoteBotEmote() => Emote.Parse("<:quoted:926362503531872317>");
-    }
+    public static Emote QuoteBotEmote() => Emote.Parse("<:quoted:926362503531872317>");
 }

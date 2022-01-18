@@ -1,50 +1,52 @@
-﻿using Azure.Core.Serialization;
+﻿//using Azure.Core.Serialization;
 using Microsoft.Azure.Cosmos;
 
-namespace Quotebot.Data.Serialization
+namespace Quotebot.Data.Serialization;
+
+public class CosmosSystemTextJsonSerializer : CosmosSerializer
 {
-    /// <summary>
-    /// I hate this class. It makes me cry 😭
-    /// </summary>
-    public class CosmosSystemTextJsonSerializer : CosmosSerializer
+    private readonly JsonSerializerOptions _jsonSerializerOptions;
+    //private readonly JsonObjectSerializer _systemTextJsonSerializer;
+
+    public CosmosSystemTextJsonSerializer(JsonSerializerOptions jsonSerializerOptions)
     {
-        private readonly JsonObjectSerializer _systemTextJsonSerializer;
+        //_systemTextJsonSerializer = new JsonObjectSerializer(jsonSerializerOptions);
+        _jsonSerializerOptions = jsonSerializerOptions;
+    }
 
-        public CosmosSystemTextJsonSerializer(JsonSerializerOptions jsonSerializerOptions)
+    public override T FromStream<T>(Stream stream)
+    {
+        if (stream is null)
+            throw new ArgumentException("Stream is null", nameof(stream));
+
+        if (stream.CanSeek && stream.Length == 0)
         {
-            _systemTextJsonSerializer = new JsonObjectSerializer(jsonSerializerOptions);
+            return default!;
         }
 
-        public override T FromStream<T>(Stream stream)
+        if (typeof(Stream).IsAssignableFrom(typeof(T)))
         {
-            if (stream.CanSeek && stream.Length == 0)
-            {
-#pragma warning disable CS8603 // Possible null reference return.
-                return default;
-#pragma warning restore CS8603 // Possible null reference return.
-            }
-
-            if (typeof(Stream).IsAssignableFrom(typeof(T)))
-            {
-                return (T)(object)stream;
-            }
-
-            using (stream)
-            {
-#pragma warning disable CS8600 // Converting null literal or possible null value to non-nullable type.
-#pragma warning disable CS8603 // Possible null reference return.
-                return (T)_systemTextJsonSerializer.Deserialize(stream, typeof(T), default);
-#pragma warning restore CS8603 // Possible null reference return.
-#pragma warning restore CS8600 // Converting null literal or possible null value to non-nullable type.
-            }
+            return (T)(object)stream;
         }
-
-        public override Stream ToStream<T>(T input)
+        using (stream)
         {
-            var streamPayload = new MemoryStream();
-            _systemTextJsonSerializer.Serialize(streamPayload, input, typeof(T), default);
-            streamPayload.Position = 0;
-            return streamPayload;
+            var buffer = JsonSerializer.Deserialize<T>(stream, _jsonSerializerOptions);
+
+            if (buffer is null)
+                throw new NullReferenceException(nameof(buffer));
+
+            if (buffer is T result)
+                return result;
+
+            throw new Exception($"Unable to convert {buffer.GetType().FullName} to {typeof(T).FullName}");
         }
+    }
+
+    public override Stream ToStream<T>(T input)
+    {
+        var streamPayload = new MemoryStream();
+        JsonSerializer.Serialize(streamPayload, input, _jsonSerializerOptions);
+        streamPayload.Position = 0;
+        return streamPayload;
     }
 }

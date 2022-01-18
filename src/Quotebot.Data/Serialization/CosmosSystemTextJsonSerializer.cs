@@ -1,4 +1,4 @@
-﻿using Azure.Core.Serialization;
+﻿//using Azure.Core.Serialization;
 using Microsoft.Azure.Cosmos;
 using System.Text.Json;
 
@@ -6,11 +6,13 @@ namespace Quotebot.Data.Serialization;
 
 public class CosmosSystemTextJsonSerializer : CosmosSerializer
 {
-    private readonly JsonObjectSerializer _systemTextJsonSerializer;
+    private readonly JsonSerializerOptions _jsonSerializerOptions;
+    //private readonly JsonObjectSerializer _systemTextJsonSerializer;
 
     public CosmosSystemTextJsonSerializer(JsonSerializerOptions jsonSerializerOptions)
     {
-        _systemTextJsonSerializer = new JsonObjectSerializer(jsonSerializerOptions);
+        //_systemTextJsonSerializer = new JsonObjectSerializer(jsonSerializerOptions);
+        _jsonSerializerOptions = jsonSerializerOptions;
     }
 
     public override T FromStream<T>(Stream stream)
@@ -27,10 +29,9 @@ public class CosmosSystemTextJsonSerializer : CosmosSerializer
         {
             return (T)(object)stream;
         }
-
         using (stream)
         {
-            var buffer = _systemTextJsonSerializer.Deserialize(stream, typeof(T), default);
+            var buffer = JsonSerializer.Deserialize<T>(stream, _jsonSerializerOptions);
 
             if (buffer is null)
                 throw new NullReferenceException(nameof(buffer));
@@ -45,7 +46,7 @@ public class CosmosSystemTextJsonSerializer : CosmosSerializer
     public override Stream ToStream<T>(T input)
     {
         var streamPayload = new MemoryStream();
-        _systemTextJsonSerializer.Serialize(streamPayload, input, typeof(T), default);
+        JsonSerializer.Serialize(streamPayload, input, _jsonSerializerOptions);
         streamPayload.Position = 0;
         return streamPayload;
     }

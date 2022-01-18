@@ -75,7 +75,11 @@ namespace Quotebot.Data
                 }
             }
 
-            return stringBuilder.ToString();
+            var result = stringBuilder.ToString();
+            if(string.IsNullOrWhiteSpace(result))
+                return $"No quotes found containg the text *{messageLike}* in this server.";
+
+            return result;
         }
 
         public async Task<string> FindByQuote(string messageLike, ulong channelId, int take = 5)
@@ -104,7 +108,11 @@ namespace Quotebot.Data
                 }
             }
 
-            return stringBuilder.ToString();
+            var result = stringBuilder.ToString();
+            if (string.IsNullOrWhiteSpace(result))
+                return $"No quotes found containg the text *{messageLike}* in this channel.";
+
+            return result;
         }
     }
 }

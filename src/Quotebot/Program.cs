@@ -1,11 +1,4 @@
-﻿global using Discord;
-global using Microsoft.Extensions.Configuration;
-global using Discord.WebSocket;
-global using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using Quotebot;
-using Quotebot.Data;
+﻿using Microsoft.Extensions.Hosting;
 
 
 try

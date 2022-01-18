@@ -1,22 +1,19 @@
-﻿using Discord;
+﻿namespace Quotebot.Data.Entities;
 
-namespace Quotebot.Data.Entities
+public class Channel
 {
-    public class Channel
+    public Channel()
+    { }
+
+    public Channel(IChannel channel)
     {
-        public Channel()
-        { }
-
-        public Channel(IChannel channel)
-        {
-            Name = channel.Name;
-            CreatedAt = channel.CreatedAt;
-            Id = channel.Id;
-        }
-        public string? Name { get; set; }
-
-        public DateTimeOffset CreatedAt { get; set; }
-
-        public ulong Id { get; set; }
+        Name = channel.Name;
+        CreatedAt = channel.CreatedAt;
+        Id = channel.Id;
     }
+    public string? Name { get; set; }
+
+    public DateTimeOffset CreatedAt { get; set; }
+
+    public ulong Id { get; set; }
 }

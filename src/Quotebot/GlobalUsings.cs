@@ -1,0 +1,10 @@
+﻿global using Discord;
+global using Discord.WebSocket;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Logging;
+global using Quotebot;
+global using Quotebot.Configuration;
+global using Quotebot.Data;
+global using Quotebot.Data.Entities;
+global using Quotebot.Services;

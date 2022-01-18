@@ -49,6 +49,7 @@ jobs:
           release_branch=$(test "${{ github.ref }}" = refs/heads/main && echo true || echo false)
           echo "Is this a release branch? ${release_branch}"
           echo "SHOULD_TAG=${release_branch}" >> $GITHUB_ENV
+          
       - name: Create a GitHub release
         if: ${{ success() && env.SHOULD_TAG=='true' }}
         uses: actions/create-release@v1
@@ -116,7 +117,3 @@ jobs:
           template: ./container-app.json
           deploymentName: MageBot-Deployment-${{ needs.build.outputs.build_version }}
           parameters: container-version=${{ needs.build.outputs.build_version }} conerdazurecrio-conerd-pwd=${{ secrets.CONTAINER_REGISTRY_PASSWORD }} keyvault-api-clientid=${{ secrets.KEYVAULT_CLIENTID }} keyvault-api-secret=${{ secrets.KEYVAULT_SECRET }} keyvault-secret-url=${{ secrets.KEYVAULT_URI }}
-
-
-      
-        

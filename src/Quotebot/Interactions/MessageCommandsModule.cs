@@ -23,11 +23,21 @@ public class MessageCommandsModule : InteractionModuleBase<SocketInteractionCont
         var completeMessage = await Context.GetCompleteMessage(message);
         if (completeMessage.Author.IsBot)
         {
-            await RespondAsync($"Sorry, you can't add quotes from bots.");
+            await FollowupAsync($"Sorry, you can't add quotes from bots.");
             return;
         }
 
-        await completeMessage.AddReactionAsync(BotExtensions.QuoteBotEmote());
+        if (string.IsNullOrWhiteSpace(completeMessage.CleanContent))
+        {
+            await FollowupAsync($"No actual text was found. You can only quote text chat.");
+            return;
+        }
+
+        if (message.Embeds.Count > 0 || message.Attachments.Count > 0)
+        {
+            await FollowupAsync($"An embed or an attachment was found. You can currently only quote text chat.");
+            return;
+        }
 
         var quote = new Quoted(completeMessage);
         quote.Author = await Context.GetGuildUserName(completeMessage.Author);
@@ -38,6 +48,8 @@ public class MessageCommandsModule : InteractionModuleBase<SocketInteractionCont
             await FollowupAsync($"This quote was already added.");
             return;
         }
+
+        await completeMessage.AddReactionAsync(BotExtensions.QuoteBotEmote());
 
         var response = new StringBuilder()
             .AppendLine($"> *{quote.Author?.Nickname ?? quote.Author?.Username} : {completeMessage.Content}*");

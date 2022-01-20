@@ -1,0 +1,31 @@
+name: Scale Container
+
+on: 
+  workflow_dispatch:
+    minReplicas:
+      description: Scale Container. Pick either 0 or 1
+      required: true
+      default: 1
+    containerVersion:
+      description: Version of container to scale. 
+      required: true
+
+jobs:
+  Scale:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 
+        uses: actions/checkout@v2
+          
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.Azure_ServicePrincipal }}
+
+      - name: Deploy to Azure
+        uses: azure/arm-deploy@v1
+        with:
+          resourceGroupName: CoNerd
+          template: ./container-app.json
+          deploymentName: MageBot-Scale-${{ github.event.inputs.containerVersion }}
+          parameters: min-replicas=${{ github.event.inputs.minReplicas }} container-version=${{ github.event.inputs.containerVersion }} conerdazurecrio-conerd-pwd=${{ secrets.CONTAINER_REGISTRY_PASSWORD }} keyvault-api-clientid=${{ secrets.KEYVAULT_CLIENTID }} keyvault-api-secret=${{ secrets.KEYVAULT_SECRET }} keyvault-secret-url=${{ secrets.KEYVAULT_URI }}

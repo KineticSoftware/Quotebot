@@ -33,6 +33,10 @@
         },
         "container-version": {
             "type": "string"
+        },
+        "min-replicas": {
+            "type": "number",
+            "defaultValue": 1
         }
     },
     "resources": [
@@ -96,7 +100,7 @@
                         }
                     ],
                     "scale": {
-                        "minReplicas": 1,
+                        "minReplicas": "[parameters('min-replicas')]",
                         "maxReplicas": 1
                     }
                 }

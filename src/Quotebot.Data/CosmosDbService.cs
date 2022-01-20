@@ -1,9 +1,5 @@
 ﻿using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Linq;
-using Microsoft.Extensions.Logging;
-using Quotebot.Data.Entities;
-using System.Net;
-using System.Text;
 
 namespace Quotebot.Data
 {

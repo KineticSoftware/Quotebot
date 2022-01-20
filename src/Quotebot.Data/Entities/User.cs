@@ -20,7 +20,6 @@ public class User
         Mention = user.Mention;
         Status = user.Status;
         ActiveClients = user.ActiveClients;
-        Activities = user.Activities;
     }
 
     public User(IGuildUser user)
@@ -38,7 +37,6 @@ public class User
         Mention = user.Mention;
         Status = user.Status;
         ActiveClients = user.ActiveClients;
-        Activities = user.Activities;
         JoinedAt = user.JoinedAt;
         GuildAvatarId = user.GuildAvatarId;
         GuildId = user.GuildId;
@@ -69,8 +67,6 @@ public class User
     public UserStatus Status { get; set; }
 
     public IReadOnlyCollection<ClientType>? ActiveClients { get; set; }
-
-    public IReadOnlyCollection<IActivity>? Activities { get; set; }
 
     public DateTimeOffset? JoinedAt { get; set; }
 

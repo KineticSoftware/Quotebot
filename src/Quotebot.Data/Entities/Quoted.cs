@@ -16,7 +16,6 @@ public class Quoted
         EditedTimestamp = message.EditedTimestamp;
         Channel = new Channel(message.Channel);
         Author = new User(message.Author);
-        Reference = message.Reference;
         Flags = message.Flags;
         CreatedAt = message.CreatedAt;
         Id = Convert.ToString(message.Id);
@@ -45,8 +44,6 @@ public class Quoted
     public Channel Channel { get; set; } = new();
 
     public User Author { get; set; } = new();
-
-    public MessageReference? Reference { get; set; }
 
     public MessageFlags? Flags { get; set; }
 }

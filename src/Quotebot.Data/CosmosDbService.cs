@@ -50,7 +50,7 @@ namespace Quotebot.Data
             var iterator = await _container.GetItemQueryIterator<Quoted>().ReadNextAsync();
             if (!iterator.Any())
             {
-                return $"No quotes found containg the text *{messageLike}* in this server.";
+                return $"No quotes found containing the text *{messageLike}* in this server.";
             }
 
             using var setIterator = _container.GetItemLinqQueryable<Quoted>(allowSynchronousQueryExecution: true)
@@ -73,21 +73,21 @@ namespace Quotebot.Data
 
             var result = stringBuilder.ToString();
             if(string.IsNullOrWhiteSpace(result))
-                return $"No quotes found containg the text *{messageLike}* in this server.";
+                return $"No quotes found containing the text *{messageLike}* in this server.";
 
             return result;
         }
 
-        public async Task<string> FindByQuote(string messageLike, ulong channelId, int take = 5)
+        public async Task<string> FindByQuote(string messageLike, string channelName, int take = 5)
         {
             var iterator = await _container.GetItemQueryIterator<Quoted>().ReadNextAsync();
-            if(!iterator.Any(item => item.Channel.Id == channelId))
+            if(iterator.All(item => item.Channel.Name != channelName))
             {
-                return $"No quotes found containg the text *{messageLike}* in this channel.";
+                return $"No quotes found containing the text *{messageLike}* in this channel.";
             }
 
-            using var setIterator = _container.GetItemLinqQueryable<Quoted>(allowSynchronousQueryExecution: true)
-                                 .Where(record => record.Channel != null && record.Channel.Id == channelId && record.CleanContent != null && record.CleanContent.Contains(messageLike, StringComparison.InvariantCultureIgnoreCase))
+            using var setIterator = _container.GetItemLinqQueryable<Quoted>(true)
+                                 .Where(record => record.Channel.Name == channelName && record.CleanContent != null && record.CleanContent.Contains(messageLike, StringComparison.InvariantCultureIgnoreCase))
                                  .Take(take)
                                  .ToFeedIterator();
             
@@ -106,7 +106,7 @@ namespace Quotebot.Data
 
             var result = stringBuilder.ToString();
             if (string.IsNullOrWhiteSpace(result))
-                return $"No quotes found containg the text *{messageLike}* in this channel.";
+                return $"No quotes found containing the text *{messageLike}* in this channel.";
 
             return result;
         }

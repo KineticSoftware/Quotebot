@@ -15,7 +15,7 @@ public class SlashCommandsModule : InteractionModuleBase<SocketInteractionContex
     {
         await DeferAsync();
 
-        var results = await _dataService.FindByQuote(text, Context.Channel.Id, limit);
+        var results = await _dataService.FindByQuote(text, Context.Channel.Name, limit);
 
         await FollowupAsync(results);
     }

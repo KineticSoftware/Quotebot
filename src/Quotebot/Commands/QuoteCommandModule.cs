@@ -38,7 +38,8 @@ public class QuoteCommandModule : ModuleBase<SocketCommandContext>
     [Summary("Find a Quote")]
     public async Task FindQuotes(string text, int limit = 5)
     {
-        var results = await _dataService.FindByQuote(text, Context.Channel.Id, limit);
+        
+        var results = await _dataService.FindByQuote(text, Context.Channel.Name, limit);
 
         await ReplyAsync(results);
     }

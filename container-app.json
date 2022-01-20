@@ -35,7 +35,7 @@
             "type": "string"
         },
         "min-replicas": {
-            "type": "number",
+            "type": "int",
             "defaultValue": 1
         }
     },

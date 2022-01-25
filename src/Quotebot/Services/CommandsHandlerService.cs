@@ -66,6 +66,16 @@ public class CommandsHandlerService
             return;
         }
 
+        if (string.IsNullOrWhiteSpace(userMessage.CleanContent))
+        {
+            return;
+        }
+
+        if (userMessage.Embeds.Count > 0 || userMessage.Attachments.Count > 0)
+        {
+            return;
+        }
+
         var quote = new Quoted(userMessage);
         var discordUser = await channelMessage.GetUserAsync(quote.Author.Id);
         quote.Author = new User(discordUser);

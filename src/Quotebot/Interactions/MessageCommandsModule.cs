@@ -1,5 +1,6 @@
 ﻿using Discord.Interactions;
 using System.Text;
+using Quotebot.Domain;
 
 namespace Quotebot.Interactions;
 
@@ -49,7 +50,7 @@ public class MessageCommandsModule : InteractionModuleBase<SocketInteractionCont
             return;
         }
 
-        await completeMessage.AddReactionAsync(BotExtensions.QuoteBotEmote());
+        await completeMessage.AddReactionAsync(BotEmotes.QuotedEmote());
 
         var response = new StringBuilder()
             .AppendLine($"> *{quote.Author?.Nickname ?? quote.Author?.Username} : {completeMessage.Content}*");

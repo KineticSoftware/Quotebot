@@ -1,5 +1,8 @@
 ﻿using Discord.Commands;
 using System.Reflection;
+using System.Text;
+using Quotebot.Domain;
+// ReSharper disable StringLiteralTypo
 
 namespace Quotebot.Commands;
 
@@ -51,5 +54,54 @@ public class QuoteCommandModule : ModuleBase<SocketCommandContext>
         var results = await _dataService.FindByQuoteInServer(text, limit);
 
         await ReplyAsync(results);
+    }
+
+    [Command("add")]
+    [Summary("Records a quote!")]
+    public async Task AddQuote()
+    {
+        if (Context.Guild is null)
+        {
+            await ReplyAsync($"Try using this command in a channel {Context.User.Username}");
+            return;
+        }
+
+        if (Context.Message.ReferencedMessage is null)
+        {
+            await ReplyAsync($"Try using this command in a reply {Context.User.Username}");
+        }
+        else
+        {
+            var completeMessage = await Context.GetCompleteMessage(Context.Message.ReferencedMessage);
+
+            if (string.IsNullOrWhiteSpace(completeMessage.CleanContent))
+            {
+                await ReplyAsync($"No actual text was found. You can only quote text chat.");
+                return;
+            }
+
+            if (completeMessage.Embeds.Count > 0 || completeMessage.Attachments.Count > 0)
+            {
+                await ReplyAsync($"An embed or an attachment was found. You can currently only quote text chat.");
+                return;
+            }
+
+            var quote = new Quoted(completeMessage);
+            quote.Author = await Context.GetGuildUserName(completeMessage.Author);
+
+            var result = await _dataService.TryCreateQuoteRecord(quote);
+            if (!result)
+            {
+                await ReplyAsync($"This quote was already added.");
+                return;
+            }
+
+            await completeMessage.AddReactionAsync(BotEmotes.QuotedEmote());
+
+            var response = new StringBuilder()
+                .AppendLine($"> *{quote.Author.Nickname ?? quote.Author.Username} : {completeMessage.Content}*");
+
+            await ReplyAsync($"{response}");
+        }
     }
 }

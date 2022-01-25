@@ -1,5 +1,6 @@
 ﻿using Discord.Commands;
 using System.Reflection;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Quotebot.Services;
 
@@ -31,22 +32,14 @@ public class CommandsHandlerService
 
         switch (rawMessage)
         {
-            case SocketUserMessage message
-                when !message.HasCharPrefix('!', ref argPosition):
-                return;
-
-            case SocketUserMessage message
-                when message.Source != MessageSource.User:
-                return;
-
-            case SocketUserMessage message:
+            case SocketUserMessage { Source: MessageSource.User } message when message.HasCharPrefix('!', ref argPosition):
                 var context = new SocketCommandContext(_client, message);
                 await _commandService.ExecuteAsync(context, argPosition, _serviceProvider);
-                return;
-
-            case SocketMessage:
-                return;
-        }
+                break;
+            default: 
+                await Task.CompletedTask;
+                break;
+        };
     }
 
     public async Task CommandExecutedAsync(Optional<CommandInfo> command, ICommandContext context, IResult result)

@@ -1,8 +1,6 @@
 ﻿using Discord.Commands;
 using System.Reflection;
-using System.Reflection.Metadata.Ecma335;
 using System.Text;
-using Quotebot.Domain;
 
 namespace Quotebot.Services;
 

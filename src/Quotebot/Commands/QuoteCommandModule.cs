@@ -1,7 +1,7 @@
 ﻿using Discord.Commands;
 using System.Reflection;
 using System.Text;
-using Quotebot.Domain;
+
 // ReSharper disable StringLiteralTypo
 
 namespace Quotebot.Commands;

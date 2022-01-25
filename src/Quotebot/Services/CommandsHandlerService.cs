@@ -1,5 +1,6 @@
 ﻿using Discord.Commands;
 using System.Reflection;
+using System.Text;
 
 namespace Quotebot.Services;
 
@@ -8,16 +9,19 @@ public class CommandsHandlerService
     private readonly CommandService _commandService;
     private readonly DiscordSocketClient _client;
     private readonly IServiceProvider _serviceProvider;
+    private readonly IDataService _dataService;
 
-    public CommandsHandlerService(IServiceProvider serviceProvider)
+    public CommandsHandlerService(IServiceProvider serviceProvider, IDataService dataService)
     {
         _serviceProvider = serviceProvider;
+        _dataService = dataService;
 
         _commandService = _serviceProvider.GetRequiredService<CommandService>();
         _client = _serviceProvider.GetRequiredService<DiscordSocketClient>();
 
         _commandService.CommandExecuted += CommandExecutedAsync;
         _client.MessageReceived += MessageReceivedAsync;
+        _client.ReactionAdded += ReactionAddedAsync;
     }
 
     public async Task InitializeAsync()
@@ -25,31 +29,62 @@ public class CommandsHandlerService
         await _commandService.AddModulesAsync(Assembly.GetEntryAssembly(), _serviceProvider);
     }
 
-    public async Task MessageReceivedAsync(SocketMessage rawMessage)
+    private async Task MessageReceivedAsync(SocketMessage rawMessage)
     {
         var argPosition = 0;
 
         switch (rawMessage)
         {
-            case SocketUserMessage message
-                when !message.HasCharPrefix('!', ref argPosition):
-                return;
-
-            case SocketUserMessage message
-                when message.Source != MessageSource.User:
-                return;
-
-            case SocketUserMessage message:
+            case SocketUserMessage { Source: MessageSource.User } message when message.HasCharPrefix('!', ref argPosition):
                 var context = new SocketCommandContext(_client, message);
                 await _commandService.ExecuteAsync(context, argPosition, _serviceProvider);
-                return;
-
-            case SocketMessage:
-                return;
-        }
+                break;
+            default: 
+                await Task.CompletedTask;
+                break;
+        };
     }
 
-    public async Task CommandExecutedAsync(Optional<CommandInfo> command, ICommandContext context, IResult result)
+    private async Task ReactionAddedAsync(Cacheable<IUserMessage, ulong> cachedUserMessage, Cacheable<IMessageChannel, ulong> cachedChannelMessage, SocketReaction reaction)
+    {
+        var userMessage = await cachedUserMessage.GetOrDownloadAsync();
+        if (userMessage is { Author.IsBot: true } )
+            return;
+
+        var emotedValue = userMessage.Reactions.TryGetValue(BotEmotes.QuotedEmote(), out var emoteMetadata);
+        if (emotedValue && emoteMetadata.ReactionCount > 1)
+            return;
+
+        var channelMessage = await cachedChannelMessage.GetOrDownloadAsync();
+        if (channelMessage is not IGuildChannel)
+        {
+            return;
+        }
+
+        if (reaction.User.GetValueOrDefault() is not SocketGuildUser socketGuildUser)
+        {
+            return;
+        }
+
+        var quote = new Quoted(userMessage);
+        var discordUser = await channelMessage.GetUserAsync(quote.Author.Id);
+        quote.Author = new User(discordUser);
+
+        var result = await _dataService.TryCreateQuoteRecord(quote);
+        if (!result)
+        {
+            await userMessage.ReplyAsync($"This quote was already added.");
+            return;
+        }
+        
+        var response = new StringBuilder()
+            .AppendLine($"_{socketGuildUser.Nickname} quoted via_ {BotEmotes.QuotedRaw}")
+            .AppendLine($"> *{quote.Author?.Nickname ?? quote.Author?.Username} : {userMessage.Content}*");
+
+        await userMessage.ReplyAsync($"{response}");
+    }
+
+    private async Task CommandExecutedAsync(Optional<CommandInfo> command, ICommandContext context, IResult result)
     {
         if (!command.IsSpecified || result.IsSuccess)
             return;

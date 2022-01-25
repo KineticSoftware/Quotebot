@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quotebot", "Quotebot\Quoteb
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quotebot.Data", "Quotebot.Data\Quotebot.Data.csproj", "{164E8CB4-1E11-4B11-A845-E535ABDB13E5}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quotebot.Domain", "Quotebot.Domain\Quotebot.Domain.csproj", "{95F5FE8F-57F9-4BA6-8D8F-CC2E5D658C61}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{164E8CB4-1E11-4B11-A845-E535ABDB13E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{164E8CB4-1E11-4B11-A845-E535ABDB13E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{164E8CB4-1E11-4B11-A845-E535ABDB13E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95F5FE8F-57F9-4BA6-8D8F-CC2E5D658C61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95F5FE8F-57F9-4BA6-8D8F-CC2E5D658C61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95F5FE8F-57F9-4BA6-8D8F-CC2E5D658C61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95F5FE8F-57F9-4BA6-8D8F-CC2E5D658C61}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

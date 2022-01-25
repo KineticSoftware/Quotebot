@@ -21,6 +21,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\Quotebot.Data\Quotebot.Data.csproj" />
+		<ProjectReference Include="..\Quotebot.Domain\Quotebot.Domain.csproj" />
 	</ItemGroup>
 	<Choose>
 		<When Condition="'$(Configuration)' == 'Debug'">

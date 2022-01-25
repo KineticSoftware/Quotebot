@@ -10,10 +10,7 @@ namespace Quotebot.Data
 
         public CosmosDbService(Container container, ILogger<CosmosDbService> logger)
         {
-            if(container is null)
-                throw new ArgumentNullException(nameof(container));
-
-            _container = container;
+            _container = container ?? throw new ArgumentNullException(nameof(container));
             _logger = logger;
         }
 

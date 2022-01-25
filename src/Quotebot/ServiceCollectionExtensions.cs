@@ -21,8 +21,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton(serviceProvider => new InteractionService(serviceProvider.GetRequiredService<DiscordSocketClient>()))
             .AddSingleton(serviceProvider => new CommandService(new CommandServiceConfig
             {
-                    // Again, log level:
-                    LogLevel = LogSeverity.Debug,
+                LogLevel = LogSeverity.Debug,
                 ThrowOnError = true
             }))
             .AddSingleton<CommandsHandlerService>()

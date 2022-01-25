@@ -2,6 +2,7 @@
 
 namespace Quotebot.Interactions;
 
+// ReSharper disable once UnusedType.Global
 public class SlashCommandsModule : InteractionModuleBase<SocketInteractionContext>
 {
     IDataService _dataService;
@@ -29,6 +30,4 @@ public class SlashCommandsModule : InteractionModuleBase<SocketInteractionContex
 
         await FollowupAsync(results);
     }
-
-
 }

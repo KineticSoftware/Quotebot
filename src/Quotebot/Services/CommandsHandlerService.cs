@@ -52,7 +52,7 @@ public class CommandsHandlerService
             return;
 
         var emotedValue = userMessage.Reactions.TryGetValue(BotEmotes.QuotedEmote(), out var emoteMetadata);
-        if (emotedValue && emoteMetadata.ReactionCount > 1)
+        if (!emotedValue || emoteMetadata.ReactionCount > 1)
             return;
 
         var channelMessage = await cachedChannelMessage.GetOrDownloadAsync();
@@ -62,6 +62,16 @@ public class CommandsHandlerService
         }
 
         if (reaction.User.GetValueOrDefault() is not SocketGuildUser socketGuildUser)
+        {
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(userMessage.CleanContent))
+        {
+            return;
+        }
+
+        if (userMessage.Embeds.Count > 0 || userMessage.Attachments.Count > 0)
         {
             return;
         }

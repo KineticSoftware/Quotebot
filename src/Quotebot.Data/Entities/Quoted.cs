@@ -1,6 +1,4 @@
-﻿using Discord.WebSocket;
-
-namespace Quotebot.Data.Entities;
+﻿namespace Quotebot.Data.Entities;
 
 public class Quoted
 {
@@ -20,7 +18,7 @@ public class Quoted
         
         Author = message.Author switch
         {
-            SocketGuildUser socketGuildUser => new User(socketGuildUser),
+            IGuildUser guildUser => new User(guildUser),
             _ => new User(message.Author)
         };
 

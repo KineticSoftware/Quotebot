@@ -13,7 +13,8 @@ CONerd Quotebot is this idea that any message spoken in a Discord server could b
   - [x] Determine table schema (Date/Time, messageID (primary key), username, message, etc.)
 - [x] Add `!quote add`
   - [x] Accessed by right clicking on a message (context menu) and then via `Apps` menu item. 
-  - [ ] While replying to message `/quote add`
+  - [x] While replying to message `/quote add`
+  - [x] When using the `:quoted:` empoji
   - [x] Data storage implemenation
 - [x] Add `Count of Quotes` as a user action (right click on a User)
 - [ ] Should we set [ephemeral](https://github.com/discord-net/Discord.Net/blob/dev/src/Discord.Net.Core/Entities/Interactions/IDiscordInteraction.cs#L58)?
@@ -22,4 +23,5 @@ CONerd Quotebot is this idea that any message spoken in a Discord server could b
 - [ ] Allow embeds or attachments??
 - [ ] NTH Add `!quote messageid`
 - [x] Make quotebot add an emoji to quoted text
+- [ ] Add Application Insights or another type of application telemetry.
 - [ ] (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧

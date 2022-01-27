@@ -1,4 +1,6 @@
-﻿namespace Quotebot.Data.Entities;
+﻿using Discord.WebSocket;
+
+namespace Quotebot.Data.Entities;
 
 public class Quoted
 {
@@ -15,7 +17,13 @@ public class Quoted
         Timestamp = message.Timestamp;
         EditedTimestamp = message.EditedTimestamp;
         Channel = new Channel(message.Channel);
-        Author = new User(message.Author);
+        
+        Author = message.Author switch
+        {
+            SocketGuildUser socketGuildUser => new User(socketGuildUser),
+            _ => new User(message.Author)
+        };
+
         Flags = message.Flags;
         CreatedAt = message.CreatedAt;
         Id = Convert.ToString(message.Id);

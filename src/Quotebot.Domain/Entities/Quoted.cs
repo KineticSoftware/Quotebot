@@ -1,4 +1,6 @@
-﻿namespace Quotebot.Data.Entities;
+﻿using System.Text.Json.Serialization;
+
+namespace Quotebot.Domain.Entities;
 
 public class Quoted
 {

@@ -16,4 +16,8 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
   </ItemGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\Quotebot.Domain\Quotebot.Domain.csproj" />
+  </ItemGroup>
+
 </Project>

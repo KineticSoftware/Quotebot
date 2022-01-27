@@ -1,6 +1,4 @@
-﻿using Discord;
-
-namespace Quotebot.Domain;
+﻿namespace Quotebot.Domain;
 
 public static class BotEmotes
 {

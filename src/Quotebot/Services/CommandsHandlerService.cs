@@ -1,6 +1,7 @@
 ﻿using Discord.Commands;
 using System.Reflection;
 using System.Text;
+using Quotebot.Domain.Validators;
 
 namespace Quotebot.Services;
 
@@ -62,10 +63,8 @@ public class CommandsHandlerService
         if (reaction.User.GetValueOrDefault() is not SocketGuildUser socketGuildUser)
             return;
 
-        if (string.IsNullOrWhiteSpace(userMessage.CleanContent))
-            return;
-
-        if (userMessage.Embeds.Count > 0 || userMessage.Attachments.Count > 0)
+        var validator = userMessage.Validate();
+        if(!validator.IsValid)
             return;
 
         var quote = new Quoted(userMessage);

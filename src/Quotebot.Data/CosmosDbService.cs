@@ -1,5 +1,6 @@
 ﻿using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Linq;
+using User = Quotebot.Domain.Entities.User;
 
 namespace Quotebot.Data
 {
@@ -35,7 +36,7 @@ namespace Quotebot.Data
             }
         }
 
-        public async Task<int> QuotesCountByUser(Entities.User user)
+        public async Task<int> QuotesCountByUser(User user)
         {
             return await _container.GetItemLinqQueryable<Quoted>()
                 .Where(item => item.Author.Mention == user.Mention)

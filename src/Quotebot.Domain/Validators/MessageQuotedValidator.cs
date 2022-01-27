@@ -2,7 +2,7 @@
 {
     public static class MessageQuotedValidator
     {
-        public static (bool IsValid, string? validationException) IsMessageValid(this IMessage message)
+        public static (bool IsValid, string? validationException) Validate(this IMessage message)
         {
             if (string.IsNullOrWhiteSpace(message.CleanContent))
             {

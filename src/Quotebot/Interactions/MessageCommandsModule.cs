@@ -28,7 +28,7 @@ public class MessageCommandsModule : InteractionModuleBase<SocketInteractionCont
             return;
         }
 
-        var validator = completeMessage.IsMessageValid();
+        var validator = completeMessage.Validate();
         if (!validator.IsValid)
         {
             await FollowupAsync(validator.validationException);

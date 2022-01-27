@@ -76,7 +76,7 @@ public class QuoteCommandModule : ModuleBase<SocketCommandContext>
             var completeMessage = await Context.GetCompleteMessage(Context.Message.ReferencedMessage);
 
 
-            var validator = completeMessage.IsMessageValid();
+            var validator = completeMessage.Validate();
             if (!validator.IsValid)
             {
                 await ReplyAsync(validator.validationException);

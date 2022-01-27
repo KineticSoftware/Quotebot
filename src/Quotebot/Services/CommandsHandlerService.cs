@@ -63,7 +63,7 @@ public class CommandsHandlerService
         if (reaction.User.GetValueOrDefault() is not SocketGuildUser socketGuildUser)
             return;
 
-        var validator = userMessage.IsMessageValid();
+        var validator = userMessage.Validate();
         if(!validator.IsValid)
             return;
 

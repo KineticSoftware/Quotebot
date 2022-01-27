@@ -6,6 +6,5 @@ global using Microsoft.Extensions.Logging;
 global using Quotebot;
 global using Quotebot.Configuration;
 global using Quotebot.Data;
-global using Quotebot.Data.Entities;
 global using Quotebot.Domain;
 global using Quotebot.Services;

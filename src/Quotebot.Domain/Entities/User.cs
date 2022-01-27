@@ -1,4 +1,4 @@
-﻿namespace Quotebot.Data.Entities;
+﻿namespace Quotebot.Domain.Entities;
 
 
 public class User

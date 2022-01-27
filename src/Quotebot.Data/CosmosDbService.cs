@@ -38,7 +38,7 @@ namespace Quotebot.Data
         public async Task<int> QuotesCountByUser(Entities.User user)
         {
             return await _container.GetItemLinqQueryable<Quoted>()
-                .Where(item => item.Author != null && item.Author.Id == user.Id)
+                .Where(item => item.Author.Mention == user.Mention)
                 .CountAsync();
         }
 

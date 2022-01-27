@@ -1,6 +1,8 @@
 ﻿using Discord.Commands;
 using System.Reflection;
 using System.Text;
+using Quotebot.Domain.Entities;
+using Quotebot.Domain.Validators;
 
 namespace Quotebot.Services;
 
@@ -57,28 +59,16 @@ public class CommandsHandlerService
 
         var channelMessage = await cachedChannelMessage.GetOrDownloadAsync();
         if (channelMessage is not IGuildChannel)
-        {
             return;
-        }
 
         if (reaction.User.GetValueOrDefault() is not SocketGuildUser socketGuildUser)
-        {
             return;
-        }
 
-        if (string.IsNullOrWhiteSpace(userMessage.CleanContent))
-        {
+        var validator = userMessage.IsMessageValid();
+        if(!validator.IsValid)
             return;
-        }
-
-        if (userMessage.Embeds.Count > 0 || userMessage.Attachments.Count > 0)
-        {
-            return;
-        }
 
         var quote = new Quoted(userMessage);
-        var discordUser = await channelMessage.GetUserAsync(quote.Author.Id);
-        quote.Author = new User(discordUser);
 
         var result = await _dataService.TryCreateQuoteRecord(quote);
         if (!result)

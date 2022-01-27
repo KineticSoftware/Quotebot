@@ -1,5 +1,7 @@
 ﻿using Discord.Interactions;
 using System.Text;
+using Quotebot.Domain.Entities;
+using Quotebot.Domain.Validators;
 
 namespace Quotebot.Interactions;
 
@@ -27,18 +29,13 @@ public class MessageCommandsModule : InteractionModuleBase<SocketInteractionCont
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(completeMessage.CleanContent))
+        var validator = completeMessage.IsMessageValid();
+        if (!validator.IsValid)
         {
-            await FollowupAsync($"No actual text was found. You can only quote text chat.");
+            await FollowupAsync(validator.validationException);
             return;
         }
-
-        if (message.Embeds.Count > 0 || message.Attachments.Count > 0)
-        {
-            await FollowupAsync($"An embed or an attachment was found. You can currently only quote text chat.");
-            return;
-        }
-
+        
         var quote = new Quoted(completeMessage);
         quote.Author = await Context.GetGuildUserName(completeMessage.Author);
 

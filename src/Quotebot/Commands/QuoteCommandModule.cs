@@ -1,6 +1,8 @@
 ﻿using Discord.Commands;
 using System.Reflection;
 using System.Text;
+using Quotebot.Domain.Entities;
+using Quotebot.Domain.Validators;
 
 // ReSharper disable StringLiteralTypo
 
@@ -74,15 +76,11 @@ public class QuoteCommandModule : ModuleBase<SocketCommandContext>
         {
             var completeMessage = await Context.GetCompleteMessage(Context.Message.ReferencedMessage);
 
-            if (string.IsNullOrWhiteSpace(completeMessage.CleanContent))
-            {
-                await ReplyAsync($"No actual text was found. You can only quote text chat.");
-                return;
-            }
 
-            if (completeMessage.Embeds.Count > 0 || completeMessage.Attachments.Count > 0)
+            var validator = completeMessage.IsMessageValid();
+            if (!validator.IsValid)
             {
-                await ReplyAsync($"An embed or an attachment was found. You can currently only quote text chat.");
+                await ReplyAsync(validator.validationException);
                 return;
             }
 

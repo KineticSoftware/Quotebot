@@ -7,4 +7,5 @@ global using Quotebot;
 global using Quotebot.Configuration;
 global using Quotebot.Data;
 global using Quotebot.Domain;
+global using Quotebot.Domain.Entities;
 global using Quotebot.Services;

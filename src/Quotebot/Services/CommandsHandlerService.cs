@@ -1,7 +1,6 @@
 ﻿using Discord.Commands;
 using System.Reflection;
 using System.Text;
-using Quotebot.Domain.Entities;
 using Quotebot.Domain.Validators;
 
 namespace Quotebot.Services;

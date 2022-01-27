@@ -1,6 +1,4 @@
-﻿using Discord;
-
-namespace Quotebot.Domain.Entities;
+﻿namespace Quotebot.Domain.Entities;
 
 public class Channel
 {

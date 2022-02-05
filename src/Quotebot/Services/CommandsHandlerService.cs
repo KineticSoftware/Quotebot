@@ -53,7 +53,7 @@ public class CommandsHandlerService
             return;
 
         var emotedValue = userMessage.Reactions.TryGetValue(BotEmotes.QuotedEmote(), out var emoteMetadata);
-        if (!emotedValue || emoteMetadata.ReactionCount > 1)
+        if (!emotedValue || emoteMetadata.ReactionCount > 1 || reaction.User.Value.IsBot)
             return;
 
         var channelMessage = await cachedChannelMessage.GetOrDownloadAsync();

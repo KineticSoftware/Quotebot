@@ -35,7 +35,9 @@ public class QuoteCommandModule : ModuleBase<SocketCommandContext>
     [Summary("Gets the bot's current version")]
     public async Task SayVersion()
     {
-        await ReplyAsync($"My current version is {Assembly.GetEntryAssembly()?.GetName().Version}");
+        Version version = Assembly.GetEntryAssembly()?.GetName().Version ??
+                          throw new Exception("Unable to determine entry assembly");
+        await ReplyAsync($"Version: `{version.Major}.{version.Minor}.{version.Build}.{version.Revision:00000}`");
     }
 
     [Command("find")]

@@ -1,4 +1,5 @@
-﻿using Microsoft.Azure.Cosmos;
+﻿using System;
+using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Linq;
 using User = Quotebot.Domain.Entities.User;
 
@@ -47,66 +48,94 @@ namespace Quotebot.Data
         {
             var iterator = await _container.GetItemQueryIterator<Quoted>().ReadNextAsync();
             if (!iterator.Any())
-            {
-                return $"No quotes found containing the text *{messageLike}* in this server.";
-            }
+                return BuildNoResultResponse(messageLike);
 
             using var setIterator = _container.GetItemLinqQueryable<Quoted>(allowSynchronousQueryExecution: true)
                                  .Where(record => record.CleanContent != null && record.CleanContent.Contains(messageLike, StringComparison.InvariantCultureIgnoreCase))
                                  .Take(take)
                                  .ToFeedIterator();
 
-            List<Quoted> results = new();
-
-            StringBuilder stringBuilder = new();
-            while (setIterator.HasMoreResults)
-            {
-                foreach (var quote in await setIterator.ReadNextAsync())
-                {
-                    stringBuilder
-                        .AppendLine()
-                        .AppendLine($"{quote.CreatedAt.ToString("d")} - **{quote.Author?.Nickname ?? quote.Author?.Username}** in #{quote.Channel.Name} : {quote.Content}");
-                }
-            }
-
-            var result = stringBuilder.ToString();
-            if(string.IsNullOrWhiteSpace(result))
-                return $"No quotes found containing the text *{messageLike}* in this server.";
-
-            return result;
+            return await BuildResponseAsync(setIterator,
+                (quote) => $"{BuildResponsePrefix(quote)} in #{quote.Channel.Name} : {quote.Content}",
+                messageLike);
         }
 
         public async Task<string> FindByQuote(string messageLike, string channelName, int take = 5)
         {
             var iterator = await _container.GetItemQueryIterator<Quoted>().ReadNextAsync();
             if(iterator.All(item => item.Channel.Name != channelName))
-            {
-                return $"No quotes found containing the text *{messageLike}* in this channel.";
-            }
+                return BuildNoResultResponse(messageLike);
 
             using var setIterator = _container.GetItemLinqQueryable<Quoted>(true)
                                  .Where(record => record.Channel.Name == channelName && record.CleanContent != null && record.CleanContent.Contains(messageLike, StringComparison.InvariantCultureIgnoreCase))
                                  .Take(take)
                                  .ToFeedIterator();
-            
-            List<Quoted> results = new();
 
+            return await BuildResponseAsync(setIterator,
+                (quote) => $"{BuildResponsePrefix(quote)} : {quote.Content}",
+                messageLike);
+        }
+
+        public string GetRandomQuotesByUser(User user, int take = 1)
+        {
+            var quotes = _container.GetItemLinqQueryable<Quoted>()
+                .Where(item => item.Author.Mention == user.Mention)
+                .ToArray();
+            return AggregateRandomQuotes(quotes, take);
+        }
+
+        public string GetRandomQuotesByChannel(string channelName, int take = 1)
+        {
+            var quotes = _container.GetItemLinqQueryable<Quoted>()
+                .Where(item => item.Channel.Name == channelName)
+                .ToArray();
+            return AggregateRandomQuotes(quotes, take);
+        }
+
+        private string AggregateRandomQuotes(Quoted[] quotes, int take)
+        {
+            Random rand = new();
+            var results = new Quoted[take];
+            for (var i = 0; i < take; i++)
+                results[i] = quotes[rand.Next(quotes.Length - 1)];
+            return BuildResponse(results, (quote) => $"{BuildResponsePrefix(quote)} : {quote.Content}", string.Empty);
+        }
+
+        private static async Task<string> BuildResponseAsync(FeedIterator<Quoted> setIterator, Func<Quoted, string> successEntryBuilder, string messageLike)
+        {
             StringBuilder stringBuilder = new();
             while (setIterator.HasMoreResults)
-            {
                 foreach (var quote in await setIterator.ReadNextAsync())
-                {
                     stringBuilder
                         .AppendLine()
-                        .AppendLine($"{quote.CreatedAt.ToString("d")} - **{quote.Author?.Nickname ?? quote.Author?.Username}** : {quote.Content}");
-                }
-            }
+                        .AppendLine(successEntryBuilder(quote));
 
-            var result = stringBuilder.ToString();
+            var result = $"{stringBuilder}";
             if (string.IsNullOrWhiteSpace(result))
-                return $"No quotes found containing the text *{messageLike}* in this channel.";
+                return BuildNoResultResponse(messageLike);
 
             return result;
         }
+
+        private static string BuildResponse(IEnumerable<Quoted> resultSet, Func<Quoted, string> successEntryBuilder, string messageLike)
+        {
+            StringBuilder stringBuilder = new();
+            foreach (var quote in resultSet)
+                stringBuilder
+                    .AppendLine()
+                    .AppendLine(successEntryBuilder(quote));
+
+            var result = $"{stringBuilder}";
+            if (string.IsNullOrWhiteSpace(result))
+                return BuildNoResultResponse(messageLike);
+
+            return result;
+        }
+
+        private static string BuildResponsePrefix(Quoted? quote) => 
+            $"{quote?.CreatedAt.ToString("d") ?? string.Empty} - **{quote?.Author?.Nickname ?? quote?.Author?.Username ?? string.Empty}**";
+
+        private static string BuildNoResultResponse(string messageLike) => 
+            $"No quotes found containing the text *{messageLike}* in this channel.";
     }
 }

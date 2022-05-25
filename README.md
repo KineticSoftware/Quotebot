@@ -25,5 +25,6 @@ CONerd Quotebot is this idea that any message spoken in a Discord server could b
 - [x] Make quotebot add an emoji to quoted text
 - [ ] !quote displays a random quote
 - [ ] Search quotes by username
+- [ ] Autosuggest find quote by text or username
 - [ ] Add Application Insights or another type of application telemetry.
 - [ ] (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧

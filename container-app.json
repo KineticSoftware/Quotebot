@@ -10,9 +10,9 @@
             "type": "string",
             "defaultValue": "eastus"
         },
-        "kubeEnvironmentId": {
+        "containerAppEnvName": {
             "type": "string",
-            "defaultValue": "/subscriptions/aa5821af-08a6-4708-82df-14b56118350a/resourceGroups/CoNerd/providers/Microsoft.Web/kubeEnvironments/Production-East-US"
+            "defaultValue": "Production-East-US"
         },
         "conerdazurecrio-conerd-pwd": {
             "type": "string"
@@ -42,7 +42,7 @@
             "name": "[parameters('name')]",
             "location": "[parameters('location')]",
             "properties": {
-                "kubeEnvironmentId": "[parameters('kubeEnvironmentId')]",
+                "managedEnvironmentId": "[resourceId('Microsoft.App/managedEnvironments', parameters('containerAppEnvName'))]",
                 "configuration": {
                     "activeRevisionsMode": "Single",
                     "secrets": [

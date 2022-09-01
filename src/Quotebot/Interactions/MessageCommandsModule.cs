@@ -41,7 +41,7 @@ public class MessageCommandsModule : InteractionModuleBase<SocketInteractionCont
         var result = await _dataService.TryCreateQuoteRecord(quote);
         if (!result)
         {
-            await FollowupAsync($"This quote was already added.");
+            await FollowupAsync($"{Context.User.Mention} this quote was added previously.");
             return;
         }
 

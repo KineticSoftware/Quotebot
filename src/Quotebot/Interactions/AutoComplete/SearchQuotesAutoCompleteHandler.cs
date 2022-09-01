@@ -21,12 +21,13 @@ class SearchQuotesAutoCompleteHandler : AutocompleteHandler
 
 
         List<AutocompleteResult> suggestions = new();
-        var rows = await dataService.FindQuotesByUserInChannel(user, channel, query);
-        foreach (var row in rows)
+        IEnumerable<Quoted> quotes = await dataService.FindQuotesByUserInChannel(user, channel, query);
+        foreach (var quote in quotes)
         {
-            suggestions.Add(new AutocompleteResult(row.CleanContent, row.Content));
+            suggestions.Add(new AutocompleteResult($"{quote.CleanContent}", $"{quote.CreatedAt:d} - **{quote.Author.Nickname ?? quote.Author.Username}** : {quote.Content}"));
         }
 
-        return await Task.FromResult(AutocompletionResult.FromSuccess(suggestions));
+        // max - 25 suggestions at a time (API limit)
+        return AutocompletionResult.FromSuccess(suggestions.Take(25));
     }
 }

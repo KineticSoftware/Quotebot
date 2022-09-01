@@ -39,8 +39,8 @@ public static class ServiceCollectionExtensions
                 logger.LogInformation("Connecting to database...");
                 logger.LogTrace("CreateDatabaseIfNotExistsAsync");
 
-                    // purposely doing this synchronous. It's required to boostrap the bot. 
-                    DatabaseResponse databaseResponse = cosmosClient.CreateDatabaseIfNotExistsAsync(DataConstants.DatabaseId).Result;
+                // purposely doing this synchronous. It's required to boostrap the bot. 
+                DatabaseResponse databaseResponse = cosmosClient.CreateDatabaseIfNotExistsAsync(DataConstants.DatabaseId).Result;
 
                 string output = databaseResponse.StatusCode switch
                 {
@@ -51,8 +51,8 @@ public static class ServiceCollectionExtensions
 
                 logger.LogDebug(output);
 
-                    // The response from Azure Cosmos
-                    DatabaseProperties properties = databaseResponse;
+                // The response from Azure Cosmos
+                DatabaseProperties properties = databaseResponse;
 
                 logger.LogDebug($"Database resource id: {properties.Id} and last modified: {properties.LastModified}");
 
@@ -60,9 +60,9 @@ public static class ServiceCollectionExtensions
 
                 if (configuration.AlwaysRebuildContainer)
                 {
-                    logger.LogTrace("DeleteContainerStreamAsync");
+                    logger.LogCritical("DeleteContainerStreamAsync");
                     using var deletionResult = database.GetContainer(DataConstants.ContainerId).DeleteContainerStreamAsync().Result;
-                    logger.LogTrace($"DeleteContainerStreamAsync {deletionResult.IsSuccessStatusCode}");
+                    logger.LogCritical($"DeleteContainerStreamAsync {deletionResult.IsSuccessStatusCode}");
                 }
 
                 return database;

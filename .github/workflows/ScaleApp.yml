@@ -15,6 +15,10 @@ jobs:
   Scale:
     runs-on: ubuntu-latest
     steps:
+      - name: Echo Parameters
+        run: |
+          echo "container-version: + ${{ github.event.inputs.containerVersion }}"
+          echo "min-replicas: ${{ github.event.inputs.minReplicas }}"
       - name: Checkout 
         uses: actions/checkout@v2
           

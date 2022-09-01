@@ -12,13 +12,13 @@ public class CommandsHandlerService
     private readonly IServiceProvider _serviceProvider;
     private readonly IDataService _dataService;
 
-    public CommandsHandlerService(IServiceProvider serviceProvider, IDataService dataService)
+    public CommandsHandlerService(IServiceProvider serviceProvider, IDataService dataService, CommandService commandService, DiscordSocketClient client)
     {
         _serviceProvider = serviceProvider;
         _dataService = dataService;
 
-        _commandService = _serviceProvider.GetRequiredService<CommandService>();
-        _client = _serviceProvider.GetRequiredService<DiscordSocketClient>();
+        _commandService = commandService;
+        _client = client;
 
         _commandService.CommandExecuted += CommandExecutedAsync;
         _client.MessageReceived += MessageReceivedAsync;
@@ -72,7 +72,7 @@ public class CommandsHandlerService
         var result = await _dataService.TryCreateQuoteRecord(quote);
         if (!result)
         {
-            await userMessage.ReplyAsync($"This quote was already added.");
+            await userMessage.ReplyAsync($"{socketGuildUser.Mention} this quote was added previously.");
             return;
         }
         

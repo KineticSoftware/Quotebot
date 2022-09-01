@@ -27,67 +27,74 @@ public class InteractionsHandlerService
         _interactionService.ComponentCommandExecuted += ComponentCommandExecuted;
     }
 
-    private async Task ComponentCommandExecuted(ComponentCommandInfo commandInfo, IInteractionContext context, IResult result)
+    private Task ComponentCommandExecuted(ComponentCommandInfo commandInfo, IInteractionContext context, IResult result)
     {
-        if (!result.IsSuccess)
+        if (result.IsSuccess) 
+            return Task.CompletedTask;
+
+        switch (result.Error)
         {
-            switch (result.Error)
-            {
-                case InteractionCommandError.UnmetPrecondition:
-                case InteractionCommandError.UnknownCommand:
-                case InteractionCommandError.BadArgs:
-                case InteractionCommandError.Exception:
-                case InteractionCommandError.Unsuccessful:
-                    Console.WriteLine($"{result.Error} {result.ErrorReason}");
-                    break;
-                default:
-                    break;
-            }
+            case InteractionCommandError.UnmetPrecondition:
+            case InteractionCommandError.UnknownCommand:
+            case InteractionCommandError.BadArgs:
+            case InteractionCommandError.Exception:
+            case InteractionCommandError.ConvertFailed:
+            case InteractionCommandError.ParseFailed:
+            case InteractionCommandError.Unsuccessful:
+                Console.WriteLine($"{result.Error} {result.ErrorReason}");
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
-        await Task.CompletedTask;
+
+        return Task.CompletedTask;
     }
 
-    private async Task ContextCommandExecuted(ContextCommandInfo contextInfo, IInteractionContext context, IResult result)
+    private Task ContextCommandExecuted(ContextCommandInfo contextInfo, IInteractionContext context, IResult result)
     {
         // Message Commands
-        if (!result.IsSuccess)
+        if (result.IsSuccess) 
+            return Task.CompletedTask;
+
+        switch (result.Error!)
         {
-            switch (result.Error)
-            {
-                case InteractionCommandError.UnmetPrecondition:
-                case InteractionCommandError.UnknownCommand:
-                case InteractionCommandError.BadArgs:
-                case InteractionCommandError.Exception:
-                case InteractionCommandError.Unsuccessful:
-                    Console.WriteLine($"{result.Error} {result.ErrorReason}");
-                    break;
-                default:
-                    break;
-            }
+            case InteractionCommandError.UnmetPrecondition:
+            case InteractionCommandError.UnknownCommand:
+            case InteractionCommandError.BadArgs:
+            case InteractionCommandError.Exception:
+            case InteractionCommandError.ConvertFailed:
+            case InteractionCommandError.ParseFailed:
+            case InteractionCommandError.Unsuccessful:
+                Console.WriteLine($"{result.Error} {result.ErrorReason}");
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
 
-        await Task.CompletedTask;
+        return Task.CompletedTask;
     }
 
-    private async Task SlashCommandExecuted(SlashCommandInfo slashInfo, IInteractionContext context, IResult result)
+    private Task SlashCommandExecuted(SlashCommandInfo slashInfo, IInteractionContext context, IResult result)
     {
-        if (!result.IsSuccess)
+        if (result.IsSuccess) 
+            return Task.CompletedTask;
+
+        switch (result.Error)
         {
-            switch (result.Error)
-            {
-                case InteractionCommandError.UnmetPrecondition:
-                case InteractionCommandError.UnknownCommand:
-                case InteractionCommandError.BadArgs:
-                case InteractionCommandError.Exception:
-                case InteractionCommandError.Unsuccessful:
-                    Console.WriteLine($"{result.Error} {result.ErrorReason}");
-                    break;
-                default:
-                    break;
-            }
+            case InteractionCommandError.UnmetPrecondition:
+            case InteractionCommandError.UnknownCommand:
+            case InteractionCommandError.BadArgs:
+            case InteractionCommandError.Exception:
+            case InteractionCommandError.ConvertFailed:
+            case InteractionCommandError.ParseFailed:
+            case InteractionCommandError.Unsuccessful:
+                Console.WriteLine($"{result.Error} {result.ErrorReason}");
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
         }
 
-        await Task.CompletedTask;
+        return Task.CompletedTask;
     }
 
     private async Task InteractionCreated(SocketInteraction socketInteraction)

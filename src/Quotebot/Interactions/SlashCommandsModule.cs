@@ -1,4 +1,7 @@
 ﻿using Discord.Interactions;
+using Quotebot.Interactions.AutoComplete;
+using System.Text.Json;
+// ReSharper disable StringLiteralTypo
 
 namespace Quotebot.Interactions;
 
@@ -11,7 +14,7 @@ public class SlashCommandsModule : InteractionModuleBase<SocketInteractionContex
         _dataService = dataService;
     }
 
-    [SlashCommand("findquote", "Finds a quote")]
+    [SlashCommand("findquote-legacy", "Finds a quote")]
     public async Task FindQuote(string text, int limit = 5)
     {
         await DeferAsync();
@@ -29,5 +32,17 @@ public class SlashCommandsModule : InteractionModuleBase<SocketInteractionContex
         var results = await _dataService.FindByQuoteInServer(text, limit);
 
         await FollowupAsync(results);
+    }
+
+    
+    [SlashCommand("findquote", "Search for a specific quote by user")]
+    public async Task FindQuoteBeta(
+        [Summary("user", "The user to search")]
+         IUser user,
+        [Summary("query", "The query for the item to search"),
+         Autocomplete(typeof(SearchQuotesAutoCompleteHandler))]
+        string quote)
+    {
+        await RespondAsync(quote);
     }
 }

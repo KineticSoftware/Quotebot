@@ -3,14 +3,12 @@ using System.Reflection;
 using System.Text;
 using Quotebot.Domain.Validators;
 
-// ReSharper disable StringLiteralTypo
-
 namespace Quotebot.Commands;
 
 [Group("quote")]
 public class QuoteCommandModule : ModuleBase<SocketCommandContext>
 {
-    IDataService _dataService;
+    readonly IDataService _dataService;
 
     public QuoteCommandModule(IDataService dataService)
     {
@@ -37,7 +35,7 @@ public class QuoteCommandModule : ModuleBase<SocketCommandContext>
     {
         Version version = Assembly.GetEntryAssembly()?.GetName().Version ??
                           throw new Exception("Unable to determine entry assembly");
-        await ReplyAsync($"Version: `{version.Major}.{version.Minor}.{version.Build:000#}.{version.Revision}`");
+		await ReplyAsync($"Version: `{version.Major}.{version.Minor}.{version.Build:000#}.{version.Revision:00000}`");
     }
 
     [Command("find")]
@@ -91,7 +89,7 @@ public class QuoteCommandModule : ModuleBase<SocketCommandContext>
             var result = await _dataService.TryCreateQuoteRecord(quote);
             if (!result)
             {
-                await ReplyAsync($"This quote was already added.");
+                await ReplyAsync($"{Context.User.Mention} this quote was added previously.");
                 return;
             }
 

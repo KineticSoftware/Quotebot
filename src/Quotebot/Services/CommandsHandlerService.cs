@@ -72,7 +72,7 @@ public class CommandsHandlerService
         var result = await _dataService.TryCreateQuoteRecord(quote);
         if (!result)
         {
-            await userMessage.ReplyAsync($"{socketGuildUser.Nickname} this quote was added previously.");
+            await userMessage.ReplyAsync($"{socketGuildUser.Mention} this quote was added previously.");
             return;
         }
         

@@ -1,6 +1,7 @@
 ﻿using Discord;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Azure.Cosmos.Linq;
+using Quotebot.Domain.Entities;
 using User = Quotebot.Domain.Entities.User;
 
 namespace Quotebot.Data
@@ -94,6 +95,22 @@ namespace Quotebot.Data
             return resultString;
         }
 
+        public async Task<Quoted> FindQuoteById(string id)
+        {
+            var query = _container.GetItemQueryIterator<Quoted>(new QueryDefinition(
+                $"SELECT * FROM c WHERE c.id = '{id}'"), null, new QueryRequestOptions() { MaxItemCount = 1 });
+
+            while (query.HasMoreResults)
+            {
+                foreach (var quote in await query.ReadNextAsync())
+                {
+                    return quote;
+                }
+            }
+
+            return new();
+        }
+
         public async Task<string> FindByQuote(string messageLike, string channelName, int take = 5)
         {
             IEnumerable<Quoted> results = await FindQuotesByChannel(messageLike, channelName, take);
@@ -151,26 +168,13 @@ namespace Quotebot.Data
 
         public async Task<IEnumerable<Quoted>> FindQuotesByChannel(string messageLike, string channelName, int take = 5)
         {
-            var iterator = await _container.GetItemQueryIterator<Quoted>()
-                .ReadNextAsync()
-                .ConfigureAwait(false);
-
-            if (!iterator.Any())
-                return Enumerable.Empty<Quoted>();
-
-            using var setIterator = _container.GetItemLinqQueryable<Quoted>(true)
-                .Where(record => 
-                    record.Channel.Name == channelName && 
-                    record.CleanContent != null &&
-                    record.CleanContent.Contains(messageLike, StringComparison.InvariantCultureIgnoreCase))
-                .Take(take)
-                .ToFeedIterator();
+            var query = _container.GetItemQueryIterator<Quoted>(new QueryDefinition(
+                $"SELECT * FROM c WHERE c.Channel.Name = '{channelName}' AND CONTAINS(c.CleanContent, \"{messageLike}\", true )"), null, new QueryRequestOptions() { MaxItemCount = take});
 
             List<Quoted> results = new();
-
-            while (setIterator.HasMoreResults)
+            while (query.HasMoreResults)
             {
-                foreach (var quote in await setIterator.ReadNextAsync().ConfigureAwait(false))
+                foreach (var quote in await query.ReadNextAsync())
                 {
                     results.Add(quote);
                 }
@@ -179,7 +183,23 @@ namespace Quotebot.Data
             return results;
         }
 
-        public async Task<IEnumerable<Quoted>> FindQuotesByUserInChannel(IUser user, string channelName, string messageLike)
+        // saving this for a rainy day
+        //public async IAsyncEnumerable<Quoted> FindQuotesByChannelAsync(string messageLike, string channelName, int take = 5)
+        //{
+        //    var query = _container.GetItemQueryIterator<Quoted>(new QueryDefinition(
+        //        $"SELECT * FROM c WHERE c.Channel.Name = '{channelName}' AND CONTAINS(c.CleanContent, \"{messageLike}\", true )"),
+        //        null, new QueryRequestOptions() { MaxItemCount = take });
+
+        //    while (query.HasMoreResults)
+        //    {
+        //        foreach (var record in await query.ReadNextAsync())
+        //        {
+        //            yield return record;
+        //        }
+        //    }
+        //}
+
+        public async Task<IEnumerable<Quoted>> FindQuotesByUserInChannel(IUser user, string channelName, string messageLike, int take = 5)
         {
             var iterator = await _container.GetItemQueryIterator<Quoted>()
                 .ReadNextAsync()
@@ -197,7 +217,7 @@ namespace Quotebot.Data
                     
                     record.CleanContent != null &&
                     record.CleanContent.Contains(messageLike, StringComparison.InvariantCultureIgnoreCase))
-                .Take(5)
+                .Take(take)
                 .ToFeedIterator();
 
             List<Quoted> results = new();

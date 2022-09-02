@@ -34,15 +34,20 @@ public class SlashCommandsModule : InteractionModuleBase<SocketInteractionContex
         await FollowupAsync(results);
     }
 
-    
     [SlashCommand("findquote", "Search for a specific quote by user")]
     public async Task FindQuoteBeta(
-        [Summary("user", "The user to search")]
-         IUser user,
+        
         [Summary("query", "The query for the item to search"),
          Autocomplete(typeof(SearchQuotesAutoCompleteHandler))]
-        string quote)
+        string id)
     {
-        await RespondAsync(quote);
+        if (!long.TryParse(id, out _))
+        {
+            await RespondAsync($"Chill out {Context.User.Mention}, you're going too fast for me. You need to pick from a list of quotes you want to find and I'm not done searching yet.");
+        }
+        
+        await DeferAsync();
+        var quote = await _dataService.FindQuoteById(id);
+        await FollowupAsync($"{quote.CreatedAt:d} - **{quote.Author.Nickname ?? quote.Author.Username}** : {quote.Content}");
     }
 }

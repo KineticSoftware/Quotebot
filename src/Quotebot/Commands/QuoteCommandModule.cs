@@ -35,7 +35,7 @@ public class QuoteCommandModule : ModuleBase<SocketCommandContext>
     {
         Version version = Assembly.GetEntryAssembly()?.GetName().Version ??
                           throw new Exception("Unable to determine entry assembly");
-		await ReplyAsync($"Version: `{version.Major}.{version.Minor}.{version.Build:000#}.{version.Revision:00000}`");
+		await ReplyAsync($"Version: `{version.Major}.{version.Minor}.{version.Build:000#}.{version.Revision}`");
     }
 
     [Command("find")]

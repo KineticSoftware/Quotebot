@@ -15,19 +15,25 @@ class SearchQuotesAutoCompleteHandler : AutocompleteHandler
         var channel = interaction.Channel.Name;
         ulong userId = Convert.ToUInt64(interaction.Data.Options.FirstOrDefault(x => x.Name == "user")?.Value);
         
-        var user = await context.Guild.GetUserAsync(userId);
-
         var dataService = services.GetRequiredService<IDataService>();
 
 
         List<AutocompleteResult> suggestions = new();
-        IEnumerable<Quoted> quotes = await dataService.FindQuotesByUserInChannel(user, channel, query);
-        foreach (var quote in quotes)
-        {
-            suggestions.Add(new AutocompleteResult($"{quote.CleanContent}", $"{quote.CreatedAt:d} - **{quote.Author.Nickname ?? quote.Author.Username}** : {quote.Content}"));
-        }
 
         // max - 25 suggestions at a time (API limit)
+        var quotes = await dataService.FindQuotesByChannel(query, channel, 25);
+        foreach (var quote in quotes)
+        {
+            string title = quote.CleanContent switch
+            {
+                {Length: > 100} value => value.Substring(0, 90),
+                { } value => value,
+                _ => throw new ArgumentOutOfRangeException()
+            };
+
+            suggestions.Add(new AutocompleteResult(title, quote.Id));
+        }
+
         return AutocompletionResult.FromSuccess(suggestions.Take(25));
     }
 }

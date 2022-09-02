@@ -14,9 +14,13 @@ public interface IDataService
 
     Task<string> FindByQuoteInServer(string messageLike, int take = 5);
 
+    Task<Quoted> FindQuoteById(string id);
+
     Task<IEnumerable<Quoted>> FindQuotesInServer(string messageLike, int take = 5);
 
     Task<IEnumerable<Quoted>> FindQuotesByChannel(string messageLike, string channelName, int take = 5);
 
-    Task<IEnumerable<Quoted>> FindQuotesByUserInChannel(IUser user, string channelName, string messageLike);
+    //IAsyncEnumerable<Quoted> FindQuotesByChannelAsync(string messageLike, string channelName, int take = 5);
+
+    Task<IEnumerable<Quoted>> FindQuotesByUserInChannel(IUser user, string channelName, string messageLike, int take = 5);
 }

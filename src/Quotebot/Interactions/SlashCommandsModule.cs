@@ -15,7 +15,7 @@ public class SlashCommandsModule : InteractionModuleBase<SocketInteractionContex
     }
 
     [SlashCommand("findquote-legacy", "Finds a quote")]
-    public async Task FindQuote(string text, int limit = 5)
+    public async Task FindQuoteLegacy(string text, int limit = 5)
     {
         await DeferAsync();
 
@@ -35,19 +35,23 @@ public class SlashCommandsModule : InteractionModuleBase<SocketInteractionContex
     }
 
     [SlashCommand("findquote", "Search for a specific quote by user")]
-    public async Task FindQuoteBeta(
-        
+    public async Task FindQuote(
+
         [Summary("query", "The query for the item to search"),
          Autocomplete(typeof(SearchQuotesAutoCompleteHandler))]
-        string id)
+        string query)
     {
-        if (!long.TryParse(id, out _))
+        // it's not super obvious but SearchQuotesAutoCompleteHandler should return an id of the picked quote. 
+        if (!long.TryParse(query, out _))
         {
-            await RespondAsync($"Chill out {Context.User.Mention}, you're going too fast for me. You need to pick from a list of quotes you want to find and I'm not done searching yet.");
+            await RespondAsync(
+                $"That quote doesn't seem to exist {Context.User.Mention}. You need to pick from the suggestions of saved quotes.");
+            return;
         }
-        
+
         await DeferAsync();
-        var quote = await _dataService.FindQuoteById(id);
-        await FollowupAsync($"{quote.CreatedAt:d} - **{quote.Author.Nickname ?? quote.Author.Username}** : {quote.Content}");
+        var quote = await _dataService.FindQuoteById(query);
+        await FollowupAsync(
+            $"{quote.CreatedAt:d} - **{quote.Author.Nickname ?? quote.Author.Username}** : {quote.Content}");
     }
 }

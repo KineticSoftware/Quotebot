@@ -48,28 +48,6 @@ namespace Quotebot.Data
                 .ConfigureAwait(false);
         }
 
-        // broken
-        //public async Task<(bool Success, Quoted Quoted)> FindById(string messageId)
-        //{
-        //    using var setIterator = _container.GetItemLinqQueryable<Quoted>(allowSynchronousQueryExecution: true)
-        //        .Where(record =>
-        //            record.Id == messageId)
-        //        .Take(5)
-        //        .ToFeedIterator();
-
-        //    List<Quoted> results = new();
-
-        //    while (setIterator.HasMoreResults)
-        //    {
-        //        foreach (var quote in await setIterator.ReadNextAsync().ConfigureAwait(false))
-        //        {
-        //           return (true, quote);
-        //        }
-        //    }
-
-        //    return (false, new Quoted());
-        //}
-
         public async Task<string> FindByQuoteInServer(string messageLike, int take = 5)
         {
             var results = await FindQuotesInServer(messageLike, take);
@@ -150,6 +128,7 @@ namespace Quotebot.Data
                 .Where(record =>
                     record.CleanContent != null &&
                     record.CleanContent.Contains(messageLike, StringComparison.InvariantCultureIgnoreCase))
+                .OrderByDescending(record => record.Timestamp)
                 .Take(take)
                 .ToFeedIterator();
 
@@ -169,7 +148,7 @@ namespace Quotebot.Data
         public async Task<IEnumerable<Quoted>> FindQuotesByChannel(string messageLike, string channelName, int take = 5)
         {
             var query = _container.GetItemQueryIterator<Quoted>(new QueryDefinition(
-                $"SELECT * FROM c WHERE c.Channel.Name = '{channelName}' AND CONTAINS(c.CleanContent, \"{messageLike}\", true )"), null, new QueryRequestOptions() { MaxItemCount = take});
+                $"SELECT * FROM c WHERE c.Channel.Name = '{channelName}' AND CONTAINS(c.CleanContent, \"{messageLike}\", true ) ORDER BY c.Timestamp DESC"), null, new QueryRequestOptions() { MaxItemCount = take});
 
             List<Quoted> results = new();
             while (query.HasMoreResults)
@@ -210,13 +189,12 @@ namespace Quotebot.Data
                 return Enumerable.Empty<Quoted>();
             }
 
-            //record.Channel.Name == channelName &&
             using var setIterator = _container.GetItemLinqQueryable<Quoted>(allowSynchronousQueryExecution: true)
                 .Where(record =>
                     record.Author.Mention == user.Mention &&
-                    
                     record.CleanContent != null &&
                     record.CleanContent.Contains(messageLike, StringComparison.InvariantCultureIgnoreCase))
+                .OrderByDescending(record => record.Timestamp)
                 .Take(take)
                 .ToFeedIterator();
 

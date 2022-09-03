@@ -184,20 +184,20 @@ namespace Quotebot.Data
         }
 
         // saving this for a rainy day
-        //public async IAsyncEnumerable<Quoted> FindQuotesByChannelAsync(string messageLike, string channelName, int take = 5)
-        //{
-        //    var query = _container.GetItemQueryIterator<Quoted>(new QueryDefinition(
-        //        $"SELECT * FROM c WHERE c.Channel.Name = '{channelName}' AND CONTAINS(c.CleanContent, \"{messageLike}\", true )"),
-        //        null, new QueryRequestOptions() { MaxItemCount = take });
+        public async IAsyncEnumerable<Quoted> FindQuotesByChannelAsync(string messageLike, string channelName, int take = 5)
+        {
+            var query = _container.GetItemQueryIterator<Quoted>(new QueryDefinition(
+                $"SELECT * FROM c WHERE c.Channel.Name = '{channelName}' AND CONTAINS(c.CleanContent, \"{messageLike}\", true ) ORDER BY c.Timestamp DESC"),
+                null, new QueryRequestOptions() { MaxItemCount = take });
 
-        //    while (query.HasMoreResults)
-        //    {
-        //        foreach (var record in await query.ReadNextAsync())
-        //        {
-        //            yield return record;
-        //        }
-        //    }
-        //}
+            while (query.HasMoreResults)
+            {
+                foreach (var record in await query.ReadNextAsync())
+                {
+                    yield return record;
+                }
+            }
+        }
 
         public async Task<IEnumerable<Quoted>> FindQuotesByUserInChannel(IUser user, string channelName, string messageLike, int take = 5)
         {

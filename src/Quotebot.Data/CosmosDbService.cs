@@ -162,7 +162,6 @@ namespace Quotebot.Data
             return results;
         }
 
-        // saving this for a rainy day
         public async IAsyncEnumerable<Quoted> FindQuotesByChannelAsync(string messageLike, string channelName, int take = 5)
         {
             var query = _container.GetItemQueryIterator<Quoted>(new QueryDefinition(

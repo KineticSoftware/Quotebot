@@ -20,7 +20,7 @@ public interface IDataService
 
     Task<IEnumerable<Quoted>> FindQuotesByChannel(string messageLike, string channelName, int take = 5);
 
-    //IAsyncEnumerable<Quoted> FindQuotesByChannelAsync(string messageLike, string channelName, int take = 5);
+    IAsyncEnumerable<Quoted> FindQuotesByChannelAsync(string messageLike, string channelName, int take = 5);
 
     Task<IEnumerable<Quoted>> FindQuotesByUserInChannel(IUser user, string channelName, string messageLike, int take = 5);
 }

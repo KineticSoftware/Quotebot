@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Hosting;
+﻿using Azure.Identity;
+using Microsoft.Extensions.Hosting;
 
 
 try
@@ -13,8 +14,8 @@ try
             {
                 string apiClient = configuration["ApiClientId"];
                 string apiSecret = configuration["ApiSecret"];
-                string keyUrl = configuration["TokenSecretUri"];
-                configBuilder.AddAzureKeyVault(keyUrl, apiClient, apiSecret);
+                Uri keyUrl = new Uri(configuration["TokenSecretUri"]);
+                configBuilder.AddAzureKeyVault(keyUrl, new ClientSecretCredential("26789f3b-4e12-4923-81d4-db4519203698", apiClient, apiSecret));
             }
         })
         .ConfigureLogging(hostBuilder =>

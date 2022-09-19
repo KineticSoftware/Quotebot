@@ -184,36 +184,17 @@ public class CosmosDbService : IDataService
         }
     }
 
-    public async Task<IEnumerable<Quoted>> FindQuotesByUserInChannel(IUser user, string channelName, string messageLike, int take = 5)
     {
-        var iterator = await _container.GetItemQueryIterator<Quoted>()
-            .ReadNextAsync()
-            .ConfigureAwait(false);
 
-        if (!iterator.Any())
         {
-            return Enumerable.Empty<Quoted>();
         }
 
-        using var setIterator = _container.GetItemLinqQueryable<Quoted>(allowSynchronousQueryExecution: true)
-            .Where(record =>
-                record.Author.Mention == user.Mention &&
-                record.CleanContent != null &&
-                record.CleanContent.Contains(messageLike, StringComparison.InvariantCultureIgnoreCase))
-            .OrderByDescending(record => record.Timestamp)
-            .Take(take)
-            .ToFeedIterator();
 
-        List<Quoted> results = new();
 
-        while (setIterator.HasMoreResults)
         {
-            foreach (var quote in await setIterator.ReadNextAsync().ConfigureAwait(false))
             {
-                results.Add(quote);
             }
         }
 
-        return results;
     }
 }

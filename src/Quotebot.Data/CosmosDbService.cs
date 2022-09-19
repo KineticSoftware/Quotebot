@@ -75,8 +75,9 @@ namespace Quotebot.Data
 
         public async Task<Quoted> FindQuoteById(string id)
         {
-            var query = _container.GetItemQueryIterator<Quoted>(new QueryDefinition(
-                $"SELECT * FROM c WHERE c.id = '{id}'"), null, new QueryRequestOptions() { MaxItemCount = 1 });
+            QueryDefinition queryDefinition = new QueryDefinition("SELECT * FROM c WHERE c.id = @id")
+                .WithParameter("@id", id);
+            var query = _container.GetItemQueryIterator<Quoted>(queryDefinition, null, new QueryRequestOptions() { MaxItemCount = 1 });
 
             while (query.HasMoreResults)
             {
@@ -147,8 +148,12 @@ namespace Quotebot.Data
 
         public async Task<IEnumerable<Quoted>> FindQuotesByChannel(string messageLike, string channelName, int take = 5)
         {
-            var query = _container.GetItemQueryIterator<Quoted>(new QueryDefinition(
-                $"SELECT * FROM c WHERE c.Channel.Name = '{channelName}' AND CONTAINS(c.CleanContent, \"{messageLike}\", true ) ORDER BY c.Timestamp DESC"), null, new QueryRequestOptions() { MaxItemCount = take});
+            QueryDefinition queryDefinition =
+                new QueryDefinition(
+                        "SELECT * FROM c WHERE c.Channel.Name = @channelName AND CONTAINS(c.CleanContent, @messageLike, true ) ORDER BY c.Timestamp DESC")
+                    .WithParameter("@channelName", channelName)
+                    .WithParameter("@messageLike", messageLike);
+            var query = _container.GetItemQueryIterator<Quoted>(queryDefinition, null, new QueryRequestOptions() { MaxItemCount = take});
 
             List<Quoted> results = new();
             while (query.HasMoreResults)
@@ -164,9 +169,12 @@ namespace Quotebot.Data
 
         public async IAsyncEnumerable<Quoted> FindQuotesByChannelAsync(string messageLike, string channelName, int take = 5)
         {
-            var query = _container.GetItemQueryIterator<Quoted>(new QueryDefinition(
-                $"SELECT * FROM c WHERE c.Channel.Name = '{channelName}' AND CONTAINS(c.CleanContent, \"{messageLike}\", true ) ORDER BY c.Timestamp DESC"),
-                null, new QueryRequestOptions() { MaxItemCount = take });
+            QueryDefinition queryDefinition = new QueryDefinition(
+                    "SELECT * FROM c WHERE c.Channel.Name = @channelName AND CONTAINS(c.CleanContent, @messageLike, true ) ORDER BY c.Timestamp DESC")
+                .WithParameter("@channelName", channelName)
+                .WithParameter("@messageLike", messageLike);
+            var query = _container.GetItemQueryIterator<Quoted>(queryDefinition,
+                null, new QueryRequestOptions() { MaxItemCount = take, MaxConcurrency = 5});
 
             while (query.HasMoreResults)
             {

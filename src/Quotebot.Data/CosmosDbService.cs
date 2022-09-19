@@ -184,17 +184,91 @@ public class CosmosDbService : IDataService
         }
     }
 
+    public async Task<Quoted> GetRandomQuoteInChannel(string channelName)
     {
+        var count = await GetCountOfQuotesInChannel(channelName);
 
+        if (count is 0)
+            return new() {Content = "No Quotes yet."};
+
+        var randomNum = new Random().NextInt64(count);
+
+        var queryDefinition = new QueryDefinition($"SELECT * FROM c WHERE c.Channel.Name = @channelName OFFSET @offset LIMIT 1")
+            .WithParameter("@channelName", channelName)
+            .WithParameter("@offset", randomNum);
+
+        var query = _container.GetItemQueryIterator<Quoted>(queryDefinition,
+            null, new QueryRequestOptions() { MaxItemCount = 1, MaxBufferedItemCount = 0, MaxConcurrency = 1 });
+
+        while (query.HasMoreResults)
         {
-        }
-
-
-
-        {
+            foreach (var quote in await query.ReadNextAsync())
             {
+                return quote;
             }
         }
 
+        return new() {Content = "Unable to get random quote"};
+    }
+
+    private async Task<int> GetCountOfQuotesInChannel(string channelName)
+    {
+        var countQueryDefinition = new QueryDefinition("SELECT VALUE COUNT(1) FROM c WHERE c.Channel.Name = @channelName")
+            .WithParameter("@channelName", channelName);
+        var query = _container.GetItemQueryIterator<int>(countQueryDefinition,
+            null, new QueryRequestOptions() {MaxItemCount = 1, MaxBufferedItemCount = 0, MaxConcurrency = 1});
+
+        while (query.HasMoreResults)
+        {
+            foreach (var countOfRecords in await query.ReadNextAsync())
+            {
+                return countOfRecords;
+            }
+        }
+
+        return default;
+    }
+
+    public async Task<Quoted> GetRandomQuoteInServer()
+    {
+        var count = await GetCountOfQuotesInServer();
+
+        if (count is 0)
+            return new() { Content = "No Quotes yet." };
+
+        var randomNum = new Random().NextInt64(count);
+
+        var queryDefinition = new QueryDefinition($"SELECT * FROM c OFFSET @offset LIMIT 1")
+            .WithParameter("@offset", randomNum);
+
+        var query = _container.GetItemQueryIterator<Quoted>(queryDefinition,
+            null, new QueryRequestOptions() { MaxItemCount = 1, MaxBufferedItemCount = 0, MaxConcurrency = 1 });
+
+        while (query.HasMoreResults)
+        {
+            foreach (var quote in await query.ReadNextAsync())
+            {
+                return quote;
+            }
+        }
+
+        return new() { Content = "Unable to get random quote" };
+    }
+
+    private async Task<int> GetCountOfQuotesInServer()
+    {
+        var countQueryDefinition = new QueryDefinition("SELECT VALUE COUNT(1) FROM c");
+        var query = _container.GetItemQueryIterator<int>(countQueryDefinition,
+            null, new QueryRequestOptions() { MaxItemCount = 1, MaxBufferedItemCount = 0, MaxConcurrency = 1 });
+
+        while (query.HasMoreResults)
+        {
+            foreach (var countOfRecords in await query.ReadNextAsync())
+            {
+                return countOfRecords;
+            }
+        }
+
+        return default;
     }
 }

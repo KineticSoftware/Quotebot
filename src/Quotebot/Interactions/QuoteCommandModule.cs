@@ -1,11 +1,11 @@
 ﻿using Discord.Commands;
-using System.Reflection;
 using System.Text;
 using Quotebot.Domain.Validators;
+using Quotebot.Commands;
 
-namespace Quotebot.Commands;
+namespace Quotebot.Interactions;
 
-[Group("quote")]
+[Group("mage")]
 public class QuoteCommandModule : ModuleBase<SocketCommandContext>
 {
     readonly IDataService _dataService;
@@ -15,34 +15,10 @@ public class QuoteCommandModule : ModuleBase<SocketCommandContext>
         _dataService = dataService;
     }
 
-    [Command("hello")]
-    [Summary("Says hello to you")]
-    public async Task SayHello()
-    {
-        await ReplyAsync($"Hello {Context.User.Username}");
-    }
-
-    [Command("hey")]
-    [Summary("Idiocracy Quote")]
-    public async Task SayGoAway()
-    {
-        await ReplyAsync($"{Context.User.Username} fuck you, I'm eating!");
-    }
-
-    [Command("version")]
-    [Summary("Gets the bot's current version")]
-    public async Task SayVersion()
-    {
-        Version version = Assembly.GetEntryAssembly()?.GetName().Version ??
-                          throw new Exception("Unable to determine entry assembly");
-		await ReplyAsync($"Version: `{version.Major}.{version.Minor}.{version.Build:000#}.{version.Revision}`");
-    }
-
     [Command("find")]
     [Summary("Find a Quote")]
     public async Task FindQuotes(string text, int limit = 5)
     {
-        
         var results = await _dataService.FindByQuote(text, Context.Channel.Name, limit);
 
         await ReplyAsync(results);
@@ -83,8 +59,10 @@ public class QuoteCommandModule : ModuleBase<SocketCommandContext>
                 return;
             }
 
-            var quote = new Quoted(completeMessage);
-            quote.Author = await Context.GetGuildUserName(completeMessage.Author);
+            Quoted quote = new(completeMessage)
+            {
+                Author = await Context.GetGuildUserName(completeMessage.Author)
+            };
 
             var result = await _dataService.TryCreateQuoteRecord(quote);
             if (!result)

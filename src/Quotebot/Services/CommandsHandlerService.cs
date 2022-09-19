@@ -48,6 +48,9 @@ public class CommandsHandlerService
 
     private async Task ReactionAddedAsync(Cacheable<IUserMessage, ulong> cachedUserMessage, Cacheable<IMessageChannel, ulong> cachedChannelMessage, SocketReaction reaction)
     {
+        if (!reaction.Emote.Equals(BotEmotes.QuotedEmote()))
+            return;
+
         var userMessage = await cachedUserMessage.GetOrDownloadAsync();
         if (userMessage is { Author.IsBot: true } )
             return;

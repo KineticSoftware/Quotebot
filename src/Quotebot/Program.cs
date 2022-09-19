@@ -1,5 +1,6 @@
 ﻿using Azure.Identity;
 using Microsoft.Extensions.Hosting;
+using Quotebot.Interactions;
 
 
 try
@@ -28,6 +29,7 @@ try
             services
                 .RegisterDiscordNet(hostContext.Configuration)
                 .RegisterCosmosDb(hostContext.Configuration)
+                .AddSingleton<EmojiReactionHandler>()
                 .AddSingleton<Bot>();
         })
         .Build();

@@ -1,4 +1,5 @@
-﻿using Discord.Interactions;
+﻿using System.Diagnostics;
+using Discord.Interactions;
 using Quotebot.Interactions.AutoComplete;
 
 // ReSharper disable StringLiteralTypo
@@ -52,5 +53,28 @@ public class FindQuoteSlashCommandsModule : InteractionModuleBase<SocketInteract
         var quote = await _dataService.FindQuoteById(query);
         await FollowupAsync(
             $"{quote.CreatedAt:d} - **{quote.Author.Nickname ?? quote.Author.Username}** : {quote.Content}");
+    }
+
+    [SlashCommand("randomquote", "Get a random quote")]
+    public async Task FindRandomQuote(RandomQuoteChoice choice)
+    {
+        await DeferAsync();
+
+        var quote = choice switch
+        {
+            RandomQuoteChoice.Channel => await _dataService.GetRandomQuoteInChannel(Context.Channel.Name),
+            RandomQuoteChoice.Server => await _dataService.GetRandomQuoteInServer(),
+            _ => throw new ArgumentOutOfRangeException(nameof(choice), choice, null)
+        };
+
+        await FollowupAsync(
+            $"{quote.CreatedAt:d} - **{quote.Author.Nickname ?? quote.Author.Username}** : {quote.Content}");
+    }
+
+
+    public enum RandomQuoteChoice
+    {
+        Channel,
+        Server
     }
 }

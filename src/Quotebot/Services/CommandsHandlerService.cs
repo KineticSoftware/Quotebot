@@ -1,7 +1,6 @@
 ﻿using Discord.Commands;
 using System.Reflection;
-using System.Text;
-using Quotebot.Domain.Validators;
+using Quotebot.Interactions;
 
 namespace Quotebot.Services;
 
@@ -10,12 +9,12 @@ public class CommandsHandlerService
     private readonly CommandService _commandService;
     private readonly DiscordSocketClient _client;
     private readonly IServiceProvider _serviceProvider;
-    private readonly IDataService _dataService;
+    private readonly EmojiReactionHandler _emojiReactionHandler;
 
-    public CommandsHandlerService(IServiceProvider serviceProvider, IDataService dataService, CommandService commandService, DiscordSocketClient client)
+    public CommandsHandlerService(IServiceProvider serviceProvider, EmojiReactionHandler emojiReactionHandler, CommandService commandService, DiscordSocketClient client)
     {
         _serviceProvider = serviceProvider;
-        _dataService = dataService;
+        _emojiReactionHandler = emojiReactionHandler;
 
         _commandService = commandService;
         _client = client;
@@ -48,42 +47,7 @@ public class CommandsHandlerService
 
     private async Task ReactionAddedAsync(Cacheable<IUserMessage, ulong> cachedUserMessage, Cacheable<IMessageChannel, ulong> cachedChannelMessage, SocketReaction reaction)
     {
-        if (!reaction.Emote.Equals(BotEmotes.QuotedEmote()))
-            return;
-
-        var userMessage = await cachedUserMessage.GetOrDownloadAsync();
-        if (userMessage is { Author.IsBot: true } )
-            return;
-
-        var emotedValue = userMessage.Reactions.TryGetValue(BotEmotes.QuotedEmote(), out var emoteMetadata);
-        if (!emotedValue || emoteMetadata.ReactionCount > 1 || reaction.User.Value.IsBot)
-            return;
-
-        var channelMessage = await cachedChannelMessage.GetOrDownloadAsync();
-        if (channelMessage is not IGuildChannel)
-            return;
-
-        if (reaction.User.GetValueOrDefault() is not SocketGuildUser socketGuildUser)
-            return;
-
-        var validator = userMessage.Validate();
-        if(!validator.IsValid)
-            return;
-
-        var quote = new Quoted(userMessage);
-
-        var result = await _dataService.TryCreateQuoteRecord(quote);
-        if (!result)
-        {
-            await userMessage.ReplyAsync($"{socketGuildUser.Mention} this quote was added previously.");
-            return;
-        }
-        
-        var response = new StringBuilder()
-            .AppendLine($"_{socketGuildUser.Nickname} quoted via_ {BotEmotes.QuotedRaw}")
-            .AppendLine($"> *{quote.Author?.Nickname ?? quote.Author?.Username} : {userMessage.Content}*");
-
-        await userMessage.ReplyAsync($"{response}");
+        await _emojiReactionHandler.ReactionAddedAsync(cachedUserMessage, cachedChannelMessage, reaction);
     }
 
     private async Task CommandExecutedAsync(Optional<CommandInfo> command, ICommandContext context, IResult result)

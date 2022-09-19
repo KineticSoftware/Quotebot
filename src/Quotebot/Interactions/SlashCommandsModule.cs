@@ -1,6 +1,6 @@
 ﻿using Discord.Interactions;
 using Quotebot.Interactions.AutoComplete;
-using System.Text.Json;
+
 // ReSharper disable StringLiteralTypo
 
 namespace Quotebot.Interactions;
@@ -8,7 +8,7 @@ namespace Quotebot.Interactions;
 // ReSharper disable once UnusedType.Global
 public class SlashCommandsModule : InteractionModuleBase<SocketInteractionContext>
 {
-    IDataService _dataService;
+    readonly IDataService _dataService;
     public SlashCommandsModule(IDataService dataService)
     {
         _dataService = dataService;
@@ -36,10 +36,9 @@ public class SlashCommandsModule : InteractionModuleBase<SocketInteractionContex
 
     [SlashCommand("findquote", "Search for a specific quote by user")]
     public async Task FindQuote(
-
-        [Summary("query", "The query for the item to search"),
-         Autocomplete(typeof(SearchQuotesAutoCompleteHandler))]
-        string query)
+        [Autocomplete(typeof(SearchQuotesAutoCompleteHandler)), Summary("query", "The query for the item to search")]
+        string query
+    )
     {
         // it's not super obvious but SearchQuotesAutoCompleteHandler should return an id of the picked quote. 
         if (!long.TryParse(query, out _))

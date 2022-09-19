@@ -6,10 +6,10 @@ using Quotebot.Interactions.AutoComplete;
 namespace Quotebot.Interactions;
 
 // ReSharper disable once UnusedType.Global
-public class SlashCommandsModule : InteractionModuleBase<SocketInteractionContext>
+public class FindQuoteSlashCommandsModule : InteractionModuleBase<SocketInteractionContext>
 {
     readonly IDataService _dataService;
-    public SlashCommandsModule(IDataService dataService)
+    public FindQuoteSlashCommandsModule(IDataService dataService)
     {
         _dataService = dataService;
     }

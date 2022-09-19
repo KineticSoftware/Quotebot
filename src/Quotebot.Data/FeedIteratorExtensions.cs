@@ -5,18 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.Cosmos;
 
-namespace Quotebot.Data
+namespace Quotebot.Data;
+
+public static class FeedIteratorExtensions
 {
-    public static class FeedIteratorExtensions
+    public static async IAsyncEnumerable<TModel> ToAsyncEnumerable<TModel>(this FeedIterator<TModel> iterator)
     {
-        public static async IAsyncEnumerable<TModel> ToAsyncEnumerable<TModel>(this FeedIterator<TModel> iterator)
+        while (iterator.HasMoreResults)
         {
-            while (iterator.HasMoreResults)
+            foreach (TModel record in await iterator.ReadNextAsync())
             {
-                foreach (TModel record in await iterator.ReadNextAsync())
-                {
-                    yield return record;
-                }
+                yield return record;
             }
         }
     }

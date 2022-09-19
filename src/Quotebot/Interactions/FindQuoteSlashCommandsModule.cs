@@ -1,15 +1,16 @@
-﻿using Discord.Interactions;
+﻿using System.Diagnostics;
+using Discord.Interactions;
 using Quotebot.Interactions.AutoComplete;
-using System.Text.Json;
+
 // ReSharper disable StringLiteralTypo
 
 namespace Quotebot.Interactions;
 
 // ReSharper disable once UnusedType.Global
-public class SlashCommandsModule : InteractionModuleBase<SocketInteractionContext>
+public class FindQuoteSlashCommandsModule : InteractionModuleBase<SocketInteractionContext>
 {
-    IDataService _dataService;
-    public SlashCommandsModule(IDataService dataService)
+    readonly IDataService _dataService;
+    public FindQuoteSlashCommandsModule(IDataService dataService)
     {
         _dataService = dataService;
     }
@@ -36,10 +37,9 @@ public class SlashCommandsModule : InteractionModuleBase<SocketInteractionContex
 
     [SlashCommand("findquote", "Search for a specific quote by user")]
     public async Task FindQuote(
-
-        [Summary("query", "The query for the item to search"),
-         Autocomplete(typeof(SearchQuotesAutoCompleteHandler))]
-        string query)
+        [Autocomplete(typeof(SearchQuotesAutoCompleteHandler)), Summary("query", "The query for the item to search")]
+        string query
+    )
     {
         // it's not super obvious but SearchQuotesAutoCompleteHandler should return an id of the picked quote. 
         if (!long.TryParse(query, out _))
@@ -53,5 +53,28 @@ public class SlashCommandsModule : InteractionModuleBase<SocketInteractionContex
         var quote = await _dataService.FindQuoteById(query);
         await FollowupAsync(
             $"{quote.CreatedAt:d} - **{quote.Author.Nickname ?? quote.Author.Username}** : {quote.Content}");
+    }
+
+    [SlashCommand("randomquote", "Get a random quote")]
+    public async Task FindRandomQuote(RandomQuoteChoice choice)
+    {
+        await DeferAsync();
+
+        var quote = choice switch
+        {
+            RandomQuoteChoice.Channel => await _dataService.GetRandomQuoteInChannel(Context.Channel.Name),
+            RandomQuoteChoice.Server => await _dataService.GetRandomQuoteInServer(),
+            _ => throw new ArgumentOutOfRangeException(nameof(choice), choice, null)
+        };
+
+        await FollowupAsync(
+            $"{quote.CreatedAt:d} - **{quote.Author.Nickname ?? quote.Author.Username}** : {quote.Content}");
+    }
+
+
+    public enum RandomQuoteChoice
+    {
+        Channel,
+        Server
     }
 }

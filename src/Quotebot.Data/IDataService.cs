@@ -22,5 +22,7 @@ public interface IDataService
 
     IAsyncEnumerable<Quoted> FindQuotesByChannelAsync(string messageLike, string channelName, int take = 5);
 
-    Task<IEnumerable<Quoted>> FindQuotesByUserInChannel(IUser user, string channelName, string messageLike, int take = 5);
+    Task<Quoted> GetRandomQuoteInChannel(string channelName);
+
+    Task<Quoted> GetRandomQuoteInServer();
 }

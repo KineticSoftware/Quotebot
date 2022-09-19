@@ -19,7 +19,7 @@ CONerd Quotebot is this idea that any message spoken in a Discord server could b
 - [x] Add `Count of Quotes` as a user action (right click on a User)
 - [x] Make quotebot add an emoji to quoted text
 - [x] Add `!quote find <text>`
-- [ ] **Top Requested Feature** - Display a random quote
+- [x] **Top Requested Feature** - Display a random quote
 - [ ] Should we set [ephemeral](https://github.com/discord-net/Discord.Net/blob/dev/src/Discord.Net.Core/Entities/Interactions/IDiscordInteraction.cs#L58)?
   - [ ] What about the other options? e..g allowedMentions 
 - [ ] Allow embeds or attachments??

@@ -21,32 +21,6 @@ class SearchQuotesAutoCompleteHandler : AutocompleteHandler
         return await FindSuggestionsAsync(query, channel, dataService);
     }
 
-    //private async Task<AutocompletionResult> FindSuggestions(string query, string channel, IDataService dataService)
-    //{
-    //    var quotes = await dataService.FindQuotesByChannel(query, channel, 25).ConfigureAwait(false);
-    //    var enumerable = quotes as Quoted[] ?? quotes.ToArray();
-    //    if (!enumerable.Any())
-    //    {
-    //        return AutocompletionResult.FromSuccess();
-    //    }
-
-    //    List<AutocompleteResult> suggestions = new();
-    //    foreach (var quote in enumerable)
-    //    {
-    //        string title = quote.CleanContent switch
-    //        {
-    //            { Length: > 100 } value => value.Substring(0, 90),
-    //            { } value => value,
-    //            _ => throw new ArgumentOutOfRangeException()
-    //        };
-
-    //        suggestions.Add(new AutocompleteResult(title, quote.Id));
-    //    }
-    //    // max - 25 suggestions at a time (API limit)
-    //    return AutocompletionResult.FromSuccess(suggestions.Take(25));
-    //}
-
-
     private async Task<AutocompletionResult> FindSuggestionsAsync(string query, string channel, IDataService dataService)
     {
         List<AutocompleteResult> suggestions = new();

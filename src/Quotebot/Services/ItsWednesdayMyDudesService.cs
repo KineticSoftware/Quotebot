@@ -1,13 +1,4 @@
-﻿using Discord;
-using Discord.Interactions;
-using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Quotebot.Services
+﻿namespace Quotebot.Services
 {
     internal class ItsWednesdayMyDudesService
     {

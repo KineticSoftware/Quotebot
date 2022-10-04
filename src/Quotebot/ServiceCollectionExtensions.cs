@@ -28,6 +28,6 @@ public static class ServiceCollectionExtensions
             .AddSingleton<CommandsHandlerService>()
             .AddSingleton<InteractionsHandlerService>()
             .AddSingleton<ItsWednesdayMyDudesService>(serviceProvider =>
-                new(serviceProvider.GetRequiredService<DiscordSocketClient>(), cancellationTokenSource));
+                new(serviceProvider.GetRequiredService<DiscordSocketClient>(), parentConfiguration.GetRequiredSection(YoutubeConfiguration.ConfigurationSectionName).Get<YoutubeConfiguration>(), cancellationTokenSource));
     }
 }

@@ -86,8 +86,10 @@ namespace Quotebot.Services
         private TimeSpan GetNextWednesday()
         {
             _logger.LogInformation($"Begin {nameof(GetNextWednesday)}");
-            DateOnly nextWednesday = NextCalendarDate(DateTimeOffset.Now, DayOfWeek.Wednesday);
-            TimeOnly sixAm = TimeOnly.FromTimeSpan(new(16, 0, 0));
+            DateTime mountainStandardTime = TimeZoneInfo.ConvertTimeFromUtc(DateTimeOffset.Now.UtcDateTime, TimeZoneInfo.FindSystemTimeZoneById("Mountain Standard Time"));
+            _logger.LogInformation($"Current Mountain Standard time {mountainStandardTime}");
+            DateOnly nextWednesday = NextCalendarDate(mountainStandardTime, DayOfWeek.Wednesday);
+            TimeOnly sixAm = TimeOnly.FromTimeSpan(new(17, 0, 0));
 
             DateTime nextWedsSixAm = nextWednesday.ToDateTime(sixAm);
 

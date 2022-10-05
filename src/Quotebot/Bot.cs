@@ -5,20 +5,22 @@ namespace Quotebot;
 internal class Bot
 {
     private readonly ILogger<Bot> _logger;
-    private readonly BotConfiguration _configuration;
+    private readonly DiscordConfiguration _configuration;
     private readonly DiscordSocketClient _client;
     private readonly InteractionService _interactionService;
     private readonly CommandsHandlerService _commandsHandlerService;
     private readonly InteractionsHandlerService _interactionsHandlerService;
+    private readonly ItsWednesdayMyDudesService _itsWednesdayMyDudesService;
 
     public Bot(
         ILogger<Bot> logger,
-        BotConfiguration configuration,
+        DiscordConfiguration configuration,
         DiscordSocketClient client,
         InteractionService interactionService,
         IDataService dataService,
         CommandsHandlerService commandsHandlerService,
-        InteractionsHandlerService interactionsHandlerService)
+        InteractionsHandlerService interactionsHandlerService,
+        ItsWednesdayMyDudesService itsWednesdayMyDudesService)
     {
         _logger = logger;
         _configuration = configuration;
@@ -26,6 +28,8 @@ internal class Bot
         _interactionService = interactionService;
         _commandsHandlerService = commandsHandlerService;
         _interactionsHandlerService = interactionsHandlerService;
+        _itsWednesdayMyDudesService = itsWednesdayMyDudesService;
+
         RegisterEventHandlers();
     }
 
@@ -39,6 +43,7 @@ internal class Bot
     public async Task Connect()
     {
         var discordToken = _configuration.Token;
+        _itsWednesdayMyDudesService.Initialize();
         await Task.WhenAll(_commandsHandlerService.InitializeAsync(),
             _interactionsHandlerService.InitializeAsync());
         await _client.LoginAsync(TokenType.Bot, discordToken);
@@ -55,6 +60,8 @@ internal class Bot
     {
         await _interactionService.RegisterCommandsToGuildAsync(_configuration.GuildId, true);
         _logger.LogInformation("Bot is connected!");
+        
+        
     }
 
     public async Task OnShutdown()

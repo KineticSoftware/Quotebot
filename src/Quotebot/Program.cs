@@ -5,7 +5,8 @@ using Quotebot.Interactions;
 
 try
 {
-    var host = new HostBuilder()
+    CancellationTokenSource cancellationTokenSource = new();
+    IHost host = new HostBuilder()
         .ConfigureDefaults(args)
         .ConfigureAppConfiguration((hostContext, configBuilder) =>
         {
@@ -27,16 +28,17 @@ try
         .ConfigureServices((hostContext, services) =>
         {
             services
-                .RegisterDiscordNet(hostContext.Configuration)
+                .RegisterDiscordNet(hostContext.Configuration, cancellationTokenSource)
                 .RegisterCosmosDb(hostContext.Configuration)
                 .AddSingleton<EmojiReactionHandler>()
                 .AddSingleton<Bot>();
         })
         .Build();
 
-    CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+    
     var runningHost = host.RunAsync(cancellationTokenSource.Token);
     var bot = host.Services.GetService<Bot>();
+    
     if (bot == null) throw new ApplicationException("Could not resolve bot service.");
     Console.CancelKeyPress += async (s, e) =>
     {
@@ -44,6 +46,7 @@ try
         cancellationTokenSource.Cancel();
         e.Cancel = true;
     };
+
     await bot.Connect();
     await runningHost;
 }

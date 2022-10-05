@@ -89,7 +89,7 @@ namespace Quotebot.Services
             DateTime mountainStandardTime = TimeZoneInfo.ConvertTimeFromUtc(DateTimeOffset.Now.UtcDateTime, TimeZoneInfo.FindSystemTimeZoneById("Mountain Standard Time"));
             _logger.LogInformation($"Current Mountain Standard time {mountainStandardTime}");
             DateOnly nextWednesday = NextCalendarDate(mountainStandardTime, DayOfWeek.Wednesday);
-            TimeOnly sixAm = TimeOnly.FromTimeSpan(new(17, 0, 0));
+            TimeOnly sixAm = TimeOnly.FromTimeSpan(new(6, 0, 0));
 
             DateTime nextWedsSixAm = nextWednesday.ToDateTime(sixAm);
 
@@ -103,7 +103,7 @@ namespace Quotebot.Services
 
         private DateOnly NextCalendarDate(DateTimeOffset from, DayOfWeek dayOfTheWeek)
         {
-            DateOnly nextDay = DateOnly.FromDateTime(from.Date).AddDays(0); // set to 1 to resume normal operations. 
+            DateOnly nextDay = DateOnly.FromDateTime(from.Date).AddDays(1); // set to 1 to resume normal operations. 
             int delta = ((int) dayOfTheWeek - (int) nextDay.DayOfWeek + 7) % 7;
             nextDay = nextDay.AddDays(delta);
 

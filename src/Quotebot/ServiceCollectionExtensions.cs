@@ -30,7 +30,7 @@ public static class ServiceCollectionExtensions
             .AddSingleton<CommandsHandlerService>()
             .AddSingleton<InteractionsHandlerService>()
             .AddSingleton<ItsWednesdayMyDudesService>(serviceProvider =>
-                new(serviceProvider.GetRequiredService<DiscordSocketClient>(), discordConfiguration, youtubeConfiguration, cancellationTokenSource))
+                new(serviceProvider.GetRequiredService<DiscordSocketClient>(), discordConfiguration, youtubeConfiguration, serviceProvider.GetRequiredService<ILogger<ItsWednesdayMyDudesService>>(), cancellationTokenSource))
             .AddSingleton<EmojiReactionHandler>();
     }
 }

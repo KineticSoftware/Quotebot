@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Discord.Interactions;
+﻿using Discord.Interactions;
 using Quotebot.Interactions.AutoComplete;
 
 // ReSharper disable StringLiteralTypo

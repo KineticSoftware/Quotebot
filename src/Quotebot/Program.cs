@@ -1,7 +1,5 @@
 ﻿using Azure.Identity;
 using Microsoft.Extensions.Hosting;
-using Quotebot.Interactions;
-
 
 try
 {

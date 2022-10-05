@@ -93,7 +93,8 @@ namespace Quotebot.Services
 
             DateTime nextWedsSixAm = nextWednesday.ToDateTime(sixAm);
 
-            var result = nextWedsSixAm.Subtract(DateTimeOffset.Now.DateTime);
+            mountainStandardTime = TimeZoneInfo.ConvertTimeFromUtc(DateTimeOffset.Now.UtcDateTime, TimeZoneInfo.FindSystemTimeZoneById("Mountain Standard Time"));
+            var result = nextWedsSixAm.Subtract(mountainStandardTime);
 
             _logger.LogInformation($"Time until next Wednesday {result:d' days 'hh\\:mm\\.ss}");
             _logger.LogInformation($"End {nameof(GetNextWednesday)}");

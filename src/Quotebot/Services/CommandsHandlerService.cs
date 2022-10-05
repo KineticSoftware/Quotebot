@@ -42,7 +42,7 @@ public class CommandsHandlerService
             default: 
                 await Task.CompletedTask;
                 break;
-        };
+        }
     }
 
     private async Task ReactionAddedAsync(Cacheable<IUserMessage, ulong> cachedUserMessage, Cacheable<IMessageChannel, ulong> cachedChannelMessage, SocketReaction reaction)

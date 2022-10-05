@@ -23,13 +23,13 @@ public static class ServiceCollectionExtensions
         }
 
         return serviceCollection
-            .AddSingleton(serviceProvider =>
+            .AddSingleton<CosmosClient>(_ =>
             {
-                CosmosClientOptions cosmosClientOptions = new CosmosClientOptions()
+                CosmosClientOptions cosmosClientOptions = new()
                 {
-                    Serializer = new CosmosSystemTextJsonSerializer(new JsonSerializerOptions { })
+                    Serializer = new CosmosSystemTextJsonSerializer(new())
                 };
-                return new CosmosClient(configuration.Url, configuration.Authorization, cosmosClientOptions);
+                return new(configuration.Url, configuration.Authorization, cosmosClientOptions);
             })
             .AddSingleton(serviceProvider =>
             {

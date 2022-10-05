@@ -1,7 +1,5 @@
 ﻿using Azure.Identity;
 using Microsoft.Extensions.Hosting;
-using Quotebot.Interactions;
-
 
 try
 {
@@ -28,9 +26,8 @@ try
         .ConfigureServices((hostContext, services) =>
         {
             services
-                .RegisterDiscordNet(hostContext.Configuration, cancellationTokenSource)
+                .RegisterServices(hostContext.Configuration, cancellationTokenSource)
                 .RegisterCosmosDb(hostContext.Configuration)
-                .AddSingleton<EmojiReactionHandler>()
                 .AddSingleton<Bot>();
         })
         .Build();
@@ -40,7 +37,7 @@ try
     var bot = host.Services.GetService<Bot>();
     
     if (bot == null) throw new ApplicationException("Could not resolve bot service.");
-    Console.CancelKeyPress += async (s, e) =>
+    Console.CancelKeyPress += async (_, e) =>
     {
         await bot.OnShutdown();
         cancellationTokenSource.Cancel();

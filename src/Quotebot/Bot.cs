@@ -17,7 +17,6 @@ internal class Bot
         DiscordConfiguration configuration,
         DiscordSocketClient client,
         InteractionService interactionService,
-        IDataService dataService,
         CommandsHandlerService commandsHandlerService,
         InteractionsHandlerService interactionsHandlerService,
         ItsWednesdayMyDudesService itsWednesdayMyDudesService)
@@ -50,18 +49,16 @@ internal class Bot
         await _client.StartAsync();
     }
 
-    public async Task LogMessage(LogMessage log)
+    private async Task LogMessage(LogMessage log)
     {
         _logger.LogDebug(log.Message);
         await Task.CompletedTask;
     }
 
-    public async Task OnReady()
+    private async Task OnReady()
     {
-        await _interactionService.RegisterCommandsToGuildAsync(_configuration.GuildId, true);
+        await _interactionService.RegisterCommandsToGuildAsync(_configuration.GuildId);
         _logger.LogInformation("Bot is connected!");
-        
-        
     }
 
     public async Task OnShutdown()

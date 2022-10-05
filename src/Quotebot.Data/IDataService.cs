@@ -1,6 +1,4 @@
-﻿using Discord;
-
-namespace Quotebot.Data;
+﻿namespace Quotebot.Data;
 
 public interface IDataService
 {

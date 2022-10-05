@@ -47,7 +47,7 @@ namespace Quotebot.Interactions
 
             var response = new StringBuilder()
                 .AppendLine($"_{socketGuildUser.Nickname} quoted via_ {BotEmotes.QuotedRaw}")
-                .AppendLine($"> *{quote.Author?.Nickname ?? quote.Author?.Username} : {userMessage.Content}*");
+                .AppendLine($"> *{quote.Author.Nickname ?? quote.Author.Username} : {userMessage.Content}*");
 
             await userMessage.ReplyAsync($"{response}");
         }

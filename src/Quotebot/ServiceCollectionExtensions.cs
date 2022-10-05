@@ -7,11 +7,12 @@ public static class ServiceCollectionExtensions
 {
     public static IServiceCollection RegisterDiscordNet(this IServiceCollection serviceCollection, IConfiguration parentConfiguration, CancellationTokenSource cancellationTokenSource)
     {
-        BotConfiguration configuration = parentConfiguration.GetRequiredSection(BotConfiguration.ConfigurationSectionName).Get<BotConfiguration>();
-
+        DiscordConfiguration discordConfiguration = parentConfiguration.GetRequiredSection(DiscordConfiguration.ConfigurationSectionName).Get<DiscordConfiguration>();
+        YoutubeConfiguration youtubeConfiguration = parentConfiguration
+            .GetRequiredSection(YoutubeConfiguration.ConfigurationSectionName).Get<YoutubeConfiguration>();
         return serviceCollection
-            .AddSingleton(configuration)
-            .AddSingleton(serviceProvider => new DiscordSocketClient(
+            .AddSingleton(discordConfiguration)
+            .AddSingleton(_ => new DiscordSocketClient(
                 new DiscordSocketConfig
                 {
                     LogLevel = LogSeverity.Debug,
@@ -20,7 +21,7 @@ public static class ServiceCollectionExtensions
                 }))
             .AddSingleton(serviceProvider =>
                 new InteractionService(serviceProvider.GetRequiredService<DiscordSocketClient>()))
-            .AddSingleton(serviceProvider => new CommandService(new CommandServiceConfig
+            .AddSingleton(_ => new CommandService(new CommandServiceConfig
             {
                 LogLevel = LogSeverity.Debug,
                 ThrowOnError = true
@@ -28,6 +29,6 @@ public static class ServiceCollectionExtensions
             .AddSingleton<CommandsHandlerService>()
             .AddSingleton<InteractionsHandlerService>()
             .AddSingleton<ItsWednesdayMyDudesService>(serviceProvider =>
-                new(serviceProvider.GetRequiredService<DiscordSocketClient>(), parentConfiguration.GetRequiredSection(YoutubeConfiguration.ConfigurationSectionName).Get<YoutubeConfiguration>(), cancellationTokenSource));
+                new(serviceProvider.GetRequiredService<DiscordSocketClient>(), discordConfiguration, youtubeConfiguration, cancellationTokenSource))
     }
 }

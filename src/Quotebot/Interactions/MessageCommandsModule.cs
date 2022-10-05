@@ -48,7 +48,7 @@ public class MessageCommandsModule : InteractionModuleBase<SocketInteractionCont
         await completeMessage.AddReactionAsync(BotEmotes.QuotedEmote());
 
         var response = new StringBuilder()
-            .AppendLine($"> *{quote.Author?.Nickname ?? quote.Author?.Username} : {completeMessage.Content}*");
+            .AppendLine($"> *{quote.Author.Nickname ?? quote.Author.Username} : {completeMessage.Content}*");
 
         await FollowupAsync($"{response}");
     }

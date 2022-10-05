@@ -87,7 +87,7 @@ namespace Quotebot.Services
         {
             _logger.LogInformation($"Begin {nameof(GetNextWednesday)}");
             DateOnly nextWednesday = NextCalendarDate(DateTimeOffset.Now, DayOfWeek.Wednesday);
-            TimeOnly sixAm = TimeOnly.FromTimeSpan(new(6, 0, 0));
+            TimeOnly sixAm = TimeOnly.FromTimeSpan(new(15, 0, 0));
 
             DateTime nextWedsSixAm = nextWednesday.ToDateTime(sixAm);
 

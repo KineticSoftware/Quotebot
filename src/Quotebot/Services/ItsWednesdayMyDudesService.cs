@@ -1,32 +1,34 @@
-﻿using System.Net.Http.Json;
+﻿using Google.Apis.Services;
+using Google.Apis.YouTube.v3;
+using Google.Apis.YouTube.v3.Data;
 
 namespace Quotebot.Services
 {
     internal class ItsWednesdayMyDudesService
     {
         private readonly DiscordSocketClient _client;
-        private readonly YoutubeConfiguration _configuration;
-        private readonly string _youtubeApiKey;
+        private readonly DiscordConfiguration _discordConfiguration;
         private readonly CancellationTokenSource _cancellationTokenSource;
+        private readonly YouTubeService _youtubeService;
         private PeriodicTimer _timer = new(TimeSpan.FromMilliseconds(5));
         private Task? _task;
+        
 
-        public ItsWednesdayMyDudesService(DiscordSocketClient client, YoutubeConfiguration configuration,
+        public ItsWednesdayMyDudesService(
+            DiscordSocketClient client, 
+            DiscordConfiguration discordConfiguration, 
+            YoutubeConfiguration configuration,
             CancellationTokenSource cancellationTokenSource)
         {
             _client = client;
-            _configuration = configuration;
+            _discordConfiguration = discordConfiguration;
             _cancellationTokenSource = cancellationTokenSource;
-            _youtubeApiKey = _configuration.ApiKey;
 
-        }
-
-        private async Task AnnounceTheHolyDay()
-        {
-            ulong generalChannelId = 1021213113648947232;
-            IMessageChannel channel = _client.GetChannel(generalChannelId) as IMessageChannel ??
-                                      throw new ArgumentNullException($"Channel Id {generalChannelId} was not found");
-            await channel.SendMessageAsync("Announcement!");
+            _youtubeService = new(new BaseClientService.Initializer
+            {
+                ApiKey = configuration.ApiKey,
+                ApplicationName = "QuoteMage"
+            });
         }
 
         public void Initialize()
@@ -40,8 +42,12 @@ namespace Quotebot.Services
             using (_timer = new(untilWednesday))
             {
                 await _timer.WaitForNextTickAsync(_cancellationTokenSource.Token);
-                await GetWednesdayYouTubeVideos();
-                await AnnounceTheHolyDay();
+                PlaylistItem? video = await GetRandomWednesdayYouTubeVideos();
+                
+                if (video is not null)
+                {
+                    await AnnounceTheHolyDay(video);
+                }
             }
 
             untilWednesday = GetNextWednesday();
@@ -55,13 +61,18 @@ namespace Quotebot.Services
 
             await _task;
             _timer.Dispose();
+        }
 
+        private async Task AnnounceTheHolyDay(PlaylistItem video)
+        {
+            ulong generalChannelId = _discordConfiguration.GeneralChannelId;
+            IMessageChannel channel = _client.GetChannel(generalChannelId) as IMessageChannel ??
+                                      throw new ArgumentNullException($"Channel Id {generalChannelId} was not found");
+            await channel.SendMessageAsync($"It is Wednesday my dudes. aaaaaaaaaaaeee! https://www.youtube.com/watch?v={video.ContentDetails.VideoId}");
         }
 
         private TimeSpan GetNextWednesday()
         {
-            //return TimeSpan.FromSeconds(5);
-
             DateOnly nextWednesday = NextCalendarDate(DateTimeOffset.Now, DayOfWeek.Wednesday);
             TimeOnly sixAm = TimeOnly.FromTimeSpan(new(6, 0, 0));
 
@@ -73,61 +84,30 @@ namespace Quotebot.Services
         private DateOnly NextCalendarDate(DateTimeOffset from, DayOfWeek dayOfTheWeek)
         {
             DateOnly nextDay = DateOnly.FromDateTime(from.Date).AddDays(1);
-            var delta = ((int) dayOfTheWeek - (int) nextDay.DayOfWeek + 7) % 7;
+            int delta = ((int) dayOfTheWeek - (int) nextDay.DayOfWeek + 7) % 7;
             nextDay = nextDay.AddDays(delta);
             return nextDay;
         }
 
-
-        private async Task<YouTubeResults> GetWednesdayYouTubeVideos()
+        private async Task<PlaylistItem?> GetRandomWednesdayYouTubeVideos()
         {
-            Uri baseYoutubeUri = new("https://www.youtube.com/watch?v=");
-            using HttpClient httpClient = new()
+            PlaylistItemsResource.ListRequest listRequest = _youtubeService.PlaylistItems.List("contentDetails") ?? throw new Exception("PlaylistItems List request was null");
+            listRequest.PlaylistId = @"PLy3-VH7qrUZ5IVq_lISnoccVIYZCMvi-8";
+
+            List<PlaylistItem> results = new();
+            do
             {
-                BaseAddress = new Uri($"https://www.googleapis.com/")
-            };
+                var playlistItemsListResponse = await listRequest.ExecuteAsync();
+                if (playlistItemsListResponse is null)
+                    return null;
 
-            try
-            {
-                var result = await httpClient.GetFromJsonAsync<YouTubeResults>(
-                    $"youtube/v3/playlistItems?part=contentDetails&playlistId=PLy3-VH7qrUZ5IVq_lISnoccVIYZCMvi-8&maxResults=50&key={_youtubeApiKey}");
+                results.AddRange(playlistItemsListResponse.Items);
+                listRequest.PageToken = playlistItemsListResponse.NextPageToken;
 
-                if (result is null)
-                {
-                    return new();
-                }
+            } while (!string.IsNullOrWhiteSpace(listRequest.PageToken));
 
-                return result;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-                throw;
-            }
-        }
-
-        public abstract record YoutubeEntity
-        {
-            public string kind { get; init; } = string.Empty;
-            public string etag { get; init; } = string.Empty;
-        }
-        public record YouTubeResults : YoutubeEntity
-        {
-            public string nextPageToken { get; init; } = string.Empty;
-            public IEnumerable<YouTubeItem> items { get; init; } = Enumerable.Empty<YouTubeItem>();
-        }
-
-        public record YouTubeItem : YoutubeEntity
-        {
-            public string id { get; init; } = string.Empty;
-            public ContentItem contentDetails { get; init; }
-        }
-
-        public record ContentItem
-        {
-            public string videoId { get; init; } = string.Empty;
-
-            public DateTimeOffset videoPublishedAt { get; init; }
+            int rand = Random.Shared.Next(0, results.Count);
+            return results[rand];
         }
     }
 }

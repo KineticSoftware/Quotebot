@@ -35,7 +35,7 @@ public class CosmosSystemTextJsonSerializer : CosmosSerializer
             if (buffer is null)
                 throw new NullReferenceException(nameof(buffer));
 
-            if (buffer is T result)
+            if (buffer is { } result)
                 return result;
 
             throw new Exception($"Unable to convert {buffer.GetType().FullName} to {typeof(T).FullName}");

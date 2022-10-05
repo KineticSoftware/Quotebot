@@ -23,8 +23,8 @@ CONerd Quotebot is this idea that any message spoken in a Discord server could b
 - [ ] Should we set [ephemeral](https://github.com/discord-net/Discord.Net/blob/dev/src/Discord.Net.Core/Entities/Interactions/IDiscordInteraction.cs#L58)?
   - [ ] What about the other options? e..g allowedMentions 
 - [ ] Allow embeds or attachments??
-- [ ] NTH Add `!quote messageid`
-- [ ] Search quotes by username
-- [ ] Autosuggest find quote by text or username
+- [ ] ~~NTH Add `!quote messageid`~~
+- [ ] ~~Search quotes by username~~
+- [x] Autosuggest saved quotes by free form text
 - [ ] Add Application Insights or another type of application telemetry.
 - [ ] (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧

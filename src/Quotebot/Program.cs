@@ -26,9 +26,8 @@ try
         .ConfigureServices((hostContext, services) =>
         {
             services
-                .RegisterDiscordNet(hostContext.Configuration, cancellationTokenSource)
+                .RegisterServices(hostContext.Configuration, cancellationTokenSource)
                 .RegisterCosmosDb(hostContext.Configuration)
-                .AddSingleton<EmojiReactionHandler>()
                 .AddSingleton<Bot>();
         })
         .Build();

@@ -5,7 +5,7 @@ namespace Quotebot;
 internal class Bot
 {
     private readonly ILogger<Bot> _logger;
-    private readonly BotConfiguration _configuration;
+    private readonly DiscordConfiguration _configuration;
     private readonly DiscordSocketClient _client;
     private readonly InteractionService _interactionService;
     private readonly CommandsHandlerService _commandsHandlerService;
@@ -14,7 +14,7 @@ internal class Bot
 
     public Bot(
         ILogger<Bot> logger,
-        BotConfiguration configuration,
+        DiscordConfiguration configuration,
         DiscordSocketClient client,
         InteractionService interactionService,
         IDataService dataService,

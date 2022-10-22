@@ -5,6 +5,7 @@ using Microsoft.Extensions.Hosting;
 namespace Quotebot.Interactions.TextCommand;
 
 [Group("mage")]
+// ReSharper disable once UnusedType.Global
 public class MageTextCommandModule : ModuleBase<SocketCommandContext>
 {
     private readonly IHostEnvironment _hostEnvironment;

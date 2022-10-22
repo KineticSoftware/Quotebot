@@ -1,6 +1,6 @@
 ﻿using Discord.Commands;
 using System.Reflection;
-using Quotebot.Interactions;
+using Quotebot.Interactions.EmoteReaction;
 
 namespace Quotebot.Services;
 
@@ -9,9 +9,9 @@ public class CommandsHandlerService
     private readonly CommandService _commandService;
     private readonly DiscordSocketClient _client;
     private readonly IServiceProvider _serviceProvider;
-    private readonly EmojiReactionHandler _emojiReactionHandler;
+    private readonly QuotedEmoteReactionHandler _emojiReactionHandler;
 
-    public CommandsHandlerService(IServiceProvider serviceProvider, EmojiReactionHandler emojiReactionHandler, CommandService commandService, DiscordSocketClient client)
+    public CommandsHandlerService(IServiceProvider serviceProvider, QuotedEmoteReactionHandler emojiReactionHandler, CommandService commandService, DiscordSocketClient client)
     {
         _serviceProvider = serviceProvider;
         _emojiReactionHandler = emojiReactionHandler;

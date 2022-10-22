@@ -1,13 +1,13 @@
 ﻿using System.Text;
 using Quotebot.Domain.Validators;
 
-namespace Quotebot.Interactions
+namespace Quotebot.Interactions.EmoteReaction
 {
-    public class EmojiReactionHandler
+    public class QuotedEmoteReactionHandler
     {
         private readonly IDataService _dataService;
 
-        public EmojiReactionHandler(IDataService dataService)
+        public QuotedEmoteReactionHandler(IDataService dataService)
         {
             _dataService = dataService;
         }
@@ -18,8 +18,6 @@ namespace Quotebot.Interactions
                 return;
 
             var userMessage = await cachedUserMessage.GetOrDownloadAsync();
-            if (userMessage is { Author.IsBot: true })
-                return;
 
             var emotedValue = userMessage.Reactions.TryGetValue(BotEmotes.QuotedEmote(), out var emoteMetadata);
             if (!emotedValue || emoteMetadata.ReactionCount > 1 || reaction.User.Value.IsBot)

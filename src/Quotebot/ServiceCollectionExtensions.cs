@@ -1,6 +1,6 @@
 ﻿using Discord.Commands;
 using Discord.Interactions;
-using Quotebot.Interactions;
+using Quotebot.Interactions.EmoteReaction;
 
 namespace Quotebot;
 
@@ -31,6 +31,6 @@ internal static class ServiceCollectionExtensions
             .AddSingleton<InteractionsHandlerService>()
             .AddSingleton<ItsWednesdayMyDudesService>(serviceProvider =>
                 new(serviceProvider.GetRequiredService<DiscordSocketClient>(), discordConfiguration, youtubeConfiguration, serviceProvider.GetRequiredService<ILogger<ItsWednesdayMyDudesService>>(), cancellationTokenSource))
-            .AddSingleton<EmojiReactionHandler>();
+            .AddSingleton<QuotedEmoteReactionHandler>();
     }
 }

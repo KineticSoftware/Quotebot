@@ -29,14 +29,16 @@ public class MessageCommandsModule : InteractionModuleBase<SocketInteractionCont
 
         if (!isValid)
         {
-            return;
+           return;
         }
         
-        var quote = new Quoted(completeMessage);
-        quote.Author = await Context.GetGuildUserName(completeMessage.Author);
+        Quoted quote = new(completeMessage)
+        {
+            Author = await Context.GetGuildUserName(completeMessage.Author)
+        };
 
-        var result = await _dataService.TryCreateQuoteRecord(quote);
-        if (!result)
+        bool recordCreated = await _dataService.TryCreateQuoteRecord(quote);
+        if (!recordCreated)
         {
             await FollowupAsync($"{Context.User.Mention} this quote was added previously.");
             return;

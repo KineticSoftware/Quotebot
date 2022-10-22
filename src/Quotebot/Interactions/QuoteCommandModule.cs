@@ -64,8 +64,8 @@ public class QuoteCommandModule : ModuleBase<SocketCommandContext>
                 Author = await Context.GetGuildUserName(completeMessage.Author)
             };
 
-            var result = await _dataService.TryCreateQuoteRecord(quote);
-            if (!result)
+            var recordCreated = await _dataService.TryCreateQuoteRecord(quote);
+            if (!recordCreated)
             {
                 await ReplyAsync($"{Context.User.Mention} this quote was added previously.");
                 return;

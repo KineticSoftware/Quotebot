@@ -42,8 +42,8 @@ namespace Quotebot.Interactions
 
             var quote = new Quoted(userMessage);
 
-            var result = await _dataService.TryCreateQuoteRecord(quote);
-            if (!result)
+            var recordCreated = await _dataService.TryCreateQuoteRecord(quote);
+            if (!recordCreated)
             {
                 await userMessage.ReplyAsync($"{socketGuildUser.Mention} this quote was added previously.");
                 return;

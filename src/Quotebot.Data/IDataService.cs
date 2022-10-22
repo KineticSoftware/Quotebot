@@ -8,17 +8,11 @@ public interface IDataService
 
     Task<int> QuotesCountByUser(User user);
 
-    Task<string> FindByQuote(string messageLike, string channelName, int take = 5);
-
-    Task<string> FindByQuoteInServer(string messageLike, int take = 5);
-
     Task<Quoted> FindQuoteById(string id);
 
-    Task<IEnumerable<Quoted>> FindQuotesInServer(string messageLike, int take = 5);
+    IAsyncEnumerable<Quoted> FindQuotesByChannelAsync(string messageLike, string channelName, int take = 25);
 
-    Task<IEnumerable<Quoted>> FindQuotesByChannel(string messageLike, string channelName, int take = 5);
-
-    IAsyncEnumerable<Quoted> FindQuotesByChannelAsync(string messageLike, string channelName, int take = 5);
+    IAsyncEnumerable<Quoted> FindQuotesByGuildAsync(string messageLike, int take = 25);
 
     Task<Quoted> GetRandomQuoteInChannel(string channelName);
 

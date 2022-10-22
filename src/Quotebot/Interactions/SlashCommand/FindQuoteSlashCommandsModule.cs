@@ -3,7 +3,7 @@ using Quotebot.Interactions.AutoComplete;
 
 // ReSharper disable StringLiteralTypo
 
-namespace Quotebot.Interactions;
+namespace Quotebot.Interactions.SlashCommand;
 
 // ReSharper disable once UnusedType.Global
 public class FindQuoteSlashCommandsModule : InteractionModuleBase<SocketInteractionContext>
@@ -12,16 +12,6 @@ public class FindQuoteSlashCommandsModule : InteractionModuleBase<SocketInteract
     public FindQuoteSlashCommandsModule(IDataService dataService)
     {
         _dataService = dataService;
-    }
-
-    [SlashCommand("findquote-legacy", "Finds a quote")]
-    public async Task FindQuoteLegacy(string text, int limit = 5)
-    {
-        await DeferAsync();
-
-        var results = await _dataService.FindByQuote(text, Context.Channel.Name, limit);
-
-        await FollowupAsync(results);
     }
 
     [SlashCommand("findserverquote", "Finds a quote across all channels in this server")]

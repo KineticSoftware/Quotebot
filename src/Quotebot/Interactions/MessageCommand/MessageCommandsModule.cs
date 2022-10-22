@@ -23,6 +23,7 @@ public class MessageCommandsModule : InteractionModuleBase<SocketInteractionCont
         await DeferAsync();
 
         var completeMessage = await Context.GetCompleteMessage(message);
+        
         bool isValid = completeMessage.Validate(Context.User, async (validationException) =>
         {
             await FollowupAsync(validationException);

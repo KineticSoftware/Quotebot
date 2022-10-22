@@ -2,7 +2,7 @@
 
 namespace Quotebot.Interactions.AutoComplete;
 
-class SearchQuotesAutoCompleteHandler : AutocompleteHandler
+class SearchQuotesByChannelAutoCompleteHandler : AutocompleteHandler
 {
     public override async Task<AutocompletionResult> GenerateSuggestionsAsync(IInteractionContext context,
         IAutocompleteInteraction autocompleteInteraction,
@@ -24,7 +24,7 @@ class SearchQuotesAutoCompleteHandler : AutocompleteHandler
     private async Task<AutocompletionResult> FindSuggestionsAsync(string query, string channel, IDataService dataService)
     {
         List<AutocompleteResult> suggestions = new();
-        await foreach (var quote in dataService.FindQuotesByChannelAsync(query, channel, 25).ConfigureAwait(false))
+        await foreach (var quote in dataService.FindQuotesByChannelAsync(query, channel).ConfigureAwait(false))
         {
             string title = quote.CleanContent switch
             {

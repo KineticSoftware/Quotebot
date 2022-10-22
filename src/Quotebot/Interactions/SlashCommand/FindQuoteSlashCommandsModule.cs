@@ -15,22 +15,30 @@ public class FindQuoteSlashCommandsModule : InteractionModuleBase<SocketInteract
     }
 
     [SlashCommand("findserverquote", "Finds a quote across all channels in this server")]
-    public async Task FindServerQuote(string text, int limit = 5)
+    public async Task FindServerQuote([Autocomplete(typeof(SearchQuotesByGuildAutoCompleteHandler)), Summary("query", "Partial match text of the quote to find.")]
+        string query)
     {
+        // it's not super obvious but SearchQuotesByGuildAutoCompleteHandler will return an id of the picked quote. 
+        if (!long.TryParse(query, out _))
+        {
+            await RespondAsync(
+                $"That quote doesn't seem to exist {Context.User.Mention}. You need to pick from the suggestions of saved quotes.");
+            return;
+        }
+
         await DeferAsync();
-
-        var results = await _dataService.FindByQuoteInServer(text, limit);
-
-        await FollowupAsync(results);
+        var quote = await _dataService.FindQuoteById(query);
+        await FollowupAsync(
+            $"{quote.CreatedAt:d} - **{quote.Author.Nickname ?? quote.Author.Username}** in #{quote.Channel.Name}: {quote.Content}");
     }
 
     [SlashCommand("findquote", "Search for a specific quote by user")]
     public async Task FindQuote(
-        [Autocomplete(typeof(SearchQuotesAutoCompleteHandler)), Summary("query", "The query for the item to search")]
+        [Autocomplete(typeof(SearchQuotesByChannelAutoCompleteHandler)), Summary("query", "Partial match text of the quote to find.")]
         string query
     )
     {
-        // it's not super obvious but SearchQuotesAutoCompleteHandler should return an id of the picked quote. 
+        // it's not super obvious but SearchQuotesByChannelAutoCompleteHandler will return an id of the picked quote. 
         if (!long.TryParse(query, out _))
         {
             await RespondAsync(
@@ -45,14 +53,14 @@ public class FindQuoteSlashCommandsModule : InteractionModuleBase<SocketInteract
     }
 
     [SlashCommand("randomquote", "Get a random quote")]
-    public async Task FindRandomQuote(RandomQuoteChoice choice)
+    public async Task FindRandomQuote(QuoteChoice choice)
     {
         await DeferAsync();
 
         var quote = choice switch
         {
-            RandomQuoteChoice.Channel => await _dataService.GetRandomQuoteInChannel(Context.Channel.Name),
-            RandomQuoteChoice.Server => await _dataService.GetRandomQuoteInServer(),
+            QuoteChoice.Channel => await _dataService.GetRandomQuoteInChannel(Context.Channel.Name),
+            QuoteChoice.Server => await _dataService.GetRandomQuoteInServer(),
             _ => throw new ArgumentOutOfRangeException(nameof(choice), choice, null)
         };
 
@@ -61,7 +69,7 @@ public class FindQuoteSlashCommandsModule : InteractionModuleBase<SocketInteract
     }
 
 
-    public enum RandomQuoteChoice
+    public enum QuoteChoice
     {
         Channel,
         Server

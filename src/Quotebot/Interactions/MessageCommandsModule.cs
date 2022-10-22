@@ -22,16 +22,13 @@ public class MessageCommandsModule : InteractionModuleBase<SocketInteractionCont
         await DeferAsync();
 
         var completeMessage = await Context.GetCompleteMessage(message);
-        if (completeMessage.Author.IsBot)
+        bool isValid = completeMessage.Validate(Context.User, async (validationException) =>
         {
-            await FollowupAsync($"Sorry, you can't add quotes from bots.");
-            return;
-        }
+            await FollowupAsync(validationException);
+        });
 
-        var validator = completeMessage.Validate();
-        if (!validator.IsValid)
+        if (!isValid)
         {
-            await FollowupAsync(validator.validationException);
             return;
         }
         

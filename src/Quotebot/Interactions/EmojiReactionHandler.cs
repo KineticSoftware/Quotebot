@@ -32,8 +32,12 @@ namespace Quotebot.Interactions
             if (reaction.User.GetValueOrDefault() is not SocketGuildUser socketGuildUser)
                 return;
 
-            var validator = userMessage.Validate();
-            if (!validator.IsValid)
+            bool isValid = userMessage.Validate(socketGuildUser, async validationException =>
+            {
+                await userMessage.ReplyAsync(validationException);
+            });
+
+            if (!isValid)
                 return;
 
             var quote = new Quoted(userMessage);

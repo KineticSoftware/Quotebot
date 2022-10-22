@@ -7,3 +7,6 @@ global using System.Text.Json;
 global using Quotebot.Data.Configuration;
 global using Quotebot.Domain.Entities;
 global using Quotebot.Data.Serialization;
+
+using System.Runtime.CompilerServices;
+[assembly: InternalsVisibleTo("Quotebot")]

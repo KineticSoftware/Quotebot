@@ -1,8 +1,8 @@
 ﻿namespace Quotebot.Domain.Validators
 {
-    public static class MessageQuotedValidator
+    static class MessageQuotedValidator
     {
-        public static bool Validate(this IMessage message, IUser quotedByUser, Func<string, Task> onValidationFailed)
+        internal static bool Validate(this IMessage message, IUser quotedByUser, Func<string, Task> onValidationFailed)
         {
             if (message.Author.IsBot)
             {

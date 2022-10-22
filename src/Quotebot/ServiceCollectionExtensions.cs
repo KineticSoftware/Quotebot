@@ -4,9 +4,9 @@ using Quotebot.Interactions;
 
 namespace Quotebot;
 
-public static class ServiceCollectionExtensions
+internal static class ServiceCollectionExtensions
 {
-    public static IServiceCollection RegisterServices(this IServiceCollection serviceCollection, IConfiguration parentConfiguration, CancellationTokenSource cancellationTokenSource)
+    internal static IServiceCollection RegisterServices(this IServiceCollection serviceCollection, IConfiguration parentConfiguration, CancellationTokenSource cancellationTokenSource)
     {
         DiscordConfiguration discordConfiguration = parentConfiguration.GetRequiredSection(DiscordConfiguration.ConfigurationSectionName).Get<DiscordConfiguration>();
         YoutubeConfiguration youtubeConfiguration = parentConfiguration

@@ -2,14 +2,15 @@
 using System.Reflection;
 using Microsoft.Extensions.Hosting;
 
-namespace Quotebot.Interactions;
+namespace Quotebot.Interactions.TextCommand;
 
 [Group("mage")]
-public class MageCommandModule : ModuleBase<SocketCommandContext>
+// ReSharper disable once UnusedType.Global
+public class MageTextCommandModule : ModuleBase<SocketCommandContext>
 {
     private readonly IHostEnvironment _hostEnvironment;
 
-    public MageCommandModule(IHostEnvironment hostEnvironment)
+    public MageTextCommandModule(IHostEnvironment hostEnvironment)
     {
         _hostEnvironment = hostEnvironment;
     }

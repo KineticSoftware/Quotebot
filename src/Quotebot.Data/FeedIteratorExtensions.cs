@@ -2,9 +2,9 @@
 
 namespace Quotebot.Data;
 
-public static class FeedIteratorExtensions
+internal static class FeedIteratorExtensions
 {
-    public static async IAsyncEnumerable<TModel> ToAsyncEnumerable<TModel>(this FeedIterator<TModel> iterator)
+    internal static async IAsyncEnumerable<TModel> ToAsyncEnumerable<TModel>(this FeedIterator<TModel> iterator)
     {
         while (iterator.HasMoreResults)
         {

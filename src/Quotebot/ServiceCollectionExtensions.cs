@@ -1,12 +1,12 @@
 ﻿using Discord.Commands;
 using Discord.Interactions;
-using Quotebot.Interactions;
+using Quotebot.Interactions.EmoteReaction;
 
 namespace Quotebot;
 
-public static class ServiceCollectionExtensions
+internal static class ServiceCollectionExtensions
 {
-    public static IServiceCollection RegisterServices(this IServiceCollection serviceCollection, IConfiguration parentConfiguration, CancellationTokenSource cancellationTokenSource)
+    internal static IServiceCollection RegisterServices(this IServiceCollection serviceCollection, IConfiguration parentConfiguration, CancellationTokenSource cancellationTokenSource)
     {
         DiscordConfiguration discordConfiguration = parentConfiguration.GetRequiredSection(DiscordConfiguration.ConfigurationSectionName).Get<DiscordConfiguration>();
         YoutubeConfiguration youtubeConfiguration = parentConfiguration
@@ -31,6 +31,6 @@ public static class ServiceCollectionExtensions
             .AddSingleton<InteractionsHandlerService>()
             .AddSingleton<ItsWednesdayMyDudesService>(serviceProvider =>
                 new(serviceProvider.GetRequiredService<DiscordSocketClient>(), discordConfiguration, youtubeConfiguration, serviceProvider.GetRequiredService<ILogger<ItsWednesdayMyDudesService>>(), cancellationTokenSource))
-            .AddSingleton<EmojiReactionHandler>();
+            .AddSingleton<QuotedEmoteReactionHandler>();
     }
 }

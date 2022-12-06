@@ -8,9 +8,12 @@ internal static class ServiceCollectionExtensions
 {
     internal static IServiceCollection RegisterServices(this IServiceCollection serviceCollection, IConfiguration parentConfiguration, CancellationTokenSource cancellationTokenSource)
     {
-        DiscordConfiguration discordConfiguration = parentConfiguration.GetRequiredSection(DiscordConfiguration.ConfigurationSectionName).Get<DiscordConfiguration>();
-        YoutubeConfiguration youtubeConfiguration = parentConfiguration
-            .GetRequiredSection(YoutubeConfiguration.ConfigurationSectionName).Get<YoutubeConfiguration>();
+        DiscordConfiguration discordConfiguration = parentConfiguration.GetRequiredSection(DiscordConfiguration.ConfigurationSectionName).Get<DiscordConfiguration>() 
+                                                        ?? throw new ArgumentException($"{DiscordConfiguration.ConfigurationSectionName} configuration section was not specified.");
+        
+        YoutubeConfiguration youtubeConfiguration = parentConfiguration.GetRequiredSection(YoutubeConfiguration.ConfigurationSectionName).Get<YoutubeConfiguration>() 
+                                                        ?? throw new ArgumentException($"{YoutubeConfiguration.ConfigurationSectionName} configuration section was not specified.");
+
         return serviceCollection
             .AddSingleton(discordConfiguration)
             .AddSingleton(_ => new DiscordSocketClient(

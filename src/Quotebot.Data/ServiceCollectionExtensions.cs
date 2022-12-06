@@ -6,7 +6,8 @@ internal static class ServiceCollectionExtensions
 {
     internal static IServiceCollection RegisterCosmosDb(this IServiceCollection serviceCollection, IConfiguration parentConfiguration)
     {
-        CosmosConfiguration configuration = parentConfiguration.GetRequiredSection(CosmosConfiguration.ConfigurationSectionName).Get<CosmosConfiguration>();
+        CosmosConfiguration configuration = parentConfiguration.GetRequiredSection(CosmosConfiguration.ConfigurationSectionName).Get<CosmosConfiguration>()
+                                                ?? throw new ArgumentException($"{CosmosConfiguration.ConfigurationSectionName} configuration section was not specified.");
 
         string endpoint = configuration.Url;
         if (string.IsNullOrWhiteSpace(endpoint))

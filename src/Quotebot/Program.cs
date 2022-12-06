@@ -12,9 +12,9 @@ try
 
             if (hostContext.HostingEnvironment.IsProduction())
             {
-                string apiClient = configuration["ApiClientId"];
-                string apiSecret = configuration["ApiSecret"];
-                Uri keyUrl = new Uri(configuration["TokenSecretUri"]);
+                string apiClient = configuration["ApiClientId"] ?? throw new ArgumentException("ApiClientId was not found.");
+                string apiSecret = configuration["ApiSecret"] ?? throw new ArgumentException("ApiSecret was not found.");
+                Uri keyUrl = new Uri(configuration["TokenSecretUri"] ?? throw new ArgumentException("TokenSecretUri was not found."));
                 configBuilder.AddAzureKeyVault(keyUrl, new ClientSecretCredential("26789f3b-4e12-4923-81d4-db4519203698", apiClient, apiSecret));
             }
         })

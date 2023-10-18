@@ -14,7 +14,6 @@ on:
 
 permissions: 
   id-token: write # Required for requesting the JWT
-  contents: read
   
 jobs:
   Scale:
@@ -27,7 +26,7 @@ jobs:
           echo "container-version: + ${{ github.event.inputs.containerVersion }}"
           echo "min-replicas: ${{ github.event.inputs.minReplicas }}"
       - name: Checkout 
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
           
       - name: Az CLI login
         uses: azure/login@v1

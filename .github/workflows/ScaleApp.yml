@@ -6,6 +6,7 @@ on:
       minReplicas:
         description: Scale Container. Pick either 0 or 1
         required: true
+        type: number
         default: 1
       containerVersion:
         description: Version of container to scale. 
@@ -14,6 +15,8 @@ on:
 jobs:
   Scale:
     runs-on: ubuntu-latest
+    environment:
+      name: Production
     steps:
       - name: Echo Parameters
         run: |
@@ -22,10 +25,12 @@ jobs:
       - name: Checkout 
         uses: actions/checkout@v2
           
-      - name: Login to Azure
+      - name: Az CLI login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.Azure_ServicePrincipal }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID_GITHUB_ACTION_QUOTEBOT_APP }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID_GITHUB_ACTION_QUOTEBOT_APP }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Deploy to Azure
         uses: azure/arm-deploy@v1

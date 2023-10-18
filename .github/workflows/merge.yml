@@ -107,10 +107,12 @@ jobs:
         with:
           name: quotebot-artifact
           
-      - name: Login to Azure
+      - name: Az CLI login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.Azure_ServicePrincipal }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID_GITHUB_ACTION_QUOTEBOT_APP }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID_GITHUB_ACTION_QUOTEBOT_APP }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Deploy to Azure
         uses: azure/arm-deploy@v1

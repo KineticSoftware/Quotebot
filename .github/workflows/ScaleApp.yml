@@ -12,6 +12,10 @@ on:
         description: Version of container to scale. 
         required: true
 
+permissions: 
+  id-token: write # Required for requesting the JWT
+  contents: read
+  
 jobs:
   Scale:
     runs-on: ubuntu-latest

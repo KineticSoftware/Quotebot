@@ -5,6 +5,10 @@ on:
     branches:
       - 'main'
 
+permissions: 
+  id-token: write # Required for requesting the JWT
+  contents: read
+  
 env:
   SLN_PATH: './src/Quotebot.sln'
   BINARIES: './output'

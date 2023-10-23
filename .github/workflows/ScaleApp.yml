@@ -1,6 +1,6 @@
 name: Scale Container
 
-on: 
+on:
   workflow_dispatch:
     inputs:
       minReplicas:
@@ -9,12 +9,12 @@ on:
         type: number
         default: 1
       containerVersion:
-        description: Version of container to scale. 
+        description: Version of container to scale.
         required: true
 
-permissions: 
+permissions:
   id-token: write # Required for requesting the JWT
-  
+
 jobs:
   Scale:
     runs-on: ubuntu-latest
@@ -25,9 +25,9 @@ jobs:
         run: |
           echo "container-version: + ${{ github.event.inputs.containerVersion }}"
           echo "min-replicas: ${{ github.event.inputs.minReplicas }}"
-      - name: Checkout 
+      - name: Checkout
         uses: actions/checkout@v4
-          
+
       - name: Az CLI login
         uses: azure/login@v1
         with:
@@ -38,6 +38,7 @@ jobs:
       - name: Deploy to Azure
         uses: azure/arm-deploy@v1
         with:
+          scope: resourcegroup
           resourceGroupName: CoNerd
           template: ./container-app.json
           deploymentName: MageBot-Scale-${{ github.event.inputs.containerVersion }}

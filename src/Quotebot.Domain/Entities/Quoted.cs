@@ -2,17 +2,13 @@
 
 namespace Quotebot.Domain.Entities;
 
-public class Quoted
+public class Quoted(string content)
 {
-    public Quoted()
-    { }
-
-    public Quoted(IMessage message)
+    public Quoted(IMessage message) : this(message.Content)
     {
         Type = message.Type;
         Source = message.Source;
         MentionedEveryone = message.MentionedEveryone;
-        Content = message.Content;
         CleanContent = message.CleanContent;
         Timestamp = message.Timestamp;
         EditedTimestamp = message.EditedTimestamp;
@@ -41,7 +37,7 @@ public class Quoted
 
     public bool MentionedEveryone { get; set; }
 
-    public string? Content { get; set; }
+    public string? Content { get; set; } = content;
 
     public string? CleanContent { get; set; }
 

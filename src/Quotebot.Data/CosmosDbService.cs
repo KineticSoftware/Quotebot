@@ -60,7 +60,7 @@ public class CosmosDbService : IDataService
             }
         }
 
-        return new();
+        return new($"No Quote Found by Id: {id}");
     }
 
     public async IAsyncEnumerable<Quoted> FindQuotesByChannelAsync(string messageLike, string channelName, int take = 5)
@@ -103,7 +103,7 @@ public class CosmosDbService : IDataService
         var count = await GetCountOfQuotesInChannel(channelName);
 
         if (count is 0)
-            return new() {Content = "No Quotes yet."};
+            return new("No Quotes yet.");
 
         var randomNum = new Random().NextInt64(count);
 
@@ -122,7 +122,7 @@ public class CosmosDbService : IDataService
             }
         }
 
-        return new() {Content = "Unable to get random quote"};
+        return new("Unable to get random quote");
     }
 
     private async Task<int> GetCountOfQuotesInChannel(string channelName)
@@ -148,7 +148,7 @@ public class CosmosDbService : IDataService
         var count = await GetCountOfQuotesInServer();
 
         if (count is 0)
-            return new() { Content = "No Quotes yet." };
+            return new("No Quotes yet.");
 
         var randomNum = new Random().NextInt64(count);
 
@@ -166,7 +166,7 @@ public class CosmosDbService : IDataService
             }
         }
 
-        return new() { Content = "Unable to get random quote" };
+        return new("Unable to get random quote");
     }
 
     private async Task<int> GetCountOfQuotesInServer()

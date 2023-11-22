@@ -29,7 +29,7 @@ public class FindQuoteSlashCommandsModule : InteractionModuleBase<SocketInteract
         await DeferAsync();
         var quote = await _dataService.FindQuoteById(query);
         await FollowupAsync(
-            $"{quote.CreatedAt:d} - **{quote.Author.Nickname ?? quote.Author.Username}** in #{quote.Channel.Name}: {quote.Content}");
+            $"{quote.CreatedAt:d} - **{quote.Author.Nickname ?? quote.Author.Username}** in #{quote.Channel?.Name}: {quote.Content}");
     }
 
     [SlashCommand("findquote", "Search for a specific quote by user")]

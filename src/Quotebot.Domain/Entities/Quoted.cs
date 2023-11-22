@@ -49,7 +49,7 @@ public class Quoted
 
     public DateTimeOffset? EditedTimestamp { get; set; }
 
-    public Channel Channel { get; set; } = new();
+    public Channel? Channel { get; set; }
 
     public User Author { get; set; } = new();
 

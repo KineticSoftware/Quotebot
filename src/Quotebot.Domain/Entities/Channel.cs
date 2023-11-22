@@ -2,9 +2,6 @@
 
 public class Channel
 {
-    public Channel()
-    { }
-
     public Channel(IChannel channel)
     {
         Name = channel.Name;

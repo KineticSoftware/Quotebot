@@ -1,9 +1,8 @@
-﻿namespace Quotebot.Configuration
-{
-    internal class YoutubeConfiguration
-    {
-        public const string ConfigurationSectionName = "Youtube";
+﻿namespace Quotebot.Configuration;
 
-        public string ApiKey { get; init; } = string.Empty;
-    }
+internal class YoutubeConfiguration
+{
+    public const string ConfigurationSectionName = "Youtube";
+
+    public string ApiKey { get; init; } = string.Empty;
 }

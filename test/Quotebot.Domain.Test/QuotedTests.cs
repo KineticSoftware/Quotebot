@@ -1,5 +1,4 @@
-﻿using System.Formats.Tar;
-using Discord;
+﻿using Discord;
 using Discord.Mocks;
 using Quotebot.Domain.Entities;
 

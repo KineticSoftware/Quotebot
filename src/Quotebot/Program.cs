@@ -1,4 +1,5 @@
-﻿using Azure.Identity;
+﻿using System.Data;
+using Azure.Identity;
 using Microsoft.Extensions.Hosting;
 
 try
@@ -12,9 +13,9 @@ try
 
             if (hostContext.HostingEnvironment.IsProduction())
             {
-                string apiClient = configuration["ApiClientId"] ?? throw new ArgumentException("ApiClientId was not found.");
-                string apiSecret = configuration["ApiSecret"] ?? throw new ArgumentException("ApiSecret was not found.");
-                Uri keyUrl = new Uri(configuration["TokenSecretUri"] ?? throw new ArgumentException("TokenSecretUri was not found."));
+                string apiClient = configuration["ApiClientId"] ?? throw new NoNullAllowedException("ApiClientId was not found.");
+                string apiSecret = configuration["ApiSecret"] ?? throw new NoNullAllowedException("ApiSecret was not found.");
+                Uri keyUrl = new Uri(configuration["TokenSecretUri"] ?? throw new NoNullAllowedException("TokenSecretUri was not found."));
                 configBuilder.AddAzureKeyVault(keyUrl, new ClientSecretCredential("26789f3b-4e12-4923-81d4-db4519203698", apiClient, apiSecret));
             }
         })

@@ -3,18 +3,22 @@ name: Build and Push Container
 on:
   push:
     branches:
-      - 'main'
+      - "main"
+
+permissions:
+  id-token: write # Required for requesting the JWT
+  contents: write
 
 env:
-  SLN_PATH: './src/Quotebot.sln'
-  BINARIES: './output'
+  SLN_PATH: "./src/Quotebot.sln"
+  BINARIES: "./output"
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout 
-        uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
@@ -26,17 +30,15 @@ jobs:
           Write-Host $version
 
       - name: Set up .NET Core
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '6.0.x'
-          include-prerelease: false
+          dotnet-version: "6.0.x"
 
       - name: dotnet build
         run: dotnet build ${{ENV.SLN_PATH}} --configuration Release -p:Version=${{ENV.BUILD_VERSION}} --output ${{env.BINARIES}}
 
-
       - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: quotebot-artifact
           path: |
@@ -45,13 +47,13 @@ jobs:
             ${{env.BINARIES}}
             !${{env.BINARIES}}/runtimes_data/win**/**
           if-no-files-found: error
-          
+
       - name: Determine If Master
         run: |
           release_branch=$(test "${{ github.ref }}" = refs/heads/main && echo true || echo false)
           echo "Is this a release branch? ${release_branch}"
           echo "SHOULD_TAG=${release_branch}" >> $GITHUB_ENV
-          
+
       - name: Create a GitHub release
         if: ${{ success() && env.SHOULD_TAG=='true' }}
         uses: actions/create-release@v1
@@ -59,33 +61,34 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ env.BUILD_VERSION }}
-    
+          release_name: ${{ env.BUILD_VERSION }}
+
     outputs:
       build_version: ${{ env.BUILD_VERSION }}
-    
+
   container:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: Azure Container Registry 
+      name: Azure Container Registry
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: quotebot-artifact
-          
+
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v1
-      
+        uses: docker/setup-buildx-action@v3
+
       - name: Login to Azure Container Registry
         uses: azure/docker-login@v1
         with:
-          login-server: 'conerd.azurecr.io'
+          login-server: "conerd.azurecr.io"
           username: ${{ secrets.CONTAINER_REGISTRY_USER }}
           password: ${{ secrets.CONTAINER_REGISTRY_PASSWORD }}
 
       - name: Build Release Container
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v5
         with:
           context: .
           file: ./dockerfile
@@ -96,25 +99,28 @@ jobs:
 
   deploy:
     runs-on: ubuntu-latest
-    needs: 
+    needs:
       - build
       - container
     environment:
-      name: Production      
+      name: Production
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v3
         with:
           name: quotebot-artifact
-          
-      - name: Login to Azure
+
+      - name: Az CLI login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.Azure_ServicePrincipal }}
+          client-id: ${{ secrets.AZURE_CLIENT_ID_GITHUB_ACTION_QUOTEBOT_APP }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID_GITHUB_ACTION_QUOTEBOT_APP }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
       - name: Deploy to Azure
         uses: azure/arm-deploy@v1
         with:
+          scope: resourcegroup
           resourceGroupName: CoNerd
           template: ./container-app.json
           deploymentName: MageBot-Deployment-${{ needs.build.outputs.build_version }}

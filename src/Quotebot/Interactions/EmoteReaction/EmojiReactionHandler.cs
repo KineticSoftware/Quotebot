@@ -1,5 +1,5 @@
 ﻿using System.Text;
-using Quotebot.Domain.Validators;
+using Quotebot.Data.Validators;
 
 namespace Quotebot.Interactions.EmoteReaction;
 

@@ -1,4 +1,6 @@
-﻿namespace Quotebot.Domain.Validators;
+﻿using Discord;
+
+namespace Quotebot.Data.Validators;
 
 static class MessageQuotedValidator
 {

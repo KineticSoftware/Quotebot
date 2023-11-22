@@ -23,7 +23,6 @@ public class Quoted(string content)
         Flags = message.Flags;
         CreatedAt = message.CreatedAt;
         Id = Convert.ToString(message.Id);
-
     }
 
     [JsonPropertyName("id")]
@@ -37,9 +36,9 @@ public class Quoted(string content)
 
     public bool MentionedEveryone { get; set; }
 
-    public string? Content { get; set; } = content;
+    public string Content { get; set; } = content;
 
-    public string? CleanContent { get; set; }
+    public string CleanContent { get; set; } = content;
 
     public DateTimeOffset Timestamp { get; set; }
 
@@ -47,7 +46,7 @@ public class Quoted(string content)
 
     public Channel? Channel { get; set; }
 
-    public User Author { get; set; } = new();
+    public User Author { get; init; } = new();
 
     public MessageFlags? Flags { get; set; }
 }

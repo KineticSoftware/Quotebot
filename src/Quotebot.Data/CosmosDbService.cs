@@ -4,16 +4,10 @@ using User = Quotebot.Domain.Entities.User;
 
 namespace Quotebot.Data;
 
-public class CosmosDbService : IDataService
+public class CosmosDbService(Container container, ILogger<CosmosDbService> logger) : IDataService
 {
-    private readonly ILogger _logger;
-    private readonly Container _container;
-
-    public CosmosDbService(Container container, ILogger<CosmosDbService> logger)
-    {
-        _container = container ?? throw new ArgumentNullException(nameof(container));
-        _logger = logger;
-    }
+    private readonly ILogger _logger = logger;
+    private readonly Container _container = container ?? throw new ArgumentNullException(nameof(container));
 
     public async Task<bool> TryCreateQuoteRecord(Quoted message)
     {

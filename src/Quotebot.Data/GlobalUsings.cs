@@ -10,3 +10,4 @@ global using Quotebot.Data.Serialization;
 
 using System.Runtime.CompilerServices;
 [assembly: InternalsVisibleTo("Quotebot")]
+[assembly: InternalsVisibleTo("Quotebot.Data.Test")]

@@ -9,7 +9,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quotebot.Data", "Quotebot.D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quotebot.Domain", "Quotebot.Domain\Quotebot.Domain.csproj", "{95F5FE8F-57F9-4BA6-8D8F-CC2E5D658C61}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quotebot.Domain.Test", "..\test\Quotebot.Domain.Test\Quotebot.Domain.Test.csproj", "{9BE47E0A-2672-4E37-87C1-7DAB768ED65F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quotebot.Domain.Test", "..\test\Quotebot.Domain.Test\Quotebot.Domain.Test.csproj", "{9BE47E0A-2672-4E37-87C1-7DAB768ED65F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quotebot.Data.Test", "..\test\Quotebot.Data.Test\Quotebot.Data.Test.csproj", "{4A483B17-72BC-4B40-9475-2824A3033CE8}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{9BE47E0A-2672-4E37-87C1-7DAB768ED65F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BE47E0A-2672-4E37-87C1-7DAB768ED65F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9BE47E0A-2672-4E37-87C1-7DAB768ED65F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A483B17-72BC-4B40-9475-2824A3033CE8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A483B17-72BC-4B40-9475-2824A3033CE8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A483B17-72BC-4B40-9475-2824A3033CE8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A483B17-72BC-4B40-9475-2824A3033CE8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

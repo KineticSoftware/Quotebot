@@ -6,30 +6,22 @@ static class MessageQuotedValidator
 {
     internal static bool Validate(this IMessage message, IUser quotedByUser, Func<string, Task> onValidationFailed)
     {
-        if (message.Author.IsBot)
+        string? failureReason = message switch
         {
-            onValidationFailed($"{quotedByUser.Mention} sorry, you can't add quotes from bots.");
-            return false;
-        }
-            
-        if (string.IsNullOrWhiteSpace(message.CleanContent))
-        {
-            onValidationFailed($"{quotedByUser.Mention} no actual text was found. You can only quote text chat.");
-            return false;
-        }
+            _ when message.Author.IsBot => $"{quotedByUser.Mention} sorry, you can't add quotes from bots.",
+            _ when string.IsNullOrWhiteSpace(message.CleanContent) => $"{quotedByUser.Mention} no actual text was found. You can only quote text chat.",
+            _ when message.Embeds.Count > 0 || message.Attachments.Count > 0 => $"{quotedByUser.Mention} an embed or an attachment was found. You can currently only quote text chat.",
+            _ when quotedByUser.Username == message.Author.Username || quotedByUser.Mention == message.Author.Mention => $"{quotedByUser.Mention} you're not allowed to quote yourself. ┗( T﹏T )┛",
+            _ => null
+        };
 
-        if (message.Embeds.Count > 0 || message.Attachments.Count > 0)
+        if (failureReason != null)
         {
-            onValidationFailed($"{quotedByUser.Mention} an embed or an attachment was found. You can currently only quote text chat.");
-            return false;
-        }
-
-        if (quotedByUser.Username == message.Author.Username || quotedByUser.Mention == message.Author.Mention)
-        {
-            onValidationFailed($"{quotedByUser.Mention} you're not allowed to quote yourself. ┗( T﹏T )┛");
+            onValidationFailed(failureReason);
             return false;
         }
 
         return true;
     }
+
 }

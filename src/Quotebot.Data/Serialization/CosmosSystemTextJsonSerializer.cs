@@ -10,7 +10,7 @@ public class CosmosSystemTextJsonSerializer(JsonSerializerOptions jsonSerializer
         if (stream is null)
             throw new ArgumentException("Stream is null", nameof(stream));
 
-        if (stream.CanSeek && stream.Length == 0)
+        if (stream is {CanSeek: true, Length: 0})
         {
             return default!;
         }
@@ -21,7 +21,7 @@ public class CosmosSystemTextJsonSerializer(JsonSerializerOptions jsonSerializer
         }
         using (stream)
         {
-            var buffer = JsonSerializer.Deserialize<T>(stream, _jsonSerializerOptions);
+            var buffer = JsonSerializer.Deserialize<T>(stream, jsonSerializerOptions);
 
             if (buffer is null)
                 throw new NullReferenceException(nameof(buffer));
@@ -36,7 +36,7 @@ public class CosmosSystemTextJsonSerializer(JsonSerializerOptions jsonSerializer
     public override Stream ToStream<T>(T input)
     {
         var streamPayload = new MemoryStream();
-        JsonSerializer.Serialize(streamPayload, input, _jsonSerializerOptions);
+        JsonSerializer.Serialize(streamPayload, input, jsonSerializerOptions);
         streamPayload.Position = 0;
         return streamPayload;
     }

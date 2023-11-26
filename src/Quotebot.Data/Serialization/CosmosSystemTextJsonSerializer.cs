@@ -3,17 +3,8 @@ using Microsoft.Azure.Cosmos;
 
 namespace Quotebot.Data.Serialization;
 
-public class CosmosSystemTextJsonSerializer : CosmosSerializer
+public class CosmosSystemTextJsonSerializer(JsonSerializerOptions jsonSerializerOptions) : CosmosSerializer
 {
-    private readonly JsonSerializerOptions _jsonSerializerOptions;
-    //private readonly JsonObjectSerializer _systemTextJsonSerializer;
-
-    public CosmosSystemTextJsonSerializer(JsonSerializerOptions jsonSerializerOptions)
-    {
-        //_systemTextJsonSerializer = new JsonObjectSerializer(jsonSerializerOptions);
-        _jsonSerializerOptions = jsonSerializerOptions;
-    }
-
     public override T FromStream<T>(Stream stream)
     {
         if (stream is null)

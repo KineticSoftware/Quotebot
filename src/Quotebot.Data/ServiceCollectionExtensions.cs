@@ -28,14 +28,14 @@ internal static class ServiceCollectionExtensions
                 logger.LogInformation("Connecting to database...");
                 logger.LogTrace("CreateDatabaseIfNotExistsAsync");
 
-                // purposely doing this synchronous. It's required to boostrap the bot. 
+                // purposely doing this synchronous. It's required to bootstrap the bot. 
                 DatabaseResponse databaseResponse = cosmosClient.CreateDatabaseIfNotExistsAsync(DataConstants.DatabaseId).Result;
 
                 string output = databaseResponse.StatusCode switch
                 {
                     HttpStatusCode.OK => "Database already existed...",
                     HttpStatusCode.Created => $"Database {DataConstants.DatabaseId} was created successfully",
-                    _ => $"An error occured when attempting to create database. Http Status was {databaseResponse.StatusCode}"
+                    _ => $"An error occurred when attempting to create database. Http Status was {databaseResponse.StatusCode}"
                 };
 
                 logger.LogDebug(output);
@@ -71,7 +71,7 @@ internal static class ServiceCollectionExtensions
                 {
                     HttpStatusCode.OK => "Container already existed...",
                     HttpStatusCode.Created => $"Container {DataConstants.ContainerId} was created successfully",
-                    _ => $"An error occured when attempting to create database. Http Status was {containerResponse.StatusCode}"
+                    _ => $"An error occurred when attempting to create database. Http Status was {containerResponse.StatusCode}"
                 };
 
                 logger.LogDebug(output);

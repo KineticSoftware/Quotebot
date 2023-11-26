@@ -6,22 +6,10 @@ internal static class ServiceCollectionExtensions
 {
     internal static IServiceCollection RegisterCosmosDb(this IServiceCollection serviceCollection, IConfiguration parentConfiguration)
     {
-        CosmosConfiguration configuration = parentConfiguration.GetRequiredSection(CosmosConfiguration.ConfigurationSectionName).Get<CosmosConfiguration>()
-                                                ?? throw new ArgumentException($"{CosmosConfiguration.ConfigurationSectionName} configuration section was not specified.");
+        CosmosConfiguration configuration = parentConfiguration.GetRequiredSection(CosmosConfiguration.ConfigurationSectionName).Get<CosmosConfiguration>()!;
 
-        string endpoint = configuration.Url;
-        if (string.IsNullOrWhiteSpace(endpoint))
-        {
-            Console.WriteLine($"Please specify a valid CosmosDb {nameof(configuration.Url)} in your appSettings.json or Key Vault.");
-            return serviceCollection;
-        }
-
-        string authKey = configuration.Authorization;
-        if (string.IsNullOrWhiteSpace(authKey))
-        {
-            Console.WriteLine($"Please specify a valid {nameof(configuration.Authorization)} in your appSettings.json or Key Vault.");
-            return serviceCollection;
-        }
+        ArgumentException.ThrowIfNullOrWhiteSpace(configuration.Url);
+        ArgumentException.ThrowIfNullOrWhiteSpace(configuration.Authorization);
 
         return serviceCollection
             .AddSingleton<CosmosClient>(_ =>

@@ -1,5 +1,5 @@
-# Quotebot
-CONerd Quotebot is this idea that any message spoken in a Discord server could be recorded to a quote database. Specific quotes could then be retrieved in the future, or even searched.  This is recreating old quotebot functionality some of you may remember from IRC.
+# QuoteMage
+CONerd QuoteMage is this idea that any message spoken in a Discord server could be recorded to a quote database. Specific quotes could then be retrieved in the future, or even searched.  This is recreating old quote bot functionality some of you may remember from IRC.
 
 [![Build and Push Container](https://github.com/KineticSoftware/Quotebot/actions/workflows/merge.yml/badge.svg)](https://github.com/KineticSoftware/Quotebot/actions/workflows/merge.yml)
 
